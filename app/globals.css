@@ -1,0 +1,339 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #6EC6FF;
+  --color-secondary: #0A3D62;
+  --color-turquoise: #1DD3B0;
+  --color-orange: #FF7A00;
+  --color-bg: #F2F6F9;
+  --color-text: #2E2E2E;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+html,
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: #0A3D62;
+  color: white;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #F2F6F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #0A3D62;
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6EC6FF;
+}
+
+/* Prevent iOS zoom-on-focus on inputs */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+@layer components {
+  /* === BUTTONS in brand colors (no visible color blends) === */
+
+  /* Primary: deep brand blue, white text. The shimmer streak only fires on
+   * hover and is a quick UI affordance, not a visual color palette. */
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-secondary px-6 py-4 font-semibold text-white shadow-cta transition-all duration-200 min-h-[52px] overflow-hidden
+      hover:bg-brand-primary hover:text-brand-secondary hover:shadow-glow hover:-translate-y-0.5
+      active:scale-[0.97] active:translate-y-0
+      focus-visible:outline-none focus-visible:shadow-ring;
+  }
+
+  /* Light: bright brand blue with deep blue text */
+  .btn-light {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-primary px-6 py-4 font-bold text-brand-secondary shadow-glow transition-all duration-200 min-h-[52px] overflow-hidden
+      hover:bg-white hover:shadow-[0_18px_44px_-10px_rgba(110,198,255,0.7)] hover:-translate-y-0.5
+      active:scale-[0.97] active:translate-y-0
+      focus-visible:outline-none focus-visible:shadow-ring;
+  }
+
+  /* Shimmer streak shared across both — sweeps across once on hover */
+  .btn-primary::before,
+  .btn-light::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.35) 50%,
+      transparent 70%
+    );
+    transform: translateX(-110%) skewX(-12deg);
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+  }
+  .btn-primary:hover::before,
+  .btn-light:hover::before {
+    transform: translateX(110%) skewX(-12deg);
+  }
+  /* Lift child content above the streak */
+  .btn-primary > *,
+  .btn-light > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Outline (works on light backgrounds) */
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-secondary bg-transparent px-6 py-4 font-semibold text-brand-secondary transition-all min-h-[52px]
+      hover:bg-brand-secondary hover:text-white
+      active:scale-[0.97];
+  }
+
+  /* On-dark secondary (used in hero and dark sections) */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-primary bg-white/5 px-6 py-4 font-semibold text-white backdrop-blur-md transition-all min-h-[52px]
+      hover:bg-brand-primary hover:text-brand-secondary
+      active:scale-[0.97];
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 font-semibold text-brand-secondary transition-all min-h-[44px]
+      hover:bg-brand-primary/15;
+  }
+
+  /* === LAYOUT === */
+  .section {
+    @apply px-5 sm:px-8 py-16 md:py-24 lg:py-28 max-w-7xl mx-auto;
+  }
+
+  .section-title {
+    @apply font-display text-[2rem] sm:text-4xl md:text-5xl font-bold text-brand-secondary leading-[1.08] tracking-tight;
+  }
+
+  .section-eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-brand-secondary mb-3;
+  }
+  .section-eyebrow::before {
+    content: "";
+    @apply inline-block h-2 w-2 rounded-full bg-brand-primary;
+  }
+
+  .card {
+    @apply rounded-2xl bg-white shadow-soft border border-black/5;
+  }
+
+  /* Solid (non-gradient) decorative blobs */
+  .blob-turquoise {
+    @apply absolute rounded-full bg-brand-turquoise/25 blur-3xl pointer-events-none;
+  }
+  .blob-orange {
+    @apply absolute rounded-full bg-brand-orange/20 blur-3xl pointer-events-none;
+  }
+  .blob-primary {
+    @apply absolute rounded-full bg-brand-primary/35 blur-3xl pointer-events-none;
+  }
+
+  /* Section variants — solid colors only, no gradients */
+  .section-deep {
+    @apply relative bg-brand-secondary text-white overflow-hidden;
+  }
+  .section-tinted {
+    @apply relative bg-brand-primary-50 overflow-hidden;
+  }
+  .section-bg {
+    @apply relative bg-brand-bg overflow-hidden;
+  }
+
+  /* Brand pattern utilities */
+  .pattern-dots {
+    background-image: radial-gradient(rgba(110, 198, 255, 0.35) 1px, transparent 1px);
+    background-size: 22px 22px;
+  }
+  .pattern-grid {
+    background-image:
+      linear-gradient(to right, rgba(110, 198, 255, 0.16) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(110, 198, 255, 0.16) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+
+  /* "Sticker" badge */
+  .sticker {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-primary text-brand-secondary text-xs font-bold uppercase tracking-wider shadow-soft;
+  }
+
+  /* Logo shine — uses the PNG alpha as a CSS mask so the white streak
+   * only appears where the logo artwork is, never on the surrounding box. */
+  .logo-shine {
+    -webkit-mask-image: url("/logo.png");
+    -webkit-mask-size: contain;
+    -webkit-mask-position: left center;
+    -webkit-mask-repeat: no-repeat;
+    mask-image: url("/logo.png");
+    mask-size: contain;
+    mask-position: left center;
+    mask-repeat: no-repeat;
+  }
+
+  /* Outlined "82" decoration — barely there, blends into the surrounding
+   * surface. Hue is chosen per usage (primary on light, secondary-700 on
+   * dark) but the stroke + transparent fill keeps it from popping out. */
+  .num82-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(110, 198, 255, 0.22);
+  }
+  .num82-outline-dark {
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(6, 42, 69, 0.9);
+  }
+
+  /* Glossy sheen — diagonal highlight that travels across the element. Used
+   * sparingly on highlighted surfaces (price tier card, badges, big numerals). */
+  .sheen {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .sheen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      120deg,
+      transparent 0%,
+      transparent 38%,
+      rgba(255, 255, 255, 0.18) 50%,
+      transparent 62%,
+      transparent 100%
+    );
+    background-size: 200% 100%;
+    background-position: 200% 0;
+    animation: sheen-sweep 4.5s cubic-bezier(0.55, 0.05, 0.4, 0.95) infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+  @keyframes sheen-sweep {
+    0% { background-position: 200% 0; }
+    55% { background-position: -200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Feature card with custom hover treatments. Each card sets its own
+   * --feat-color and --feat-rotate via inline style so animations feel
+   * unique per card without duplicating CSS. */
+  .feature-card {
+    @apply relative overflow-hidden rounded-2xl bg-white border border-black/5 p-5 sm:p-6 shadow-soft transition-all duration-300;
+    transition-property: transform, box-shadow, border-color;
+  }
+  .feature-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 0 var(--feat-color, #6EC6FF);
+    transition: box-shadow 0.4s ease;
+    pointer-events: none;
+  }
+  .feature-card:hover {
+    transform: translateY(-4px);
+    border-color: transparent;
+    box-shadow: 0 22px 44px -16px rgba(10, 61, 98, 0.28);
+  }
+  .feature-card:hover::before {
+    box-shadow: inset 0 0 0 2px var(--feat-color, #6EC6FF);
+  }
+  /* Sweeping diagonal accent line on hover */
+  .feature-card::after {
+    content: "";
+    position: absolute;
+    top: -40%;
+    left: -40%;
+    width: 30%;
+    height: 200%;
+    background: var(--feat-color, #6EC6FF);
+    opacity: 0;
+    transform: rotate(20deg);
+    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
+    pointer-events: none;
+    mix-blend-mode: multiply;
+  }
+  .feature-card:hover::after {
+    transform: translateX(420%) rotate(20deg);
+    opacity: 0.06;
+  }
+  .feature-card .feat-icon {
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .feature-card:hover .feat-icon {
+    transform: rotate(var(--feat-rotate, 8deg)) scale(1.08);
+  }
+  .feature-card .feat-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 0;
+    height: 3px;
+    background: var(--feat-color, #6EC6FF);
+    transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .feature-card:hover .feat-corner {
+    width: 100%;
+  }
+}
+
+/* Marquee animation for trust banner and social feed carousel */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 28s linear infinite;
+}
+.marquee-x {
+  animation: marquee 55s linear infinite;
+}
+.marquee-x:hover,
+.group:hover .marquee-x {
+  animation-play-state: paused;
+}
+
+/* Reduce motion respect */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Hide decorative blobs on small screens to declutter */
+@media (max-width: 640px) {
+  .blob-primary,
+  .blob-turquoise,
+  .blob-orange {
+    display: none;
+  }
+}
