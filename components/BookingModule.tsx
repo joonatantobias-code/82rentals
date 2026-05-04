@@ -3,16 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
-
-// Leaflet uses `window`, so the picker is loaded client-only.
-const MapPicker = dynamic(() => import("./MapPicker"), {
-  ssr: false,
-  loading: () => (
-    <div className="rounded-2xl border-2 border-brand-primary/30 h-[320px] sm:h-[380px] grid place-items-center text-brand-secondary/60 text-sm">
-      Ladataan karttaa…
-    </div>
-  ),
-});
 import {
   Calendar as CalendarIcon,
   Clock,
@@ -37,8 +27,20 @@ import {
   FUEL_PER_HOUR_EUR,
   BASE_PRICES,
 } from "@/lib/pricing";
+import { useLocale, useT } from "@/components/LocaleProvider";
+
+// Leaflet uses `window`, so the picker is loaded client-only.
+const MapPicker = dynamic(() => import("./MapPicker"), {
+  ssr: false,
+  loading: () => (
+    <div className="rounded-2xl border-2 border-brand-primary/30 h-[320px] sm:h-[380px] grid place-items-center text-brand-secondary/60 text-sm">
+      Loading map…
+    </div>
+  ),
+});
 
 type Slot = string; // "HH:00"
+type T = ReturnType<typeof useT>;
 
 const ALL_SLOTS: Slot[] = [
   "10:00", "11:00", "12:00", "13:00", "14:00",
@@ -66,19 +68,16 @@ type DayAvailability = {
 type Status = "idle" | "submitting" | "success" | "error";
 type Step = 1 | 2 | 3 | 4;
 
-const FI_DAYS = ["Su", "Ma", "Ti", "Ke", "To", "Pe", "La"];
-const FI_MONTHS = [
-  "tammi", "helmi", "maalis", "huhti", "touko", "kesä",
-  "heinä", "elo", "syys", "loka", "marras", "joulu",
-];
-
-function fmtShortDate(iso: string) {
+function fmtShortDate(iso: string, t: T) {
   const d = new Date(iso + "T00:00:00");
-  return `${FI_DAYS[d.getDay()]} ${d.getDate()}.${d.getMonth() + 1}.`;
+  return `${t.booking.monthDays[d.getDay()]} ${d.getDate()}.${d.getMonth() + 1}.`;
 }
-function fmtLongDate(iso: string) {
+function fmtLongDate(iso: string, t: T, locale: string) {
   const d = new Date(iso + "T00:00:00");
-  return `${FI_DAYS[d.getDay()]} ${d.getDate()}. ${FI_MONTHS[d.getMonth()]}kuuta`;
+  if (locale === "en") {
+    return `${t.booking.monthDays[d.getDay()]} ${d.getDate()} ${t.booking.monthsShort[d.getMonth()]}`;
+  }
+  return `${t.booking.monthDays[d.getDay()]} ${d.getDate()}. ${t.booking.monthsShort[d.getMonth()]}kuuta`;
 }
 
 function startsForDuration(hours: number): Slot[] {
@@ -89,14 +88,14 @@ function startsForDuration(hours: number): Slot[] {
   });
 }
 
-const STEP_LABELS: Record<Step, string> = {
-  1: "Vesijetit ja kesto",
-  2: "Päivä ja aloitusaika",
-  3: "Tiedot ja toimitus",
-  4: "Tarkista ja vahvista",
-};
+function durationLabel(d: Duration, t: T) {
+  return t.booking.durationLabels[d];
+}
 
 export default function BookingModule() {
+  const t = useT();
+  const { locale } = useLocale();
+
   const [step, setStep] = useState<Step>(1);
   const [maxStepReached, setMaxStepReached] = useState<Step>(1);
   const [availability, setAvailability] = useState<DayAvailability[] | null>(null);
@@ -117,13 +116,9 @@ export default function BookingModule() {
 
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // Track furthest step reached so the stepper can let users jump back, and
-  // scroll the booking card back to the top so the new step is in view.
   function goTo(next: Step) {
     setStep(next);
     if (next > maxStepReached) setMaxStepReached(next);
-    // Defer to the next paint so layout (including AnimatePresence exit) is
-    // settled before we measure scroll position.
     requestAnimationFrame(() => {
       const el = cardRef.current;
       if (!el) return;
@@ -132,7 +127,6 @@ export default function BookingModule() {
     });
   }
 
-  // Fetch availability lazily once we hit step 2
   useEffect(() => {
     if (step !== 2 || availability !== null) return;
     let cancelled = false;
@@ -185,7 +179,6 @@ export default function BookingModule() {
     if (quantity > slotCapacity) setQuantity(Math.max(1, slotCapacity));
   }, [slotCapacity, quantity]);
 
-  // When duration changes, drop a previously chosen slot if it doesn't fit
   useEffect(() => {
     if (slot && !validStarts.includes(slot)) setSlot(null);
   }, [validStarts, slot]);
@@ -210,11 +203,11 @@ export default function BookingModule() {
       });
       const data = await res.json();
       if (!res.ok || !data.ok)
-        throw new Error(data.error || "Varauspyyntö epäonnistui");
+        throw new Error(data.error || "Booking failed");
       setStatus("success");
     } catch (err) {
       setStatus("error");
-      setErrorMsg(err instanceof Error ? err.message : "Jokin meni vikaan");
+      setErrorMsg(err instanceof Error ? err.message : "Something went wrong");
     }
   }
 
@@ -231,7 +224,6 @@ export default function BookingModule() {
         transition={{ duration: 0.6 }}
         className="max-w-6xl mx-auto card overflow-hidden border-2 border-brand-primary/30 scroll-mt-24"
       >
-        {/* Mobile-first compact summary appears above the form on small screens */}
         {status !== "success" && (
           <MobileSummary
             duration={duration}
@@ -239,20 +231,23 @@ export default function BookingModule() {
             slot={slot}
             quantity={quantity}
             total={price.total}
+            t={t}
           />
         )}
 
         <div className="grid lg:grid-cols-[1.5fr_1fr]">
-          {/* LEFT: stepper */}
           <div className="p-5 sm:p-7 lg:p-9">
             <Header
               step={step}
               maxStepReached={maxStepReached}
               onJump={goTo}
+              t={t}
             />
 
             {status === "success" ? (
               <SuccessView
+                t={t}
+                locale={locale}
                 onReset={() => {
                   setStatus("idle");
                   setStep(1);
@@ -281,7 +276,7 @@ export default function BookingModule() {
                     <StepWrapper key="s1">
                       <Field
                         icon={<Users size={16} />}
-                        label="Kuinka monta vesijettiä?"
+                        label={t.booking.qtyTitle}
                       >
                         <div className="grid grid-cols-2 gap-3">
                           {[1, 2].map((n) => {
@@ -306,18 +301,11 @@ export default function BookingModule() {
                                   {n}
                                 </span>
                                 <span
-                                  className={`text-xs mt-2 font-semibold uppercase tracking-wider ${
-                                    active ? "text-white/80" : "text-brand-secondary/65"
-                                  }`}
-                                >
-                                  {n === 1 ? "vesijetti" : "vesijettiä"}
-                                </span>
-                                <span
-                                  className={`text-[11px] mt-1 ${
+                                  className={`text-[11px] mt-2 ${
                                     active ? "text-white/70" : "text-brand-secondary/55"
                                   }`}
                                 >
-                                  {n === 1 ? "1–2 henkilölle" : "2–4 henkilölle"}
+                                  {n === 1 ? t.booking.qty1People : t.booking.qty2People}
                                 </span>
                               </button>
                             );
@@ -325,15 +313,11 @@ export default function BookingModule() {
                         </div>
                         <p className="mt-2 inline-flex items-start gap-1.5 text-xs text-brand-secondary/70">
                           <Info size={12} className="text-brand-primary-600 mt-0.5 shrink-0" />
-                          <span>
-                            Yhdelle vesijetille mahtuu 1–2 henkilöä. Voit ottaa
-                            myös kaksi vesijettiä, jos haluatte ajaa kaksin
-                            omillanne. Kalustossa maksimissaan 2 vesijettiä.
-                          </span>
+                          <span>{t.booking.qtyHelper}</span>
                         </p>
                       </Field>
 
-                      <Field icon={<Hourglass size={16} />} label="Kuinka pitkä ajo?">
+                      <Field icon={<Hourglass size={16} />} label={t.booking.durationTitle}>
                         <div className="grid grid-cols-2 gap-3">
                           {DURATIONS.map((d) => {
                             const active = duration === d.value;
@@ -355,7 +339,7 @@ export default function BookingModule() {
                                   </span>
                                 )}
                                 <div className="font-display text-xl sm:text-2xl font-extrabold">
-                                  {d.label}
+                                  {durationLabel(d.value, t)}
                                 </div>
                                 <div className="font-display text-2xl sm:text-3xl font-extrabold mt-2">
                                   {BASE_PRICES[d.value]} €
@@ -365,7 +349,7 @@ export default function BookingModule() {
                                     active ? "text-white/70" : "text-brand-secondary/60"
                                   }`}
                                 >
-                                  + bensa {fuel} €
+                                  {t.booking.fuelLine.replace("{amount}", String(fuel))}
                                 </div>
                               </button>
                             );
@@ -374,14 +358,15 @@ export default function BookingModule() {
                       </Field>
 
                       <ContactNote
-                        title="Tarvitsetko eri pituisen paketin?"
-                        body="Räätälöimme polttariporukoille, tapahtumiin ja pidempiin ajoihin. Soita tai laita sähköpostia, vastaamme heti."
+                        title={t.booking.contactCustomTitle}
+                        body={t.booking.contactCustomBody}
                       />
 
                       <NextRow
-                        rightLabel="Jatka"
+                        rightLabel={t.common.continue}
                         rightDisabled={!duration}
                         onRight={() => goTo(2)}
+                        t={t}
                       />
                     </StepWrapper>
                   )}
@@ -390,12 +375,12 @@ export default function BookingModule() {
                     <StepWrapper key="s2">
                       <SectionLabel
                         icon={<CalendarIcon size={18} />}
-                        text="Valitse päivä"
-                        small="Selaa kuukausia nuolista"
+                        text={t.booking.pickDay}
+                        small={t.booking.pickDayHelper}
                       />
                       {loadingAvail ? (
                         <div className="h-72 rounded-xl bg-brand-primary-50 grid place-items-center text-brand-secondary/60 text-sm">
-                          Ladataan vapaita aikoja…
+                          ⋯
                         </div>
                       ) : (
                         <MonthCalendar
@@ -406,6 +391,7 @@ export default function BookingModule() {
                             setDate(d);
                             setSlot(null);
                           }}
+                          t={t}
                         />
                       )}
 
@@ -413,28 +399,39 @@ export default function BookingModule() {
                         <div className="mt-1">
                           <SectionLabel
                             icon={<Clock size={18} />}
-                            text={`Aloitusaika · ${fmtLongDate(date)}`}
-                            small={`Aukioloajat klo ${OPEN_HOUR}–${CLOSE_HOUR}`}
+                            text={t.booking.startTimeTitle.replace(
+                              "{date}",
+                              fmtLongDate(date, t, locale)
+                            )}
+                            small={t.booking.hours
+                              .replace("{open}", String(OPEN_HOUR))
+                              .replace("{close}", String(CLOSE_HOUR))}
                           />
                           <SlotGrid
                             day={selectedDay}
                             validStarts={validStarts}
                             selected={slot}
                             onPick={setSlot}
+                            t={t}
                           />
                         </div>
                       )}
 
                       <ContactNote
-                        title="Haluatko muun ajan?"
-                        body="Aukioloajan ulkopuoliset ajot, aikaiset aamut tai myöhäiset illat sopimuksen mukaan. Soita tai laita sähköpostia, järjestämme."
+                        title={t.booking.contactTitle}
+                        body={t.booking.contactBody}
                       />
 
                       <NextRow
                         onLeft={() => goTo(1)}
-                        rightLabel={duration ? `Jatka · ${price.total} €` : "Jatka"}
+                        rightLabel={
+                          duration
+                            ? `${t.common.continue} · ${price.total} €`
+                            : t.common.continue
+                        }
                         rightDisabled={!canGoStep3()}
                         onRight={() => goTo(3)}
+                        t={t}
                       />
                     </StepWrapper>
                   )}
@@ -443,11 +440,11 @@ export default function BookingModule() {
                     <StepWrapper key="s3">
                       <Field
                         icon={<MapPin size={16} />}
-                        label="Mihin tuomme vesijetin?"
+                        label={t.booking.pickupTitle}
                       >
                         <MapPicker selected={pickup} onPick={setPickup} />
                         <p className="mt-3 text-xs font-bold uppercase tracking-wider text-brand-secondary/55">
-                          Tai valitse pikavalinnoista
+                          {t.booking.pickupOrChoose}
                         </p>
                         <div className="flex flex-wrap gap-2 mt-2">
                           {POPULAR_PICKUPS.map((p) => (
@@ -472,24 +469,23 @@ export default function BookingModule() {
                               className="text-brand-primary-600 shrink-0"
                             />
                             <span>
-                              Toimituspaikka:{" "}
+                              {t.booking.pickupConfirm}{" "}
                               <strong>{pickup}</strong>
                             </span>
                           </div>
                         )}
                       </Field>
 
-                      <Field icon={<UserIcon size={16} />} label="Koko nimi">
+                      <Field icon={<UserIcon size={16} />} label={t.booking.fullName}>
                         <input
                           type="text"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
-                          placeholder="Matti Meikäläinen"
                           className="booking-input"
                         />
                       </Field>
                       <div className="grid sm:grid-cols-2 gap-4">
-                        <Field icon={<Phone size={16} />} label="Puhelin">
+                        <Field icon={<Phone size={16} />} label={t.common.phone}>
                           <input
                             type="tel"
                             value={phone}
@@ -498,66 +494,70 @@ export default function BookingModule() {
                             className="booking-input"
                           />
                         </Field>
-                        <Field icon={<Mail size={16} />} label="Sähköposti">
+                        <Field icon={<Mail size={16} />} label={t.common.email}>
                           <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            placeholder="sinä@esimerkki.fi"
                             className="booking-input"
                           />
                         </Field>
                       </div>
 
-                      <Field label="Lisätietoja (valinnainen)">
+                      <Field label={t.booking.additionalInfo}>
                         <textarea
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
                           rows={3}
-                          placeholder="Esim. tarkka osoite tai erityistoiveet"
+                          placeholder={t.booking.additionalPlaceholder}
                           className="booking-input booking-textarea"
                         />
                       </Field>
 
                       <NextRow
                         onLeft={() => goTo(2)}
-                        rightLabel={duration ? `Tarkista · ${price.total} €` : "Tarkista varaus"}
+                        rightLabel={
+                          duration
+                            ? `${t.booking.checkLabel} · ${price.total} €`
+                            : t.booking.reviewTitle
+                        }
                         rightDisabled={!canGoStep4()}
                         onRight={() => goTo(4)}
+                        t={t}
                       />
                     </StepWrapper>
                   )}
 
                   {step === 4 && (
                     <StepWrapper key="s4">
-                      <Field icon={<Sparkles size={16} />} label="Tarkista yhteenveto">
+                      <Field icon={<Sparkles size={16} />} label={t.booking.reviewTitle}>
                         <div className="rounded-2xl border-2 border-brand-primary/30 bg-white divide-y divide-brand-primary/15">
-                          <ReviewRow label="Päivä" value={fmtShortDate(date!)} onEdit={() => goTo(2)} />
-                          <ReviewRow label="Kellonaika" value={slot!} onEdit={() => goTo(2)} />
+                          <ReviewRow label={t.booking.reviewLabels.day} value={fmtShortDate(date!, t)} onEdit={() => goTo(2)} editLabel={t.booking.edit} />
+                          <ReviewRow label={t.booking.reviewLabels.time} value={slot!} onEdit={() => goTo(2)} editLabel={t.booking.edit} />
                           <ReviewRow
-                            label="Kesto"
-                            value={DURATIONS.find((d) => d.value === duration)?.label || ""}
+                            label={t.booking.reviewLabels.duration}
+                            value={duration ? durationLabel(duration, t) : ""}
                             onEdit={() => goTo(1)}
+                            editLabel={t.booking.edit}
                           />
                           <ReviewRow
-                            label="Vesijettien määrä"
-                            value={`${quantity}× (2 hengelle / kpl)`}
+                            label={t.booking.reviewLabels.quantity}
+                            value={t.booking.summaryQtyValue.replace("{n}", String(quantity))}
                             onEdit={() => goTo(3)}
+                            editLabel={t.booking.edit}
                           />
-                          <ReviewRow label="Toimitus" value={pickup} onEdit={() => goTo(3)} />
-                          <ReviewRow label="Nimi" value={name} onEdit={() => goTo(3)} />
-                          <ReviewRow label="Puhelin" value={phone} onEdit={() => goTo(3)} />
-                          <ReviewRow label="Sähköposti" value={email} onEdit={() => goTo(3)} />
-                          {notes && <ReviewRow label="Lisätiedot" value={notes} onEdit={() => goTo(3)} />}
+                          <ReviewRow label={t.booking.reviewLabels.pickup} value={pickup} onEdit={() => goTo(3)} editLabel={t.booking.edit} />
+                          <ReviewRow label={t.booking.reviewLabels.name} value={name} onEdit={() => goTo(3)} editLabel={t.booking.edit} />
+                          <ReviewRow label={t.booking.reviewLabels.phone} value={phone} onEdit={() => goTo(3)} editLabel={t.booking.edit} />
+                          <ReviewRow label={t.booking.reviewLabels.email} value={email} onEdit={() => goTo(3)} editLabel={t.booking.edit} />
+                          {notes && <ReviewRow label={t.booking.reviewLabels.notes} value={notes} onEdit={() => goTo(3)} editLabel={t.booking.edit} />}
                         </div>
                       </Field>
 
                       <div className="rounded-2xl bg-brand-primary-50 p-5 flex items-start gap-3">
                         <Info size={18} className="text-brand-secondary shrink-0 mt-0.5" />
                         <p className="text-sm text-brand-secondary/85 leading-relaxed">
-                          Maksuton peruutus 24 tuntia ennen ajoa. Vahvistamme
-                          sinulle puhelimitse 30 minuutin sisällä varauksesta.
-                          Saa ajaa Suomen vesillä.
+                          {t.booking.reviewLegal}
                         </p>
                       </div>
 
@@ -571,12 +571,13 @@ export default function BookingModule() {
                         onLeft={() => goTo(3)}
                         rightLabel={
                           status === "submitting"
-                            ? "Varataan…"
-                            : `Vahvista varaus · ${price.total} €`
+                            ? t.booking.submitting
+                            : `${t.booking.submit} · ${price.total} €`
                         }
                         rightLoading={status === "submitting"}
                         rightDisabled={status === "submitting"}
                         onRight={handleSubmit}
+                        t={t}
                       />
                     </StepWrapper>
                   )}
@@ -585,7 +586,6 @@ export default function BookingModule() {
             )}
           </div>
 
-          {/* RIGHT: live summary (desktop only) */}
           <aside className="hidden lg:block bg-brand-secondary text-white p-7 lg:p-9 relative overflow-hidden">
             <div className="absolute inset-0 pattern-grid opacity-30 pointer-events-none" />
             <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-brand-primary/22 blur-3xl pointer-events-none" />
@@ -598,35 +598,52 @@ export default function BookingModule() {
 
             <div className="relative">
               <p className="text-xs uppercase tracking-[0.18em] text-brand-primary font-bold">
-                Varauksesi
+                {t.booking.summaryEyebrow}
               </p>
               <h3 className="font-display text-2xl font-bold mt-1">
-                Sea-Doo Spark Trixx
+                {t.booking.summaryProduct}
               </h3>
 
               <dl className="mt-6 space-y-3 text-sm">
-                <SumRow label="Kesto" value={duration ? DURATIONS.find((d) => d.value === duration)!.label : "—"} />
-                <SumRow label="Päivämäärä" value={date ? fmtShortDate(date) : "—"} />
-                <SumRow label="Aloitusaika" value={slot ?? "—"} />
-                <SumRow label="Vesijetit" value={`${quantity}× (2 hengelle)`} />
-                <SumRow label="Toimitus" value={pickup || "—"} />
+                <SumRow
+                  label={t.booking.summaryDuration}
+                  value={duration ? durationLabel(duration, t) : "—"}
+                />
+                <SumRow
+                  label={t.booking.summaryDate}
+                  value={date ? fmtShortDate(date, t) : "—"}
+                />
+                <SumRow label={t.booking.summarySlot} value={slot ?? "—"} />
+                <SumRow
+                  label={t.booking.summaryQty}
+                  value={t.booking.summaryQtyValue.replace("{n}", String(quantity))}
+                />
+                <SumRow label={t.booking.summaryPickup} value={pickup || "—"} />
               </dl>
 
               <div className="my-6 h-px bg-white/20" />
 
               <dl className="space-y-2 text-sm">
-                <SumRow label="Vuokra" value={duration ? `${price.base} €` : "—"} muted />
                 <SumRow
-                  label={`Bensa (${FUEL_PER_HOUR_EUR} € / h)`}
+                  label={t.booking.summaryRent}
+                  value={duration ? `${price.base} €` : "—"}
+                  muted
+                />
+                <SumRow
+                  label={t.booking.summaryFuel.replace("{rate}", String(FUEL_PER_HOUR_EUR))}
                   value={duration ? `${price.fuel} €` : "—"}
                   muted
                 />
-                <SumRow label="Toimitus Helsingissä" value="Sisältyy" muted />
+                <SumRow
+                  label={t.booking.summaryDelivery}
+                  value={t.booking.summaryDeliveryValue}
+                  muted
+                />
               </dl>
 
               <div className="mt-6 flex items-end justify-between">
                 <span className="text-sm uppercase tracking-wider text-white/70">
-                  Yhteensä
+                  {t.booking.summaryTotal}
                 </span>
                 <span className="font-display text-4xl font-extrabold text-brand-primary">
                   {duration ? `${price.total} €` : "—"}
@@ -674,23 +691,23 @@ function MobileSummary({
   slot,
   quantity,
   total,
+  t,
 }: {
   duration: Duration | null;
   date: string | null;
   slot: string | null;
   quantity: number;
   total: number;
+  t: T;
 }) {
   if (!duration && !date) return null;
-  const durLabel = duration
-    ? DURATIONS.find((d) => d.value === duration)!.label
-    : null;
+  const durLabel = duration ? durationLabel(duration, t) : null;
   return (
     <div className="lg:hidden bg-brand-secondary text-white px-5 sm:px-7 py-3 flex items-center justify-between gap-3 border-b border-white/10">
       <div className="text-xs sm:text-sm flex flex-wrap gap-x-3 gap-y-1 min-w-0">
         {durLabel && <span className="text-brand-primary font-bold">{durLabel}</span>}
-        {date && <span className="text-white/85">{fmtShortDate(date)}</span>}
-        {slot && <span className="text-white/85">klo {slot}</span>}
+        {date && <span className="text-white/85">{fmtShortDate(date, t)}</span>}
+        {slot && <span className="text-white/85">{slot}</span>}
         <span className="text-white/85">{quantity}×</span>
       </div>
       <span className="font-display text-xl font-extrabold text-brand-primary tabular-nums shrink-0">
@@ -704,20 +721,24 @@ function Header({
   step,
   maxStepReached,
   onJump,
+  t,
 }: {
   step: Step;
   maxStepReached: Step;
   onJump: (s: Step) => void;
+  t: T;
 }) {
+  const headerLabel = t.booking.stepHeader.replace("{n}", String(step));
+  const stepLabel = t.booking.stepLabels[step - 1];
   return (
     <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-5">
       <div>
-        <span className="section-eyebrow !mb-1">Varaus · vaihe {step}/4</span>
+        <span className="section-eyebrow !mb-1">{headerLabel}</span>
         <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-brand-secondary leading-tight">
-          {STEP_LABELS[step]}
+          {stepLabel}
         </h2>
       </div>
-      <Stepper current={step} maxStepReached={maxStepReached} onJump={onJump} />
+      <Stepper current={step} maxStepReached={maxStepReached} onJump={onJump} t={t} />
     </div>
   );
 }
@@ -726,10 +747,12 @@ function Stepper({
   current,
   maxStepReached,
   onJump,
+  t,
 }: {
   current: Step;
   maxStepReached: Step;
   onJump: (s: Step) => void;
+  t: T;
 }) {
   return (
     <div className="flex items-center gap-1.5 text-xs font-medium shrink-0">
@@ -750,7 +773,7 @@ function Stepper({
                 ? "bg-brand-primary text-brand-secondary hover:bg-brand-primary-600"
                 : "bg-brand-primary-50 text-brand-secondary/50 cursor-not-allowed"
             }`}
-            aria-label={`Vaihe ${n}: ${STEP_LABELS[n as Step]}`}
+            aria-label={t.booking.stepLabels[n - 1]}
             aria-current={isCurrent ? "step" : undefined}
           >
             {current > n ? <CheckCircle2 size={14} /> : n}
@@ -781,12 +804,14 @@ function NextRow({
   rightLabel,
   rightDisabled,
   rightLoading,
+  t,
 }: {
   onLeft?: () => void;
   onRight: () => void;
   rightLabel: string;
   rightDisabled?: boolean;
   rightLoading?: boolean;
+  t: T;
 }) {
   return (
     <div className="flex flex-col-reverse sm:flex-row gap-3 pt-2">
@@ -797,7 +822,7 @@ function NextRow({
           className="btn-outline sm:flex-1 justify-center !min-h-[52px]"
         >
           <ArrowLeft size={16} />
-          Takaisin
+          {t.common.back}
         </button>
       )}
       <button
@@ -878,7 +903,7 @@ function ContactNote({
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border-2 border-brand-primary/30 text-brand-secondary text-sm font-semibold px-4 py-2.5 hover:border-brand-primary transition-colors"
             >
               <Mail size={14} />
-              Sähköposti
+              82rentals.info@gmail.com
             </a>
           </div>
         </div>
@@ -888,16 +913,11 @@ function ContactNote({
 }
 
 /* Calendar utilities */
-const FI_WEEKDAYS_HEAD = ["Ma", "Ti", "Ke", "To", "Pe", "La", "Su"];
-const FI_MONTHS_FULL = [
-  "tammikuu", "helmikuu", "maaliskuu", "huhtikuu", "toukokuu", "kesäkuu",
-  "heinäkuu", "elokuu", "syyskuu", "lokakuu", "marraskuu", "joulukuu",
-];
 
 type GridDay = {
   iso: string;
   day: number;
-  outside: boolean; // belongs to prev/next month
+  outside: boolean;
   isPast: boolean;
 };
 
@@ -905,11 +925,9 @@ function buildMonthGrid(year: number, month: number): GridDay[] {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const first = new Date(year, month, 1);
-  // Mon-first weekday index (0..6)
   const startDay = (first.getDay() + 6) % 7;
   const days: GridDay[] = [];
 
-  // Previous month tail
   for (let i = startDay - 1; i >= 0; i--) {
     const d = new Date(year, month, -i);
     days.push({
@@ -919,7 +937,6 @@ function buildMonthGrid(year: number, month: number): GridDay[] {
       isPast: d < today,
     });
   }
-  // Current month
   const lastOfMonth = new Date(year, month + 1, 0).getDate();
   for (let i = 1; i <= lastOfMonth; i++) {
     const d = new Date(year, month, i);
@@ -930,7 +947,6 @@ function buildMonthGrid(year: number, month: number): GridDay[] {
       isPast: d < today,
     });
   }
-  // Next month head, fill until 6 full weeks (42 cells) or 5 if it fits
   while (days.length % 7 !== 0) {
     const last = days[days.length - 1];
     const lastDate = new Date(last.iso + "T00:00:00");
@@ -951,16 +967,18 @@ function MonthCalendar({
   validStarts,
   selected,
   onPick,
+  t,
 }: {
   days: DayAvailability[];
   validStarts: Slot[];
   selected: string | null;
   onPick: (d: string) => void;
+  t: T;
 }) {
   const today = useMemo(() => {
-    const t = new Date();
-    t.setHours(0, 0, 0, 0);
-    return t;
+    const x = new Date();
+    x.setHours(0, 0, 0, 0);
+    return x;
   }, []);
 
   const earliestIso = useMemo(() => today.toISOString().slice(0, 10), [today]);
@@ -969,7 +987,6 @@ function MonthCalendar({
     return days[days.length - 1].date;
   }, [days]);
 
-  // Initialize the view to the month of the selected date or today
   const initial = selected
     ? new Date(selected + "T00:00:00")
     : today;
@@ -996,7 +1013,6 @@ function MonthCalendar({
     });
   }
 
-  // Disable arrows that go outside the available data window
   const firstOfView = new Date(view.year, view.month, 1);
   const todayMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
   const canPrev = firstOfView > todayMonthStart;
@@ -1006,34 +1022,32 @@ function MonthCalendar({
 
   return (
     <div>
-      {/* Month nav */}
       <div className="flex items-center justify-between mb-3">
         <button
           type="button"
           onClick={() => canPrev && shift(-1)}
           disabled={!canPrev}
           className="h-10 w-10 rounded-xl border-2 border-brand-primary/30 bg-white text-brand-secondary grid place-items-center disabled:opacity-30 disabled:cursor-not-allowed hover:border-brand-primary transition-colors"
-          aria-label="Edellinen kuukausi"
+          aria-label="Previous month"
         >
           <ArrowLeft size={18} />
         </button>
         <div className="font-display font-bold text-brand-secondary capitalize">
-          {FI_MONTHS_FULL[view.month]} {view.year}
+          {t.booking.months[view.month]} {view.year}
         </div>
         <button
           type="button"
           onClick={() => canNext && shift(1)}
           disabled={!canNext}
           className="h-10 w-10 rounded-xl border-2 border-brand-primary/30 bg-white text-brand-secondary grid place-items-center disabled:opacity-30 disabled:cursor-not-allowed hover:border-brand-primary transition-colors"
-          aria-label="Seuraava kuukausi"
+          aria-label="Next month"
         >
           <ArrowRight size={18} />
         </button>
       </div>
 
-      {/* Weekday header */}
       <div className="grid grid-cols-7 gap-1 sm:gap-1.5 mb-1.5">
-        {FI_WEEKDAYS_HEAD.map((d) => (
+        {t.booking.monthDaysHead.map((d) => (
           <div
             key={d}
             className="text-[10px] sm:text-xs font-bold text-brand-secondary/55 uppercase tracking-wider text-center py-1"
@@ -1043,7 +1057,6 @@ function MonthCalendar({
         ))}
       </div>
 
-      {/* Day grid */}
       <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
         {grid.map((g) => {
           const avail = availabilityMap.get(g.iso);
@@ -1053,11 +1066,7 @@ function MonthCalendar({
             : 0;
           const fullyBooked = !!avail && totalFree === 0;
           const disabled =
-            g.outside ||
-            g.isPast ||
-            (g.iso < earliestIso) ||
-            noData ||
-            fullyBooked;
+            g.outside || g.isPast || g.iso < earliestIso || noData || fullyBooked;
           const isSelected = selected === g.iso;
 
           let cls =
@@ -1078,11 +1087,9 @@ function MonthCalendar({
               onClick={() => !disabled && onPick(g.iso)}
               disabled={disabled}
               className={cls}
-              aria-label={`${g.day}. ${FI_MONTHS_FULL[new Date(g.iso + "T00:00:00").getMonth()]}`}
               aria-pressed={isSelected}
             >
               <span className={g.outside ? "opacity-40" : ""}>{g.day}</span>
-              {/* Availability dot */}
               {!disabled && !isSelected && (
                 <span
                   className={`mt-0.5 h-1 w-1 rounded-full ${
@@ -1096,7 +1103,7 @@ function MonthCalendar({
               )}
               {fullyBooked && !g.outside && (
                 <span className="absolute bottom-0.5 text-[8px] font-bold text-red-500">
-                  täynnä
+                  {t.booking.legend.full.toLowerCase()}
                 </span>
               )}
             </button>
@@ -1106,13 +1113,13 @@ function MonthCalendar({
 
       <p className="mt-3 flex items-center gap-3 text-[11px] text-brand-secondary/60">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-brand-primary" /> Vapaita
+          <span className="h-2 w-2 rounded-full bg-brand-primary" /> {t.booking.legend.plenty}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-brand-primary/50" /> Niukasti
+          <span className="h-2 w-2 rounded-full bg-brand-primary/50" /> {t.booking.legend.few}
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-red-400/60" /> Täynnä
+          <span className="h-2 w-2 rounded-full bg-red-400/60" /> {t.booking.legend.full}
         </span>
       </p>
     </div>
@@ -1124,17 +1131,19 @@ function SlotGrid({
   validStarts,
   selected,
   onPick,
+  t,
 }: {
   day: DayAvailability | null;
   validStarts: Slot[];
   selected: Slot | null;
   onPick: (s: Slot) => void;
+  t: T;
 }) {
   if (!day) return null;
   if (validStarts.length === 0) {
     return (
       <p className="text-sm text-brand-secondary/70">
-        Tämä kesto ei mahdu aukioloaikaan, valitse lyhyempi kesto.
+        {t.booking.contactBody}
       </p>
     );
   }
@@ -1162,7 +1171,11 @@ function SlotGrid({
               {s}
             </span>
             <span className="text-[10px] mt-1.5 uppercase tracking-wider">
-              {taken ? "Varattu" : `${free} vapaa${free === 1 ? "" : "ta"}`}
+              {taken
+                ? t.booking.slotFull
+                : free === 1
+                ? t.booking.slotFreeOne
+                : t.booking.slotFreeMany.replace("{n}", String(free))}
             </span>
           </button>
         );
@@ -1214,10 +1227,12 @@ function ReviewRow({
   label,
   value,
   onEdit,
+  editLabel,
 }: {
   label: string;
   value: string;
   onEdit: () => void;
+  editLabel: string;
 }) {
   return (
     <div className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
@@ -1232,7 +1247,7 @@ function ReviewRow({
         onClick={onEdit}
         className="text-xs font-semibold text-brand-primary-600 hover:text-brand-secondary"
       >
-        Muokkaa
+        {editLabel}
       </button>
     </div>
   );
@@ -1246,6 +1261,8 @@ function SuccessView({
   quantity,
   pickup,
   total,
+  t,
+  locale,
 }: {
   onReset: () => void;
   date: string;
@@ -1254,7 +1271,15 @@ function SuccessView({
   quantity: number;
   pickup: string;
   total: number;
+  t: T;
+  locale: string;
 }) {
+  const body = t.booking.successBody
+    .replace("{qty}", String(quantity))
+    .replace("{date}", fmtShortDate(date, t))
+    .replace("{slot}", slot)
+    .replace("{duration}", durationLabel(duration, t))
+    .replace("{pickup}", pickup);
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -1265,23 +1290,20 @@ function SuccessView({
         <CheckCircle2 size={36} className="text-brand-secondary" />
       </div>
       <h3 className="font-display text-2xl font-bold text-brand-secondary mt-4">
-        Varaus vastaanotettu!
+        {t.booking.successTitle}
       </h3>
       <p className="text-brand-secondary/70 mt-2 text-sm max-w-md mx-auto">
-        {quantity}× Sea-Doo Spark Trixx · <strong>{fmtShortDate(date)}</strong>{" "}
-        klo <strong>{slot}</strong>, kesto{" "}
-        <strong>{DURATIONS.find((d) => d.value === duration)?.label}</strong>.
-        Toimitus paikkaan <strong>{pickup}</strong>.
+        {body}
       </p>
       <p className="text-xs text-brand-secondary/60 mt-3">
-        Vahvistamme puhelimitse 30 minuutin sisällä.
+        {t.booking.successConfirm}
       </p>
       <div className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary text-brand-secondary text-sm font-bold">
-        Yhteensä: {total} €
+        {t.booking.successTotal} {total} €
       </div>
       <div className="mt-6">
         <button onClick={onReset} className="btn-ghost">
-          Tee uusi varaus
+          {t.booking.successAgain}
         </button>
       </div>
     </motion.div>

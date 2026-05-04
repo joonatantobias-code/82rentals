@@ -22,10 +22,25 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close the mobile drawer when navigating to a new route
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll while drawer is open
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   const links = [
     { href: "/vesijetti", label: t.nav.vesijetti },
     { href: "/hinnasto", label: t.nav.hinnasto },
     { href: "/meista", label: t.nav.meista },
+    { href: "/ukk", label: t.nav.ukk },
     { href: "/yhteystiedot", label: t.nav.yhteystiedot },
   ];
 
@@ -65,7 +80,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <ul className="hidden md:flex items-center gap-6 lg:gap-8">
+        <ul className="hidden md:flex items-center gap-5 lg:gap-7">
           {links.map((l) => {
             const active = pathname === l.href;
             return (
@@ -88,8 +103,10 @@ export default function Navbar() {
           })}
         </ul>
 
-        <div className="flex items-center gap-3">
-          <LanguageSwitcher tone="dark" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="hidden md:block">
+            <LanguageSwitcher tone="dark" />
+          </div>
 
           <Link
             href="/varaa"
@@ -108,9 +125,11 @@ export default function Navbar() {
           </Link>
 
           <button
+            type="button"
             onClick={() => setOpen((v) => !v)}
-            className="md:hidden p-2 rounded-xl text-white"
+            className="md:hidden relative h-11 w-11 rounded-xl text-white grid place-items-center"
             aria-label={t.common.open}
+            aria-expanded={open}
           >
             {open ? <X size={26} /> : <Menu size={26} />}
           </button>
@@ -119,43 +138,62 @@ export default function Navbar() {
 
       <AnimatePresence>
         {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden mx-4 mt-3 rounded-2xl bg-white/97 backdrop-blur-xl shadow-soft p-3 border border-black/5"
-          >
-            <ul className="flex flex-col">
-              {links.map((l) => {
-                const active = pathname === l.href;
-                return (
-                  <li key={l.href}>
-                    <Link
-                      href={l.href}
-                      onClick={() => setOpen(false)}
-                      className={`block px-4 py-3.5 rounded-xl font-medium ${
-                        active
-                          ? "bg-brand-primary-50 text-brand-secondary"
-                          : "text-brand-secondary/85 hover:bg-brand-primary-50"
-                      }`}
-                    >
-                      {l.label}
-                    </Link>
-                  </li>
-                );
-              })}
-              <li className="mt-2">
-                <Link
-                  href="/varaa"
-                  onClick={() => setOpen(false)}
-                  className="btn-primary w-full"
-                >
-                  {t.common.bookNow}
-                </Link>
-              </li>
-            </ul>
-          </motion.div>
+          <>
+            {/* Backdrop closes the drawer when tapped */}
+            <motion.button
+              type="button"
+              aria-hidden
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setOpen(false)}
+              className="md:hidden fixed inset-x-0 top-[64px] bottom-0 bg-brand-secondary/60 backdrop-blur-sm z-40"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="md:hidden absolute left-4 right-4 top-full mt-2 rounded-2xl bg-white shadow-soft p-3 border border-black/5 z-50"
+            >
+              <ul className="flex flex-col">
+                {links.map((l) => {
+                  const active = pathname === l.href;
+                  return (
+                    <li key={l.href}>
+                      <Link
+                        href={l.href}
+                        onClick={() => setOpen(false)}
+                        className={`block px-4 py-3.5 rounded-xl font-medium ${
+                          active
+                            ? "bg-brand-primary-50 text-brand-secondary"
+                            : "text-brand-secondary/85 hover:bg-brand-primary-50"
+                        }`}
+                      >
+                        {l.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+
+              <div className="mt-3 px-1 flex items-center justify-between gap-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-brand-secondary/55">
+                  {t.common.langLabel}
+                </span>
+                <LanguageSwitcher tone="light" />
+              </div>
+
+              <Link
+                href="/varaa"
+                onClick={() => setOpen(false)}
+                className="btn-primary w-full mt-3"
+              >
+                {t.common.bookNow}
+              </Link>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>
