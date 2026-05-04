@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s · 82Rentals",
   },
   description:
-    "Vuokraa Sea-Doo Spark Trixx -vesijetti Helsingissä. Tuomme sen suoraan rantaan tai laituriin. Polttoaine, toimitus ja vakuutus aina hintaan. Hinnat alkaen 179 €.",
+    "Vuokraa Sea-Doo Spark Trixx -vesijetti Helsingissä. Nouto Herttoniemen satamasta. Polttoaine ja vakuutus aina hintaan. Hinnat alkaen 179 €.",
   applicationName: SITE_NAME,
   keywords: [
     "vesijetin vuokraus",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "82Rentals · Vesijetin vuokraus Helsingissä",
     description:
-      "Sea-Doo Spark Trixx vesijetti, toimitus haluamaasi rantaan Helsingissä. Polttoaine sisältyy. Hinnat alkaen 179 €.",
+      "Sea-Doo Spark Trixx vesijetti, nouto Herttoniemen satamasta. Polttoaine sisältyy. Hinnat alkaen 179 €.",
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: "fi_FI",
@@ -110,7 +110,7 @@ const localBusinessJsonLd = {
   email: "82rentals.info@gmail.com",
   priceRange: "€€",
   description:
-    "Vesijetin vuokraus Helsingissä. Sea-Doo Spark Trixx, toimitus haluamaasi rantaan tai laituriin.",
+    "Vesijetin vuokraus Helsingissä. Sea-Doo Spark Trixx, nouto Herttoniemen satamasta.",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Helsinki",

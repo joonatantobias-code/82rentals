@@ -10,7 +10,8 @@ export const DURATIONS: {
   { value: "halfday", label: "Puoli päivää (4h)", hours: 4 },
 ];
 
-/** All-inclusive price per jet ski. Fuel, delivery, life jackets and insurance included. */
+/** All-inclusive price per jet ski. Fuel, life jackets and insurance included.
+ * Pickup is at Herttoniemen satama; delivery elsewhere is by separate agreement. */
 export const BASE_PRICES: Record<Duration, number> = {
   "1h": 179,
   "2h": 279,

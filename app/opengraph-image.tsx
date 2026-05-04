@@ -105,7 +105,7 @@ export default async function OgImage() {
         >
           <div>82rentals.com</div>
           <div style={{ display: "flex", gap: "32px" }}>
-            <div>Toimitus mukana</div>
+            <div>Polttoaine mukana</div>
             <div>·</div>
             <div>Vakuutus mukana</div>
             <div>·</div>

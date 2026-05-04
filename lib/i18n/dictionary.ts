@@ -41,22 +41,22 @@ export const dictionary = {
       titleHighlight: "paras päivä",
       title2: "vesillä.",
       subhead:
-        "Yksi elämä, yksi kesä. Vuokraa Spark Trixx, jätä laituri taakse ja varmista että tästä päivästä puhutaan vielä ensi talvenakin. Me toimitamme.",
+        "Yksi elämä, yksi kesä. Vuokraa Spark Trixx, jätä laituri taakse ja varmista että tästä päivästä puhutaan vielä ensi talvenakin. Lähtö Herttoniemen satamasta.",
       cta: "Varaa nyt",
-      bullet1: "Maksuton toimitus Helsingissä",
+      bullet1: "Nouto Herttoniemen satamasta",
       bullet2: "Ei ajokorttivaatimusta",
       bullet3: "Täysin vakuutettu",
       offerEyebrow: "2h tarjous",
       offerProduct: "Sea-Doo Spark Trixx",
       offerPrice: "279 € / 2h",
-      offerTick1: "Toimitus haluamaasi rantaan",
+      offerTick1: "Nouto Herttoniemen satamasta",
       offerTick2: "1 tai 2 hengelle, pelastusliivit mukana",
       offerTick3: "Lyhyt opastus, ja menoksi",
       offerCta: "Tarkista saatavuus",
     },
     trust: {
       rating: "Arvio 4,9 / 5",
-      delivery: "Maksuton toimitus Helsingissä",
+      delivery: "Nouto Herttoniemen satamasta",
       fuel: "Polttoaine sisältyy",
       lifeJackets: "Pelastusliivit mukana",
       insured: "Täysin vakuutettu",
@@ -68,9 +68,9 @@ export const dictionary = {
       step1Title: "Valitse aika",
       step1Text:
         "Päivä, kesto ja vesijettien määrä. Maksat verkossa, valmista 60 sekunnissa.",
-      step2Title: "Me toimitamme",
+      step2Title: "Saavu Herttoniemeen",
       step2Text:
-        "Tuomme Sea-Doon mihin tahansa rantaan tai laituriin Helsingissä valitsemaasi aikaan.",
+        "Lähtöpaikka on Herttoniemen satama. Tarvittaessa voimme sopia toimituksen muualle lisämaksusta.",
       step3Title: "Aja minne tahansa",
       step3Text:
         "Lyhyt opastus, tankki täynnä, pelastusliivit valmiina. Saaristo on sinun.",
@@ -139,14 +139,14 @@ export const dictionary = {
         "82Rentals on kolmen helsinkiläisen kaverin perustama yritys. Pidämme Spark Trixxin huippukunnossa, vastaamme heti ja saavumme aina sovittuun aikaan. Olemme itse vesillä joka viikko, joten kalustomme on aina kuin omasta tallista.",
       stat1: "Tyytyväistä ajajaa",
       stat2: "Keskiarvosana",
-      stat3: "Toimitus Helsinkiin",
+      stat3: "Helppo nouto Herttoniemestä",
       stat4: "Varaus valmis",
     },
     cta: {
       eyebrow: "Valmiina lähtemään",
       defaultTitle: "Valmiina vesille?",
       defaultSubtitle:
-        "Varaa Sea-Doo Spark Trixx 60 sekunnissa, toimitamme sen sinulle minne tahansa Helsingissä.",
+        "Varaa Sea-Doo Spark Trixx 60 sekunnissa. Lähtö Herttoniemen satamasta.",
     },
     footer: {
       tagline:
@@ -167,7 +167,7 @@ export const dictionary = {
           features: [
             "Polttoaine sisältyy",
             "1 vesijetti, 1 tai 2 hengelle",
-            "Maksuton toimitus Helsingissä",
+            "Nouto Herttoniemen satamasta",
             "Pelastusliivit ja vakuutus",
           ],
           tag: "Nopea kokemus",
@@ -180,7 +180,7 @@ export const dictionary = {
           features: [
             "Polttoaine sisältyy",
             "1 vesijetti, 1 tai 2 hengelle",
-            "Maksuton toimitus Helsingissä",
+            "Nouto Herttoniemen satamasta",
             "Reittisuositukset",
             "Ammattilaisvinkit tempuille",
           ],
@@ -194,7 +194,7 @@ export const dictionary = {
           features: [
             "Polttoaine sisältyy",
             "1 vesijetti, 1 tai 2 hengelle",
-            "Maksuton toimitus Helsingissä",
+            "Nouto Herttoniemen satamasta",
             "Räätälöity reittisuunnittelu",
             "Etusija säävaraukseen",
           ],
@@ -217,7 +217,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Varaa vesijetti 60 sekunnissa.",
       sectionSubtitle:
-        "Valitse päivä, kesto ja paikka. Polttoaine, toimitus, liivit ja vakuutus aina hintaan.",
+        "Valitse päivä ja kesto. Polttoaine, liivit ja vakuutus aina hintaan. Nouto Herttoniemen satamasta.",
       stepLabels: [
         "Vesijetit ja kesto",
         "Päivä ja aloitusaika",
@@ -286,7 +286,7 @@ export const dictionary = {
       summaryPickup: "Toimitus",
       summaryRent: "Vuokra",
       summaryFuelIncluded: "Polttoaine sisältyy",
-      summaryDelivery: "Toimitus Helsingissä",
+      summaryDelivery: "Nouto Herttoniemestä",
       summaryDeliveryValue: "Sisältyy",
       summaryTotal: "Yhteensä",
       successTitle: "Varaus vastaanotettu!",
@@ -405,7 +405,7 @@ export const dictionary = {
         eyebrow: "Hinnasto",
         heroTitle: "Aja Helsingissä ilman yllätyksiä.",
         heroDesc:
-          "Polttoaine, toimitus, pelastusliivit ja vakuutus aina hintaan. Tiedät aina etukäteen mitä maksat.",
+          "Polttoaine, pelastusliivit ja vakuutus aina hintaan. Nouto Herttoniemestä. Tiedät aina etukäteen mitä maksat.",
         ctaTitle: "Lukitse hintasi nyt.",
         ctaSubtitle:
           "Hinnat ovat kiinteät, varaa heti, niin saat parhaat ajat itsellesi.",
@@ -415,7 +415,7 @@ export const dictionary = {
         eyebrow: "Meistä",
         heroTitle: "Helsinkiläinen kaveriporukka, joka rakastaa vesillä oloa.",
         heroDesc:
-          "Aloitimme 82Rentalsin koska halusimme tehdä Helsingin saaristosta lähemmäksi. Toimitamme vesijetit suoraan sinne missä olet.",
+          "Aloitimme 82Rentalsin koska halusimme tehdä Helsingin saaristosta lähemmäksi. Lähtöpaikka on Herttoniemen satama, loppupäivä on sinun.",
         storyEyebrow: "Tarina",
         storyTitle: "Miksi tämä syntyi.",
         storyBody1:
@@ -517,15 +517,15 @@ export const dictionary = {
         eyebrow: "Varaus",
         heroTitle: "Varaa vesijetti 60 sekunnissa.",
         heroDesc:
-          "Valitse päivä, kesto ja paikka. Polttoaine, toimitus, liivit ja vakuutus aina hintaan.",
+          "Valitse päivä ja kesto. Polttoaine, liivit ja vakuutus aina hintaan. Nouto Herttoniemen satamasta.",
         reassurances: [
           {
             title: "Maksuton peruutus",
             text: "24 h ennen varauksen alkua kuluitta.",
           },
           {
-            title: "Toimitus mukana",
-            text: "Helsingin alueella aina hintaan kuuluen.",
+            title: "Nouto Herttoniemestä",
+            text: "Yksi vakiopaikka, helppo löytää. Muusta paikasta sovitaan erikseen.",
           },
           {
             title: "Joustava ajankohta",
@@ -624,22 +624,22 @@ export const dictionary = {
       titleHighlight: "best day",
       title2: "of summer on the water.",
       subhead:
-        "One life, one summer. Rent the Spark Trixx, leave the dock behind and turn this day into the story you'll still tell next winter. We deliver.",
+        "One life, one summer. Rent the Spark Trixx, leave the dock behind and turn this day into the story you'll still tell next winter. Pickup from Herttoniemi marina.",
       cta: "Book now",
-      bullet1: "Free delivery in Helsinki",
+      bullet1: "Pickup at Herttoniemi marina",
       bullet2: "No license required",
       bullet3: "Fully insured",
       offerEyebrow: "2h deal",
       offerProduct: "Sea-Doo Spark Trixx",
       offerPrice: "€279 / 2h",
-      offerTick1: "Delivered to your shore",
+      offerTick1: "Pickup at Herttoniemi marina",
       offerTick2: "Fits 1 or 2 people, life jackets included",
       offerTick3: "Quick briefing, and you're off",
       offerCta: "Check availability",
     },
     trust: {
       rating: "Rated 4.9 / 5",
-      delivery: "Free delivery in Helsinki",
+      delivery: "Pickup at Herttoniemi marina",
       fuel: "Fuel included",
       lifeJackets: "Life jackets included",
       insured: "Fully insured",
@@ -651,9 +651,9 @@ export const dictionary = {
       step1Title: "Pick a time",
       step1Text:
         "Choose date, duration and number of jet skis. Pay online, done in 60 seconds.",
-      step2Title: "We deliver",
+      step2Title: "Come to Herttoniemi",
       step2Text:
-        "We bring the Sea-Doo to any shore or dock in Helsinki at your chosen time.",
+        "Pickup is at Herttoniemi marina. Delivery elsewhere is possible by separate arrangement for an extra fee.",
       step3Title: "Ride anywhere",
       step3Text:
         "Quick briefing, full tank, life jackets ready. The archipelago is yours.",
@@ -722,7 +722,7 @@ export const dictionary = {
         "82Rentals is run by three Helsinki-based friends. We keep the Spark Trixx in top shape, reply right away and arrive exactly when we said we would. We're on the water every week ourselves, so the kit is always like our own.",
       stat1: "Happy riders",
       stat2: "Average rating",
-      stat3: "Helsinki delivery",
+      stat3: "Easy pickup in Herttoniemi",
       stat4: "Booking time",
     },
     cta: {
@@ -733,7 +733,7 @@ export const dictionary = {
     },
     footer: {
       tagline:
-        "Helsinki-based jet ski rental. We bring the Sea-Doo Spark Trixx straight to your dock.",
+        "Helsinki-based jet ski rental. Pickup from Herttoniemi marina.",
       pages: "Pages",
       contact: "Contact",
       faqLink: "FAQ",
@@ -750,7 +750,7 @@ export const dictionary = {
           features: [
             "Fuel included",
             "1 jet ski, fits 1 or 2 people",
-            "Free delivery in Helsinki",
+            "Pickup at Herttoniemi marina",
             "Life jackets and insurance",
           ],
           tag: "Quick ride",
@@ -763,7 +763,7 @@ export const dictionary = {
           features: [
             "Fuel included",
             "1 jet ski, fits 1 or 2 people",
-            "Free delivery in Helsinki",
+            "Pickup at Herttoniemi marina",
             "Route suggestions",
             "Pro tips for tricks",
           ],
@@ -777,7 +777,7 @@ export const dictionary = {
           features: [
             "Fuel included",
             "1 jet ski, fits 1 or 2 people",
-            "Free delivery in Helsinki",
+            "Pickup at Herttoniemi marina",
             "Custom route planning",
             "Priority on weather rebooking",
           ],
@@ -800,7 +800,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Book a jet ski in 60 seconds.",
       sectionSubtitle:
-        "Pick the date, duration and place. Fuel, delivery, life jackets and insurance always included.",
+        "Pick the date and duration. Fuel, life jackets and insurance always included. Pickup at Herttoniemi marina.",
       stepLabels: [
         "Jet skis & duration",
         "Date & start time",
@@ -869,7 +869,7 @@ export const dictionary = {
       summaryPickup: "Delivery",
       summaryRent: "Rental",
       summaryFuelIncluded: "Fuel included",
-      summaryDelivery: "Helsinki delivery",
+      summaryDelivery: "Pickup at Herttoniemi",
       summaryDeliveryValue: "Included",
       summaryTotal: "Total",
       successTitle: "Booking received!",
@@ -988,7 +988,7 @@ export const dictionary = {
         eyebrow: "Pricing",
         heroTitle: "Ride in Helsinki, no surprises.",
         heroDesc:
-          "Fuel, delivery, life jackets and insurance always included. You always know exactly what you'll pay.",
+          "Fuel, life jackets and insurance always included. Pickup at Herttoniemi. You always know exactly what you'll pay.",
         ctaTitle: "Lock in your price now.",
         ctaSubtitle:
           "Prices are fixed, book today and grab the slots that suit you best.",
@@ -998,7 +998,7 @@ export const dictionary = {
         eyebrow: "About us",
         heroTitle: "A Helsinki crew that loves being on the water.",
         heroDesc:
-          "We started 82Rentals to bring the Helsinki archipelago closer to everyone. We deliver the jet skis straight to where you are.",
+          "We started 82Rentals to bring the Helsinki archipelago closer to everyone. Pickup is at Herttoniemi marina, the rest of the day is yours.",
         storyEyebrow: "Story",
         storyTitle: "Why we built this.",
         storyBody1:
@@ -1100,15 +1100,15 @@ export const dictionary = {
         eyebrow: "Booking",
         heroTitle: "Book a jet ski in 60 seconds.",
         heroDesc:
-          "Pick a date, duration and place. Fuel, delivery, life jackets and insurance always included.",
+          "Pick a date and duration. Fuel, life jackets and insurance always included. Pickup at Herttoniemi marina.",
         reassurances: [
           {
             title: "Free cancellation",
             text: "Cancel up to 24 hours before for free.",
           },
           {
-            title: "Delivery included",
-            text: "Always included within Helsinki.",
+            title: "Pickup at Herttoniemi",
+            text: "One fixed spot, easy to find. Other locations by separate arrangement.",
           },
           {
             title: "Flexible timing",

@@ -6,7 +6,7 @@ import { buildPageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Varaa vesijetti",
   description:
-    "Varaa Sea-Doo Spark Trixx 60 sekunnissa. Valitse aika, kesto ja toimituspaikka, me hoidamme loput. Ilmainen toimitus Helsingissä.",
+    "Varaa Sea-Doo Spark Trixx 60 sekunnissa. Valitse aika ja kesto. Nouto Herttoniemen satamasta.",
   path: "/varaa",
   ogTitle: "Varaa vesijetti · 82Rentals",
 });
