@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar as CalendarIcon,
@@ -94,13 +95,19 @@ function durationLabel(d: Duration, t: T) {
 export default function BookingModule() {
   const t = useT();
   const { locale } = useLocale();
+  const searchParams = useSearchParams();
 
   const [step, setStep] = useState<Step>(1);
   const [maxStepReached, setMaxStepReached] = useState<Step>(1);
   const [availability, setAvailability] = useState<DayAvailability[] | null>(null);
   const [loadingAvail, setLoadingAvail] = useState(true);
 
-  const [duration, setDuration] = useState<Duration | null>(null);
+  const initialDuration = useMemo(() => {
+    const d = searchParams?.get("duration");
+    return d && DURATIONS.some((x) => x.value === d) ? (d as Duration) : null;
+  }, [searchParams]);
+
+  const [duration, setDuration] = useState<Duration | null>(initialDuration);
   const [date, setDate] = useState<string | null>(null);
   const [slot, setSlot] = useState<Slot | null>(null);
   const [quantity, setQuantity] = useState(1);

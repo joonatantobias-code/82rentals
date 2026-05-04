@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import PageHero from "@/components/PageHero";
 import BookingModule from "@/components/BookingModule";
 import { Shield, Truck, Clock, Phone } from "lucide-react";
@@ -24,7 +25,9 @@ export default function VaraaContent() {
         crumbs={[{ label: t.footer.varaaLink }]}
       />
 
-      <BookingModule />
+      <Suspense fallback={null}>
+        <BookingModule />
+      </Suspense>
 
       <section className="section">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

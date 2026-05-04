@@ -126,22 +126,21 @@ export default function Pricing() {
                 ))}
               </ul>
 
-              <Link
-                href="/varaa"
-                className={`mt-auto pt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl py-3 font-semibold transition-all min-h-[48px] ${
-                  tier.highlight
-                    ? "bg-brand-primary text-brand-secondary hover:bg-white"
-                    : tier.bestValue
-                      ? "bg-brand-turquoise text-brand-secondary hover:brightness-95"
-                      : "bg-brand-secondary text-white hover:bg-brand-primary hover:text-brand-secondary"
-                }`}
-                style={{ marginTop: "auto" }}
-              >
-                <span className="inline-flex items-center gap-2">
+              <div className="mt-auto pt-6">
+                <Link
+                  href={`/varaa?duration=${tier.duration}`}
+                  className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 h-12 text-sm font-semibold transition-all ${
+                    tier.highlight
+                      ? "bg-brand-primary text-brand-secondary hover:bg-white"
+                      : tier.bestValue
+                        ? "bg-brand-turquoise text-brand-secondary hover:brightness-95"
+                        : "bg-brand-secondary text-white hover:bg-brand-primary hover:text-brand-secondary"
+                  }`}
+                >
                   {tier.cta}
                   <ArrowRight size={16} />
-                </span>
-              </Link>
+                </Link>
+              </div>
             </motion.div>
           );
         })}

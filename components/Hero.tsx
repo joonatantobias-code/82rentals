@@ -131,7 +131,7 @@ export default function Hero() {
               }}
             >
               <Link
-                href="/varaa"
+                href="/varaa?duration=2h"
                 className="group relative block rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-6 md:p-7 text-white shadow-glow overflow-hidden hover:bg-white/15 hover:border-brand-primary/60 transition-colors"
               >
                 {/* Custom number mark in the corner */}
