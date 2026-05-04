@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -29,15 +28,6 @@ import {
 } from "@/lib/pricing";
 import { useLocale, useT } from "@/components/LocaleProvider";
 
-// Leaflet uses `window`, so the picker is loaded client-only.
-const MapPicker = dynamic(() => import("./MapPicker"), {
-  ssr: false,
-  loading: () => (
-    <div className="rounded-2xl border-2 border-brand-primary/30 h-[320px] sm:h-[380px] grid place-items-center text-brand-secondary/60 text-sm">
-      Loading map…
-    </div>
-  ),
-});
 
 type Slot = string; // "HH:00"
 type T = ReturnType<typeof useT>;
@@ -49,15 +39,7 @@ const ALL_SLOTS: Slot[] = [
 const OPEN_HOUR = 10;
 const CLOSE_HOUR = 20;
 
-const POPULAR_PICKUPS = [
-  "Hernesaari",
-  "Lauttasaari",
-  "Vuosaari",
-  "Hietaniemi",
-  "Suomenlinna",
-  "Kruunuvuori",
-  "Munkkiniemi",
-];
+const DEFAULT_PICKUP = "Herttoniemen satama";
 
 type DayAvailability = {
   date: string;
@@ -111,7 +93,7 @@ export default function BookingModule() {
   const [date, setDate] = useState<string | null>(null);
   const [slot, setSlot] = useState<Slot | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [pickup, setPickup] = useState("");
+  const [pickup, setPickup] = useState(DEFAULT_PICKUP);
   const [notes, setNotes] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -447,38 +429,48 @@ export default function BookingModule() {
                         icon={<MapPin size={16} />}
                         label={t.booking.pickupTitle}
                       >
-                        <MapPicker selected={pickup} onPick={setPickup} />
-                        <p className="mt-3 text-xs font-bold uppercase tracking-wider text-brand-secondary/55">
-                          {t.booking.pickupOrChoose}
-                        </p>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {POPULAR_PICKUPS.map((p) => (
-                            <button
-                              type="button"
-                              key={p}
-                              onClick={() => setPickup(p)}
-                              className={`px-3 py-2 rounded-full text-sm font-semibold border-2 transition-colors min-h-[40px] ${
-                                pickup === p
-                                  ? "bg-brand-secondary text-white border-brand-secondary"
-                                  : "bg-white text-brand-secondary border-brand-primary/30 hover:border-brand-primary"
-                              }`}
-                            >
-                              {p}
-                            </button>
-                          ))}
-                        </div>
-                        {pickup && (
-                          <div className="mt-3 inline-flex items-center gap-2 rounded-xl bg-brand-primary-50 border border-brand-primary/30 px-3 py-2 text-sm text-brand-secondary">
-                            <MapPin
-                              size={14}
-                              className="text-brand-primary-600 shrink-0"
-                            />
-                            <span>
-                              {t.booking.pickupConfirm}{" "}
-                              <strong>{pickup}</strong>
-                            </span>
+                        <div className="rounded-2xl border-2 border-brand-primary/40 bg-brand-primary-50 p-4">
+                          <div className="flex items-start gap-3">
+                            <MapPin size={20} className="text-brand-primary-600 mt-0.5 shrink-0" />
+                            <div className="flex-1">
+                              <div className="font-display font-extrabold text-brand-secondary text-lg">
+                                {DEFAULT_PICKUP}
+                              </div>
+                              <p className="text-sm text-brand-secondary/75 mt-1 leading-relaxed">
+                                {t.booking.pickupDefaultBody}
+                              </p>
+                            </div>
                           </div>
-                        )}
+                        </div>
+
+                        <div className="mt-3 rounded-2xl border-2 border-brand-primary/30 p-4 bg-white">
+                          <div className="font-display font-bold text-brand-secondary">
+                            {t.booking.pickupOtherTitle}
+                          </div>
+                          <p className="text-sm text-brand-secondary/70 mt-1 leading-relaxed">
+                            {t.booking.pickupOtherBody}
+                          </p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <a
+                              href="tel:+358401866664"
+                              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold hover:bg-brand-primary hover:text-brand-secondary"
+                            >
+                              <Phone size={14} /> +358 40 186 6664
+                            </a>
+                            <a
+                              href="mailto:82rentals.info@gmail.com"
+                              className="inline-flex items-center gap-2 rounded-xl border-2 border-brand-primary/40 text-brand-secondary px-3 h-10 text-sm font-semibold hover:border-brand-secondary"
+                            >
+                              <Mail size={14} /> 82rentals.info@gmail.com
+                            </a>
+                          </div>
+                        </div>
+                        <div className="mt-3 inline-flex items-center gap-2 rounded-xl bg-brand-primary-50 border border-brand-primary/30 px-3 py-2 text-sm text-brand-secondary">
+                          <MapPin size={14} className="text-brand-primary-600 shrink-0" />
+                          <span>
+                            {t.booking.pickupConfirm} <strong>{pickup}</strong>
+                          </span>
+                        </div>
                       </Field>
 
                       <Field icon={<UserIcon size={16} />} label={t.booking.fullName}>
@@ -520,10 +512,13 @@ export default function BookingModule() {
                         <textarea
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
-                          rows={3}
+                          rows={4}
                           placeholder={t.booking.additionalPlaceholder}
                           className="booking-input booking-textarea"
                         />
+                        <p className="mt-2 text-xs text-brand-secondary/70">
+                          {t.booking.additionalHint}
+                        </p>
                       </Field>
 
                       <NextRow
