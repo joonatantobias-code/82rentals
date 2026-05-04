@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LocaleProvider from "@/components/LocaleProvider";
+import JsonLd from "@/components/JsonLd";
+import { SITE_URL, SITE_NAME } from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -18,9 +20,6 @@ const poppins = Poppins({
   display: "swap",
 });
 
-const SITE_URL = "https://82rentals.com";
-const SITE_NAME = "82Rentals";
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
@@ -29,6 +28,7 @@ export const metadata: Metadata = {
   },
   description:
     "Vuokraa Sea-Doo Spark Trixx -vesijetti Helsingissä. Tuomme sen suoraan rantaan tai laituriin. Varaa verkossa minuutissa, hinnat alkaen 119 €.",
+  applicationName: SITE_NAME,
   keywords: [
     "vesijetin vuokraus",
     "vesijetti Helsinki",
@@ -38,6 +38,8 @@ export const metadata: Metadata = {
     "watercraft rental Finland",
     "vesiskootteri vuokraus",
     "personal watercraft Finland",
+    "vesijetti vuokraus Helsinki",
+    "jetski Helsinki",
   ],
   authors: [{ name: "82Rentals Oy" }],
   creator: "82Rentals Oy",
@@ -59,21 +61,12 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     locale: "fi_FI",
     alternateLocale: ["en_US"],
-    images: [
-      {
-        url: `${SITE_URL}/logo.png`,
-        width: 2000,
-        height: 2000,
-        alt: "82Rentals",
-      },
-    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "82Rentals · Vesijetin vuokraus Helsingissä",
     description:
       "Sea-Doo Spark Trixx vesijetti, toimitus haluamaasi rantaan Helsingissä.",
-    images: [`${SITE_URL}/logo.png`],
   },
   icons: {
     icon: "/logo.png",
@@ -91,6 +84,11 @@ export const metadata: Metadata = {
     },
   },
   category: "Watercraft Rental",
+  formatDetection: {
+    telephone: true,
+    email: true,
+    address: true,
+  },
 };
 
 export const viewport: Viewport = {
@@ -177,6 +175,39 @@ const localBusinessJsonLd = {
   ],
 };
 
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": `${SITE_URL}/#website`,
+  url: SITE_URL,
+  name: SITE_NAME,
+  publisher: { "@id": `${SITE_URL}/#business` },
+  inLanguage: ["fi-FI", "en-US"],
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "@id": `${SITE_URL}/#org`,
+  name: "82Rentals Oy",
+  url: SITE_URL,
+  logo: `${SITE_URL}/logo.png`,
+  sameAs: [
+    "https://instagram.com/82rentals",
+    "https://www.tiktok.com/@82rentals",
+  ],
+  contactPoint: [
+    {
+      "@type": "ContactPoint",
+      telephone: "+358401866664",
+      email: "82rentals.info@gmail.com",
+      contactType: "customer service",
+      areaServed: "FI",
+      availableLanguage: ["fi", "en"],
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -185,12 +216,9 @@ export default function RootLayout({
   return (
     <html lang="fi" className={`${inter.variable} ${poppins.variable}`}>
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(localBusinessJsonLd),
-          }}
-        />
+        <JsonLd data={localBusinessJsonLd} />
+        <JsonLd data={websiteJsonLd} />
+        <JsonLd data={organizationJsonLd} />
       </head>
       <body className="font-sans bg-brand-bg text-brand-text antialiased overflow-x-clip">
         <LocaleProvider>
