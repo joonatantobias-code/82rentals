@@ -169,13 +169,6 @@ const localBusinessJsonLd = {
       priceCurrency: "EUR",
       url: `${SITE_URL}/varaa`,
     },
-    {
-      "@type": "Offer",
-      name: "Koko päivä, 8 h (polttoaine sisältyy)",
-      price: "879",
-      priceCurrency: "EUR",
-      url: `${SITE_URL}/varaa`,
-    },
   ],
 };
 

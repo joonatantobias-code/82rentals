@@ -2,17 +2,16 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Check, ArrowRight, Users, Mail, Phone, Flame, Zap, Gem, Anchor } from "lucide-react";
+import { Check, ArrowRight, Users, Mail, Phone, Flame, Zap, Gem } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
 import { BASE_PRICES, TIER_TAG, type Duration } from "@/lib/pricing";
 
-const ORDER: Duration[] = ["1h", "2h", "halfday", "fullday"];
+const ORDER: Duration[] = ["1h", "2h", "halfday"];
 
 const TAG_ICON = {
   fast: Zap,
   popular: Flame,
   "best-value": Gem,
-  premium: Anchor,
 } as const;
 
 export default function Pricing() {
@@ -36,7 +35,7 @@ export default function Pricing() {
       <div className="blob-turquoise w-[260px] h-[260px] -top-10 right-0" />
       <div className="blob-primary w-[220px] h-[220px] -bottom-10 -left-20" />
 
-      <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 md:pt-6">
+      <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7 md:pt-6 items-stretch">
         {tiers.map((tier, i) => {
           const Icon = TAG_ICON[tier.tag];
           const showBadge = tier.highlight || tier.bestValue;
@@ -47,9 +46,9 @@ export default function Pricing() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.5, delay: i * 0.06 }}
-              className={`relative rounded-2xl p-6 md:p-7 transition-all ${
+              className={`relative flex flex-col h-full rounded-2xl p-6 md:p-7 transition-all ${
                 tier.highlight
-                  ? "bg-brand-secondary text-white shadow-soft ring-2 ring-brand-primary md:-translate-y-3"
+                  ? "bg-brand-secondary text-white shadow-soft ring-2 ring-brand-primary md:-translate-y-4 md:scale-[1.04] z-10"
                   : tier.bestValue
                     ? "bg-white text-brand-secondary border-2 border-brand-turquoise shadow-soft hover:-translate-y-1"
                     : "bg-white text-brand-secondary border border-black/5 shadow-soft hover:-translate-y-1"
@@ -129,23 +128,26 @@ export default function Pricing() {
 
               <Link
                 href="/varaa"
-                className={`mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl py-3 font-semibold transition-all min-h-[48px] ${
+                className={`mt-auto pt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl py-3 font-semibold transition-all min-h-[48px] ${
                   tier.highlight
                     ? "bg-brand-primary text-brand-secondary hover:bg-white"
                     : tier.bestValue
                       ? "bg-brand-turquoise text-brand-secondary hover:brightness-95"
                       : "bg-brand-secondary text-white hover:bg-brand-primary hover:text-brand-secondary"
                 }`}
+                style={{ marginTop: "auto" }}
               >
-                {tier.cta}
-                <ArrowRight size={16} />
+                <span className="inline-flex items-center gap-2">
+                  {tier.cta}
+                  <ArrowRight size={16} />
+                </span>
               </Link>
             </motion.div>
           );
         })}
       </div>
 
-      <div className="relative mt-8 rounded-2xl bg-brand-primary-50 border-2 border-brand-primary/30 p-5 md:p-6 text-center">
+      <div className="relative mt-10 rounded-2xl bg-brand-primary-50 border-2 border-brand-primary/30 p-5 md:p-6 text-center">
         <h4 className="font-display font-bold text-brand-secondary text-lg">
           {t.pricing.allInclusiveTitle}
         </h4>

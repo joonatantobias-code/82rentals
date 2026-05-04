@@ -89,7 +89,7 @@ export default async function OgImage() {
               maxWidth: "950px",
             }}
           >
-            Polttoaine sisältyy. 1h 179 €, 2h 279 €, 4h 479 €, 8h 879 €.
+            Polttoaine sisältyy. 1h 179 €, 2h 279 €, 4h 479 €.
           </div>
         </div>
 

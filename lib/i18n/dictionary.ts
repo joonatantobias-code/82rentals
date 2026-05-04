@@ -25,7 +25,6 @@ export const dictionary = {
       hours1: "1 tunti",
       hours2: "2 tuntia",
       hoursHalf: "Puoli päivää (4h)",
-      hoursFull: "Koko päivä (8h)",
       langLabel: "Kieli",
     },
     nav: {
@@ -162,7 +161,7 @@ export const dictionary = {
     pricing: {
       tiers: [
         {
-          name: "Nopea kokemus",
+          name: "Pyrähdys",
           duration: "1 tunti",
           description: "Helppo ja nopea irtiotto.",
           features: [
@@ -175,7 +174,7 @@ export const dictionary = {
           cta: "Varaa nopeasti",
         },
         {
-          name: "Suosituin valinta",
+          name: "Kesän klassikko",
           duration: "2 tuntia",
           description: "Täydellinen aika nauttia kunnolla. Ei kiirettä, ei stressiä.",
           features: [
@@ -189,7 +188,7 @@ export const dictionary = {
           cta: "Varaa suosituin",
         },
         {
-          name: "Paras arvo",
+          name: "Saaristopäivä",
           duration: "4 tuntia",
           description: "Eniten vapautta vesillä ja paras hinta tunnille.",
           features: [
@@ -201,21 +200,6 @@ export const dictionary = {
           ],
           tag: "Paras arvo",
           cta: "Valitse paras arvo",
-        },
-        {
-          name: "Koko päivä",
-          duration: "8 tuntia",
-          description: "Premium kokemus ilman kompromisseja, koko päivä sinun.",
-          features: [
-            "Polttoaine sisältyy",
-            "1 vesijetti, 2 hengelle",
-            "Maksuton toimitus Helsingissä",
-            "Räätälöity reittisuunnittelu",
-            "Etusija säävaraukseen",
-            "Ei aikarajoitteita fiiliksen mukaan",
-          ],
-          tag: "Premium",
-          cta: "Varaa premium päivä",
         },
       ],
       mostPopular: "Suosituin valinta",
@@ -346,7 +330,6 @@ export const dictionary = {
         "1h": "1 tunti",
         "2h": "2 tuntia",
         halfday: "Puoli päivää (4h)",
-        fullday: "Koko päivä (8h)",
       },
     },
     pages: {
@@ -621,7 +604,6 @@ export const dictionary = {
       hours1: "1 hour",
       hours2: "2 hours",
       hoursHalf: "Half day (4h)",
-      hoursFull: "Full day (8h)",
       langLabel: "Language",
     },
     nav: {
@@ -758,7 +740,7 @@ export const dictionary = {
     pricing: {
       tiers: [
         {
-          name: "Quick ride",
+          name: "The Sprint",
           duration: "1 hour",
           description: "An easy, fast escape on the water.",
           features: [
@@ -771,7 +753,7 @@ export const dictionary = {
           cta: "Book quick",
         },
         {
-          name: "Most popular",
+          name: "The Classic",
           duration: "2 hours",
           description: "The sweet spot. No rush, no stress.",
           features: [
@@ -785,7 +767,7 @@ export const dictionary = {
           cta: "Book the favourite",
         },
         {
-          name: "Best value",
+          name: "Archipelago Day",
           duration: "4 hours",
           description: "Most freedom on the water and the best price per hour.",
           features: [
@@ -797,21 +779,6 @@ export const dictionary = {
           ],
           tag: "Best value",
           cta: "Pick best value",
-        },
-        {
-          name: "Full day",
-          duration: "8 hours",
-          description: "Premium, no compromises. The whole day is yours.",
-          features: [
-            "Fuel included",
-            "1 jet ski, fits 2 people",
-            "Free delivery in Helsinki",
-            "Custom route planning",
-            "Priority on weather rebooking",
-            "No time pressure",
-          ],
-          tag: "Premium",
-          cta: "Book the premium day",
         },
       ],
       mostPopular: "Most popular",
@@ -942,7 +909,6 @@ export const dictionary = {
         "1h": "1 hour",
         "2h": "2 hours",
         halfday: "Half day (4h)",
-        fullday: "Full day (8h)",
       },
     },
     pages: {
