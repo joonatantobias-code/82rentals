@@ -2,7 +2,13 @@
 
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { MapContainer, TileLayer, useMap } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Tooltip,
+  useMap,
+} from "react-leaflet";
 import { useEffect, useRef } from "react";
 
 export type Harbor = {
@@ -28,7 +34,7 @@ function makeIcon(selected: boolean) {
   const size = selected ? 44 : 32;
   const color = selected ? "#0A3D62" : "#6EC6FF";
   const ring = selected ? "#FFFFFF" : "#0A3D62";
-  const html = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="${size}" height="${size}" style="display:block;cursor:pointer;"><path d="M16 1 C 8 1 3 7 3 14 C 3 22 16 31 16 31 C 16 31 29 22 29 14 C 29 7 24 1 16 1 Z" fill="${color}" stroke="${ring}" stroke-width="2.5"/><circle cx="16" cy="13" r="4.5" fill="${ring}"/></svg>`;
+  const html = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="${size}" height="${size}" style="display:block;cursor:pointer;pointer-events:auto;"><path d="M16 1 C 8 1 3 7 3 14 C 3 22 16 31 16 31 C 16 31 29 22 29 14 C 29 7 24 1 16 1 Z" fill="${color}" stroke="${ring}" stroke-width="2.5"/><circle cx="16" cy="13" r="4.5" fill="${ring}"/></svg>`;
   return L.divIcon({
     className: "harbor-pin",
     html,
@@ -38,69 +44,77 @@ function makeIcon(selected: boolean) {
 }
 
 /**
- * Imperative marker layer. Markers are created once with bound click
- * handlers; subsequent re-renders only swap the icon for the current
- * selection. This avoids react-leaflet's stale-handler footgun where every
- * click could route to the first marker.
+ * One Marker per harbor, each in its own component. The click handler is
+ * bound directly on the underlying Leaflet marker via a ref + useEffect, so
+ * each marker captures only its own harbor and can never route clicks to a
+ * sibling. The console.log is intentional debug output you can verify in
+ * the browser DevTools while picking pins.
  */
-function MarkerLayer({
+function HarborMarker({
+  harbor,
   selected,
   onPick,
 }: {
+  harbor: Harbor;
   selected: string;
   onPick: (name: string) => void;
 }) {
-  const map = useMap();
-  const markersRef = useRef<L.Marker[]>([]);
+  const markerRef = useRef<L.Marker | null>(null);
+  // Keep the latest onPick in a ref so the bound handler always calls the
+  // freshest version without rebinding.
   const onPickRef = useRef(onPick);
-
-  // Keep handler reference current
   useEffect(() => {
     onPickRef.current = onPick;
   }, [onPick]);
 
-  // Mount markers once
+  // Bind click once per marker. The handler closes over `harbor.name`
+  // directly which is unique per HarborMarker instance.
   useEffect(() => {
-    const created: L.Marker[] = [];
-    HARBORS.forEach((h) => {
-      const marker = L.marker([h.lat, h.lng], {
-        icon: makeIcon(false),
-        title: h.name,
-        alt: h.name,
-        riseOnHover: true,
-      });
-      // Each marker gets its own closure over `h`
-      marker.on("click", () => onPickRef.current(h.name));
-      marker.bindTooltip(h.name, {
-        direction: "top",
-        offset: [0, -28],
-        opacity: 1,
-      });
-      marker.addTo(map);
-      created.push(marker);
-    });
-    markersRef.current = created;
-    return () => {
-      created.forEach((m) => m.remove());
-      markersRef.current = [];
+    const m = markerRef.current;
+    if (!m) return;
+    const handler = () => {
+      // Diagnostic — remove later if noisy
+      // eslint-disable-next-line no-console
+      console.log("[MapPicker] picked", harbor.name);
+      onPickRef.current(harbor.name);
     };
-  }, [map]);
+    m.on("click", handler);
+    return () => {
+      m.off("click", handler);
+    };
+  }, [harbor.name]);
 
-  // Update icons + camera when selection changes
+  const isSelected = selected === harbor.name;
+
+  return (
+    <Marker
+      ref={markerRef}
+      position={[harbor.lat, harbor.lng]}
+      icon={makeIcon(isSelected)}
+      keyboard
+      title={harbor.name}
+      alt={harbor.name}
+    >
+      <Tooltip
+        direction="top"
+        offset={[0, -28]}
+        opacity={1}
+        permanent={isSelected}
+      >
+        <span style={{ fontWeight: 600 }}>{harbor.name}</span>
+      </Tooltip>
+    </Marker>
+  );
+}
+
+/** Smoothly recenters the map on the selected harbor. */
+function FlyToSelected({ selected }: { selected: string }) {
+  const map = useMap();
   useEffect(() => {
-    markersRef.current.forEach((marker, i) => {
-      const harbor = HARBORS[i];
-      marker.setIcon(makeIcon(harbor.name === selected));
-    });
-    if (selected) {
-      const idx = HARBORS.findIndex((h) => h.name === selected);
-      if (idx >= 0) {
-        const h = HARBORS[idx];
-        map.flyTo([h.lat, h.lng], 13, { duration: 0.6 });
-      }
-    }
+    if (!selected) return;
+    const h = HARBORS.find((x) => x.name === selected);
+    if (h) map.flyTo([h.lat, h.lng], 13, { duration: 0.6 });
   }, [selected, map]);
-
   return null;
 }
 
@@ -123,7 +137,15 @@ export default function MapPicker({
           attribution='&copy; OpenStreetMap'
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <MarkerLayer selected={selected} onPick={onPick} />
+        {HARBORS.map((h) => (
+          <HarborMarker
+            key={h.name}
+            harbor={h}
+            selected={selected}
+            onPick={onPick}
+          />
+        ))}
+        <FlyToSelected selected={selected} />
       </MapContainer>
     </div>
   );
