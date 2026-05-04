@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Instagram, Heart, MessageCircle, Play } from "lucide-react";
 import { unsplashUrl, PEXELS_VIDEOS, LOCAL_PHOTOS } from "@/lib/images";
 import BrushUnderline from "@/components/BrushUnderline";
+import { useT } from "@/components/LocaleProvider";
 
 function TikTok({ size = 18 }: { size?: number }) {
   return (
@@ -22,99 +23,40 @@ type Reel = {
   href: string;
 };
 
-// 10 placeholder reels — videos cycle through the available Pexels clips. Swap
-// captions / posters / hrefs to real content when published.
-const reels: Reel[] = [
-  {
-    platform: "tiktok",
-    caption: "Aamuajo Suomenlinnan ohi",
-    likes: "12,4k",
-    video: PEXELS_VIDEOS.tricks,
-    poster: LOCAL_PHOTOS.coupleAction,
-    href: "https://www.tiktok.com/@82rentals",
-  },
-  {
-    platform: "instagram",
-    caption: "Kun kaveri pyytää selfietä",
-    likes: "3,1k",
-    video: PEXELS_VIDEOS.blueSea,
-    poster: unsplashUrl("jetskiOcean", { w: 800 }),
-    href: "https://instagram.com/82rentals",
-  },
-  {
-    platform: "tiktok",
-    caption: "Hernesaaresta Kaivopuistoon",
-    likes: "8,7k",
-    video: PEXELS_VIDEOS.fast,
-    poster: unsplashUrl("jetskiSplash", { w: 800 }),
-    href: "https://www.tiktok.com/@82rentals",
-  },
-  {
-    platform: "instagram",
-    caption: "Spark Trixx tempuilla",
-    likes: "5,9k",
-    video: PEXELS_VIDEOS.tricks,
-    poster: LOCAL_PHOTOS.yellowRider,
-    href: "https://instagram.com/82rentals",
-  },
-  {
-    platform: "tiktok",
-    caption: "Lauttasaaresta Vallisaareen",
-    likes: "21,2k",
-    video: PEXELS_VIDEOS.blueSea,
-    poster: LOCAL_PHOTOS.redRider,
-    href: "https://www.tiktok.com/@82rentals",
-  },
-  {
-    platform: "instagram",
-    caption: "Auringonlasku saaristossa",
-    likes: "4,3k",
-    video: PEXELS_VIDEOS.fast,
-    poster: unsplashUrl("helsinki1", { w: 800 }),
-    href: "https://instagram.com/82rentals",
-  },
-  {
-    platform: "tiktok",
-    caption: "Kaverit ja 90 hv",
-    likes: "9,5k",
-    video: PEXELS_VIDEOS.tricks,
-    poster: unsplashUrl("jetskiAction1", { w: 800 }),
-    href: "https://www.tiktok.com/@82rentals",
-  },
-  {
-    platform: "instagram",
-    caption: "Ensimmäinen ajo",
-    likes: "2,8k",
-    video: PEXELS_VIDEOS.blueSea,
-    poster: LOCAL_PHOTOS.blueSide,
-    href: "https://instagram.com/82rentals",
-  },
-  {
-    platform: "tiktok",
-    caption: "Synttärilahja kaverille",
-    likes: "15,1k",
-    video: PEXELS_VIDEOS.fast,
-    poster: LOCAL_PHOTOS.blue1,
-    href: "https://www.tiktok.com/@82rentals",
-  },
-  {
-    platform: "instagram",
-    caption: "Päivä joka jää muistiin",
-    likes: "6,2k",
-    video: PEXELS_VIDEOS.tricks,
-    poster: unsplashUrl("jetskiAction3", { w: 800 }),
-    href: "https://instagram.com/82rentals",
-  },
+// Posters / videos / platform are language-independent; captions come from
+// the dictionary so they translate.
+const REEL_BASE: Omit<Reel, "caption" | "likes">[] = [
+  { platform: "tiktok", video: PEXELS_VIDEOS.tricks, poster: LOCAL_PHOTOS.coupleAction, href: "https://www.tiktok.com/@82rentals" },
+  { platform: "instagram", video: PEXELS_VIDEOS.blueSea, poster: unsplashUrl("jetskiOcean", { w: 800 }), href: "https://instagram.com/82rentals" },
+  { platform: "tiktok", video: PEXELS_VIDEOS.fast, poster: unsplashUrl("jetskiSplash", { w: 800 }), href: "https://www.tiktok.com/@82rentals" },
+  { platform: "instagram", video: PEXELS_VIDEOS.tricks, poster: LOCAL_PHOTOS.yellowRider, href: "https://instagram.com/82rentals" },
+  { platform: "tiktok", video: PEXELS_VIDEOS.blueSea, poster: LOCAL_PHOTOS.redRider, href: "https://www.tiktok.com/@82rentals" },
+  { platform: "instagram", video: PEXELS_VIDEOS.fast, poster: unsplashUrl("helsinki1", { w: 800 }), href: "https://instagram.com/82rentals" },
+  { platform: "tiktok", video: PEXELS_VIDEOS.tricks, poster: unsplashUrl("jetskiAction1", { w: 800 }), href: "https://www.tiktok.com/@82rentals" },
+  { platform: "instagram", video: PEXELS_VIDEOS.blueSea, poster: LOCAL_PHOTOS.blueSide, href: "https://instagram.com/82rentals" },
+  { platform: "tiktok", video: PEXELS_VIDEOS.fast, poster: LOCAL_PHOTOS.blue1, href: "https://www.tiktok.com/@82rentals" },
+  { platform: "instagram", video: PEXELS_VIDEOS.tricks, poster: unsplashUrl("jetskiAction3", { w: 800 }), href: "https://instagram.com/82rentals" },
 ];
 
 type Filter = "tiktok" | "instagram";
 
 export default function SocialFeed() {
+  const t = useT();
   const [filter, setFilter] = useState<Filter>("tiktok");
+
+  const reels: Reel[] = useMemo(
+    () =>
+      REEL_BASE.map((r, i) => ({
+        ...r,
+        caption: t.socialFeed.reels[i]?.caption ?? "",
+        likes: t.socialFeed.reels[i]?.likes ?? "",
+      })),
+    [t]
+  );
 
   const filteredReels = useMemo(
     () => reels.filter((r) => r.platform === filter),
-    [filter]
+    [reels, filter]
   );
 
   // Repeat enough copies so the marquee always feels populated even when
@@ -144,18 +86,18 @@ export default function SocialFeed() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative">
         <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-end mb-8 md:mb-10">
           <div>
-            <span className="section-eyebrow">Me somessa</span>
+            <span className="section-eyebrow">{t.socialFeed.eyebrow}</span>
             <h2 className="section-title">
-              Seuraa{" "}
+              {t.socialFeed.titleA}{" "}
               <span className="relative inline-block">
-                meitä
+                {t.socialFeed.titleHighlight}
                 <BrushUnderline variant="spray" delay={0.4} duration={1.1} thickness={9} />
               </span>
-              .
+              {t.socialFeed.titleB}
+              {!t.socialFeed.titleB && "."}
             </h2>
             <p className="mt-4 text-brand-secondary/70 text-base sm:text-lg max-w-xl">
-              Asiakkaiden parhaat hetket, temput ja saariston kulttiset paikat.
-              Seuraa ennen kuin missaat sen kesän, josta kaikki puhuu.
+              {t.socialFeed.subtitle}
             </p>
           </div>
           <div className="flex flex-wrap gap-2 w-full lg:w-auto">

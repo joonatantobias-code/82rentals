@@ -6,16 +6,12 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const links = [
-  { href: "/vesijetti", label: "Vesijettimme" },
-  { href: "/hinnasto", label: "Hinnasto" },
-  { href: "/meista", label: "Meistä" },
-  { href: "/yhteystiedot", label: "Yhteystiedot" },
-];
+import { useT } from "@/components/LocaleProvider";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const t = useT();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -26,23 +22,29 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const links = [
+    { href: "/vesijetti", label: t.nav.vesijetti },
+    { href: "/hinnasto", label: t.nav.hinnasto },
+    { href: "/meista", label: t.nav.meista },
+    { href: "/yhteystiedot", label: t.nav.yhteystiedot },
+  ];
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-brand-secondary ${
         scrolled ? "py-2 shadow-soft" : "py-3"
       }`}
     >
-      {/* Top accent strip — light blue brand line, glossy feel */}
       <span
         aria-hidden
         className="absolute inset-x-0 bottom-0 h-px bg-brand-primary/40 pointer-events-none"
       />
 
-      <nav className="relative max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between gap-4">
+      <nav className="relative max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between gap-3 lg:gap-6">
         <Link
           href="/"
           className="group relative flex items-center"
-          aria-label="82Rentals etusivu"
+          aria-label="82Rentals"
         >
           <span className="relative h-12 w-[140px] sm:h-14 sm:w-[170px] shrink-0">
             <Image
@@ -54,9 +56,6 @@ export default function Navbar() {
               priority
               unoptimized
             />
-            {/* Glossy sweep on hover — masked by the logo's alpha so the
-             * shine only travels across the actual artwork, not the
-             * surrounding rectangle. */}
             <span
               aria-hidden
               className="logo-shine pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -66,7 +65,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <ul className="hidden md:flex items-center gap-7 lg:gap-9">
+        <ul className="hidden md:flex items-center gap-6 lg:gap-8">
           {links.map((l) => {
             const active = pathname === l.href;
             return (
@@ -89,16 +88,17 @@ export default function Navbar() {
           })}
         </ul>
 
-        <div className="hidden md:block">
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher tone="dark" />
+
           <Link
             href="/varaa"
-            className="group relative inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-sm font-semibold bg-brand-primary text-brand-secondary shadow-glow transition-all hover:bg-white overflow-hidden"
+            className="hidden md:inline-flex group relative items-center gap-1.5 rounded-full px-5 py-2 text-sm font-semibold bg-brand-primary text-brand-secondary shadow-glow transition-all hover:bg-white overflow-hidden"
           >
-            <span className="relative z-10">Varaa</span>
+            <span className="relative z-10">{t.common.bookShort}</span>
             <span className="relative z-10 inline-block transition-transform group-hover:translate-x-0.5">
               →
             </span>
-            {/* Shine streak */}
             <span
               aria-hidden
               className="absolute inset-0 rounded-full overflow-hidden pointer-events-none"
@@ -106,15 +106,15 @@ export default function Navbar() {
               <span className="absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/55 blur-sm opacity-0 group-hover:opacity-100 group-hover:translate-x-[260%] transition-all duration-700 ease-out" />
             </span>
           </Link>
-        </div>
 
-        <button
-          onClick={() => setOpen((v) => !v)}
-          className="md:hidden p-2 rounded-xl text-white"
-          aria-label="Avaa valikko"
-        >
-          {open ? <X size={26} /> : <Menu size={26} />}
-        </button>
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="md:hidden p-2 rounded-xl text-white"
+            aria-label={t.common.open}
+          >
+            {open ? <X size={26} /> : <Menu size={26} />}
+          </button>
+        </div>
       </nav>
 
       <AnimatePresence>
@@ -151,7 +151,7 @@ export default function Navbar() {
                   onClick={() => setOpen(false)}
                   className="btn-primary w-full"
                 >
-                  Varaa nyt
+                  {t.common.bookNow}
                 </Link>
               </li>
             </ul>

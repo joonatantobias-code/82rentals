@@ -13,6 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { LOCAL_PHOTOS } from "@/lib/images";
+import { useT } from "@/components/LocaleProvider";
 
 const gallery = [
   LOCAL_PHOTOS.blue1,
@@ -21,25 +22,17 @@ const gallery = [
   LOCAL_PHOTOS.coupleAction,
 ];
 
-type Feature = {
+type FeatureVisual = {
   icon: LucideIcon;
-  title: string;
-  text: string;
-  /** Tailwind class for the icon background */
   color: string;
-  /** Tailwind class for the icon text color */
   textColor: string;
-  /** Hex used by the hover effect (border + accent line) */
   accentHex: string;
-  /** Degrees the icon rotates on hover */
   iconRotate: number;
 };
 
-const features: Feature[] = [
+const FEATURE_VISUALS: FeatureVisual[] = [
   {
     icon: Gauge,
-    title: "Kevyt ja leikkisä",
-    text: "90 hv Rotax, alle 200 kg runko. Nopea, ketterä ja tehty heitettäväksi.",
     color: "bg-brand-primary",
     textColor: "text-brand-secondary",
     accentHex: "#6EC6FF",
@@ -47,8 +40,6 @@ const features: Feature[] = [
   },
   {
     icon: Sparkles,
-    title: "Tehty tempuille",
-    text: "Säädettävät ohjaustanko ja jalkapohjat, kaarra, pomppi ja spinnaa kuin proffa.",
     color: "bg-brand-turquoise",
     textColor: "text-brand-secondary",
     accentHex: "#1DD3B0",
@@ -56,8 +47,6 @@ const features: Feature[] = [
   },
   {
     icon: Users,
-    title: "2 hengen vesijetti",
-    text: "Ota mukaan kaveri, kumppani tai eeppisin Instagram tarinasi.",
     color: "bg-brand-secondary",
     textColor: "text-white",
     accentHex: "#0A3D62",
@@ -65,8 +54,6 @@ const features: Feature[] = [
   },
   {
     icon: Shield,
-    title: "Täysin vakuutettu",
-    text: "Kattava vakuutus ja pelastusliivit sisältyvät jokaiseen vuokraan.",
     color: "bg-brand-primary",
     textColor: "text-brand-secondary",
     accentHex: "#6EC6FF",
@@ -75,6 +62,13 @@ const features: Feature[] = [
 ];
 
 export default function Product() {
+  const t = useT();
+  const page = t.pages.vesijetti;
+  const features = FEATURE_VISUALS.map((v, i) => ({
+    ...v,
+    title: page.features[i].title,
+    text: page.features[i].text,
+  }));
   const [active, setActive] = useState(0);
 
   return (
@@ -145,7 +139,7 @@ export default function Product() {
                     ? "border-brand-primary shadow-soft scale-[0.97]"
                     : "border-transparent opacity-65 hover:opacity-100"
                 }`}
-                aria-label={`Näytä kuva ${i + 1}`}
+                aria-label={`${t.common.readMore} ${i + 1}`}
               >
                 <Image
                   src={src}
@@ -160,13 +154,10 @@ export default function Product() {
         </div>
 
         <div>
-          <span className="section-eyebrow">Kone</span>
-          <h2 className="section-title">Sea-Doo Spark Trixx 2up.</h2>
+          <span className="section-eyebrow">{page.productEyebrow}</span>
+          <h2 className="section-title">{page.productTitle}</h2>
           <p className="mt-5 text-base sm:text-lg text-brand-secondary/75 leading-relaxed">
-            Sea-Doon leikkisin vesijetti. Suunniteltu ajajille, jotka haluavat{" "}
-            <em>oikeasti tuntea</em> veden, nopea, ketterä ja järjettömän
-            hauska. Yhden ajon jälkeen ymmärrät, miksi pää kääntyy joka
-            laiturilla.
+            {page.productBody}
           </p>
 
           <div className="mt-7 grid sm:grid-cols-2 gap-3 sm:gap-4">
@@ -204,7 +195,7 @@ export default function Product() {
           </div>
 
           <Link href="/varaa" className="btn-primary mt-8">
-            Varaa tämä vesijetti <ArrowRight size={18} />
+            {page.productCta} <ArrowRight size={18} />
           </Link>
         </div>
       </div>

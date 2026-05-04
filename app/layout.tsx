@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import LocaleProvider from "@/components/LocaleProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -68,9 +69,11 @@ export default function RootLayout({
   return (
     <html lang="fi" className={`${inter.variable} ${poppins.variable}`}>
       <body className="font-sans bg-brand-bg text-brand-text antialiased overflow-x-clip">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <LocaleProvider>
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </LocaleProvider>
       </body>
     </html>
   );

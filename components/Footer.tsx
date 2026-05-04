@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Instagram, Mail, Phone, MapPin } from "lucide-react";
 import { GeoBurst, FloatingShapes } from "@/components/Decorations";
+import { useT } from "@/components/LocaleProvider";
 
 function TikTok({ size = 18 }: { size?: number }) {
   return (
@@ -20,6 +21,7 @@ function TikTok({ size = 18 }: { size?: number }) {
 }
 
 export default function Footer() {
+  const t = useT();
   const year = new Date().getFullYear();
   return (
     <footer
@@ -29,10 +31,8 @@ export default function Footer() {
       <div className="h-1 bg-brand-primary" />
       <div className="absolute inset-0 pattern-grid opacity-20 pointer-events-none" />
 
-      {/* Custom decorations: triangles, plusses, diamonds — same family as elsewhere */}
       <GeoBurst className="hidden md:block absolute -right-12 top-4 w-[460px] h-[460px] opacity-30 pointer-events-none" />
       <FloatingShapes className="hidden md:block absolute -left-10 bottom-0 w-[380px] h-[380px] opacity-25 pointer-events-none" />
-      {/* Giant outlined 82 — barely there, blends into the navy bg */}
       <span
         aria-hidden
         className="num82-outline-dark hidden md:block absolute -bottom-12 right-4 lg:right-12 font-display font-extrabold text-[14rem] lg:text-[18rem] leading-none tracking-tighter select-none pointer-events-none"
@@ -42,8 +42,7 @@ export default function Footer() {
 
       <div className="relative max-w-7xl mx-auto px-5 sm:px-8 py-14 md:py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-10">
         <div className="lg:col-span-2">
-          <Link href="/" className="inline-block" aria-label="82Rentals etusivu">
-            {/* Logo only — image already includes the wordmark */}
+          <Link href="/" className="inline-block" aria-label="82Rentals">
             <span className="relative block h-20 w-[220px]">
               <Image
                 src="/logo.png"
@@ -51,13 +50,12 @@ export default function Footer() {
                 fill
                 sizes="220px"
                 className="object-contain object-left"
-              unoptimized
+                unoptimized
               />
             </span>
           </Link>
           <p className="mt-5 text-white/75 max-w-md leading-relaxed">
-            Helsinkiläinen vesijettivuokraus. Tuomme Sea-Doo Spark Trixxin
-            laiturillesi.
+            {t.footer.tagline}
           </p>
           <div className="mt-6 flex items-center gap-3">
             <a
@@ -81,14 +79,14 @@ export default function Footer() {
             <a
               href="tel:+358401866664"
               className="h-11 w-11 rounded-xl bg-white/10 hover:bg-brand-primary hover:text-brand-secondary text-white grid place-items-center transition-colors"
-              aria-label="Soita"
+              aria-label={t.common.phone}
             >
               <Phone size={18} />
             </a>
             <a
               href="mailto:82rentals.info@gmail.com"
               className="h-11 w-11 rounded-xl bg-white/10 hover:bg-brand-primary hover:text-brand-secondary text-white grid place-items-center transition-colors"
-              aria-label="Sähköposti"
+              aria-label={t.common.email}
             >
               <Mail size={18} />
             </a>
@@ -96,42 +94,42 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="font-display font-bold text-white mb-4">Sivut</h4>
+          <h4 className="font-display font-bold text-white mb-4">{t.footer.pages}</h4>
           <ul className="space-y-2.5 text-sm text-white/75">
             <li>
               <Link href="/vesijetti" className="hover:text-brand-primary transition-colors">
-                Vesijetti
+                {t.nav.vesijetti}
               </Link>
             </li>
             <li>
               <Link href="/hinnasto" className="hover:text-brand-primary transition-colors">
-                Hinnasto
+                {t.nav.hinnasto}
               </Link>
             </li>
             <li>
               <Link href="/meista" className="hover:text-brand-primary transition-colors">
-                Meistä
+                {t.nav.meista}
               </Link>
             </li>
             <li>
               <Link href="/ukk" className="hover:text-brand-primary transition-colors">
-                Usein kysytyt
+                {t.footer.faqLink}
               </Link>
             </li>
             <li>
               <Link href="/varaa" className="hover:text-brand-primary transition-colors">
-                Varaa
+                {t.footer.varaaLink}
               </Link>
             </li>
           </ul>
         </div>
 
         <div>
-          <h4 className="font-display font-bold text-white mb-4">Yhteystiedot</h4>
+          <h4 className="font-display font-bold text-white mb-4">{t.footer.contact}</h4>
           <ul className="space-y-3 text-sm text-white/75">
             <li className="flex items-start gap-2.5">
               <MapPin size={16} className="text-brand-primary mt-0.5" />
-              <span>Helsinki, Suomi</span>
+              <span>{t.footer.city}</span>
             </li>
             <li className="flex items-start gap-2.5">
               <Phone size={16} className="text-brand-primary mt-0.5" />
@@ -157,7 +155,7 @@ export default function Footer() {
 
       <div className="relative border-t border-white/10">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 text-xs text-white/55 text-center md:text-left">
-          © {year} 82Rentals Oy. Kaikki oikeudet pidätetään.
+          © {year} 82Rentals Oy. {t.footer.rights}
         </div>
       </div>
     </footer>

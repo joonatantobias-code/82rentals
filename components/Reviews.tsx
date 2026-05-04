@@ -2,54 +2,13 @@
 
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
+import { useT } from "@/components/LocaleProvider";
 
-// Placeholder reviews. Replace with real Google reviews via the Places API
-// later. The shape mimics the Google review object so the swap is trivial.
-type Review = {
-  author: string;
-  initials: string;
-  rating: number;
-  date: string;
-  text: string;
-  color: string;
-};
-
-const reviews: Review[] = [
-  {
-    author: "Mikko T.",
-    initials: "MT",
-    rating: 5,
-    date: "Heinäkuu 2025",
-    text: "Toimitus pelasi täydellisesti. Saimme Spark Trixxin suoraan mökin laiturille ja loppupäivä meni kuin siivillä. Suosittelen.",
-    color: "bg-brand-primary",
-  },
-  {
-    author: "Anna K.",
-    initials: "AK",
-    rating: 5,
-    date: "Elokuu 2025",
-    text: "Helpoin varauskokemus. Tunti meni nopeasti, joten varasin saman tien lisää. Asiakaspalvelu rentoa ja ammattimaista.",
-    color: "bg-brand-turquoise",
-  },
-  {
-    author: "Petra L.",
-    initials: "PL",
-    rating: 5,
-    date: "Heinäkuu 2025",
-    text: "Loistava synttärilahja kaverille. Kaverit yllättyivät täysin kun jetti tuotiin paikan päälle. Varmasti tulemme uudestaan.",
-    color: "bg-brand-primary",
-  },
-  {
-    author: "Joonas R.",
-    initials: "JR",
-    rating: 5,
-    date: "Kesäkuu 2025",
-    text: "Spark Trixx on hauska peli. Lyhyt opastus riitti täysin, hommat sujui muuten ihan itsestään. Vakuutus ja liivit oli ok kunnossa.",
-    color: "bg-brand-turquoise",
-  },
-];
+const COLORS = ["bg-brand-primary", "bg-brand-turquoise", "bg-brand-primary", "bg-brand-turquoise"];
 
 export default function Reviews() {
+  const t = useT();
+  const reviews = t.reviews.items.map((r, i) => ({ ...r, rating: 5, color: COLORS[i % COLORS.length] }));
   return (
     <section id="reviews" className="section relative">
       <div className="blob-primary w-[280px] h-[280px] -top-10 -left-20" />
@@ -65,18 +24,18 @@ export default function Reviews() {
 
       <div className="relative grid lg:grid-cols-[1fr_2fr] gap-10 lg:gap-14 items-end mb-10 md:mb-12">
         <div>
-          <span className="section-eyebrow">Arvostelut</span>
-          <h2 className="section-title">Asiakkaat kertovat.</h2>
+          <span className="section-eyebrow">{t.reviews.eyebrow}</span>
+          <h2 className="section-title">{t.reviews.title}</h2>
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 lg:justify-end">
           <div className="flex items-center gap-3">
             <div className="font-display text-5xl font-extrabold text-brand-secondary leading-none">
-              4,9
+              {t.hero.ratingLabel.split(" ")[0]}
             </div>
             <div>
               <Stars rating={5} />
               <p className="text-xs text-brand-secondary/60 mt-1">
-                Yhteensä 47 Google arvostelua
+                {t.reviews.total}
               </p>
             </div>
           </div>
@@ -87,7 +46,7 @@ export default function Reviews() {
             className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-brand-primary/30 text-brand-secondary font-semibold text-sm hover:border-brand-primary transition-colors"
           >
             <GoogleG />
-            Lue Googlessa
+            {t.reviews.readGoogle}
           </a>
         </div>
       </div>

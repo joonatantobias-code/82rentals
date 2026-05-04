@@ -3,64 +3,41 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { LOCAL_PHOTOS } from "@/lib/images";
+import { useT } from "@/components/LocaleProvider";
 
 type Hotspot = {
-  /** percentage from left edge of the image */
   x: number;
-  /** percentage from top edge of the image */
   y: number;
-  /** label position relative to the dot */
   side: "left" | "right";
   number: string;
   title: string;
   text: string;
 };
 
-const hotspots: Hotspot[] = [
-  {
-    x: 52,
-    y: 22,
-    side: "right",
-    number: "01",
-    title: "Säädettävä ohjaustanko",
-    text: "Riser tuo ajoasennon ylös ja helpottaa temppuilua.",
-  },
-  {
-    x: 38,
-    y: 38,
-    side: "left",
-    number: "02",
-    title: "Sininen Trixx istuin",
-    text: "Mukava 2up istuin, mahtuu kaveri tai kumppani.",
-  },
-  {
-    x: 28,
-    y: 56,
-    side: "left",
-    number: "03",
-    title: "90 hv Rotax",
-    text: "Sähköinen iBR jarru ja peruutus, kiihdytys tuntuu heti.",
-  },
-  {
-    x: 70,
-    y: 70,
-    side: "right",
-    number: "04",
-    title: "Kevyt runko",
-    text: "Alle 200 kg kuivapaino tekee jetistä leikkisän.",
-  },
+const HOTSPOT_POSITIONS: Pick<Hotspot, "x" | "y" | "side" | "number">[] = [
+  { x: 52, y: 22, side: "right", number: "01" },
+  { x: 38, y: 38, side: "left", number: "02" },
+  { x: 28, y: 56, side: "left", number: "03" },
+  { x: 70, y: 70, side: "right", number: "04" },
 ];
 
 export default function Anatomy() {
+  const t = useT();
+  const page = t.pages.vesijetti;
+  const hotspots: Hotspot[] = HOTSPOT_POSITIONS.map((p, i) => ({
+    ...p,
+    title: page.hotspots[i].title,
+    text: page.hotspots[i].text,
+  }));
   return (
     <section className="section relative">
       <div className="blob-primary w-[280px] h-[280px] -top-10 -right-20" />
 
       <div className="relative max-w-3xl mb-10 md:mb-12">
-        <span className="section-eyebrow">Tutustu jettiin</span>
-        <h2 className="section-title">Mistä Spark Trixx koostuu.</h2>
+        <span className="section-eyebrow">{page.anatomyEyebrow}</span>
+        <h2 className="section-title">{page.anatomyTitle}</h2>
         <p className="mt-4 text-brand-secondary/70 text-base sm:text-lg">
-          Tärkeimmät ominaisuudet kerralla. Käyttöönotto vie minuutteja.
+          {page.anatomyBody}
         </p>
       </div>
 

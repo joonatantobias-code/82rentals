@@ -23,7 +23,16 @@
       "Bash(vercel --version)",
       "Bash(git init *)",
       "Bash(git add *)",
-      "Bash(git -c user.email=\"builder@82rentals.fi\" -c user.name=\"82Rentals\" commit -m \"82rentals: initial public version\")"
+      "Bash(git -c user.email=\"builder@82rentals.fi\" -c user.name=\"82Rentals\" commit -m \"82rentals: initial public version\")",
+      "Bash(vercel whoami *)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(vercel deploy *)",
+      "Bash(ps -p 37768 -o stat,etime,command)",
+      "Bash(pkill -f \"vercel deploy\")",
+      "Bash(pkill -f \"vercel whoami\")",
+      "Bash(vercel --yes)",
+      "Bash(vercel login *)",
+      "Bash(VERCEL_DEBUG=1 vercel whoami)"
     ]
   }
 }

@@ -1,58 +1,34 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Instagram, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
+import { useT } from "@/components/LocaleProvider";
 
-type Founder = {
-  name: string;
-  initials: string;
-  role: string;
-  bio: string;
-  email?: string;
-  instagram?: string;
-  bg: string;
-};
-
-const founders: Founder[] = [
-  {
-    name: "Patrik Blomvall",
-    initials: "PB",
-    role: "Perustaja",
-    bio: "Helsinkiläinen vesi ja moottoriurheilun harrastaja, joka pyörittää 82Rentalsin operatiivista puolta. Vastaa kalustosta, toimituksista ja siitä, että jokainen ajo lähtee kunnolla käyntiin.",
-    email: "patrik@82rentals.fi",
-    bg: "bg-brand-primary",
-  },
-  {
-    name: "Ville Hautamäki",
-    initials: "VH",
-    role: "Perustaja",
-    bio: "Asiakaskokemus ja kasvun suunta ovat Villen vastuulla. Pitää huolen, että varaus sujuu mutkattomasti ja että asiakkaiden palaute kuuluu jokaisessa palvelun yksityiskohdassa.",
-    email: "ville@82rentals.fi",
-    bg: "bg-brand-turquoise",
-  },
-  {
-    name: "Joonatan Lindholm",
-    initials: "JL",
-    role: "Perustaja",
-    bio: "Brändin ja digitaalisen kokonaisuuden takana. Verkkokokemus, sisältö ja ulkoasu ovat Joonatanin tontilla, jotta sivu näyttää yhtä terävältä kuin itse Spark Trixx vesillä.",
-    email: "joonatan@82rentals.fi",
-    bg: "bg-brand-primary",
-  },
+const FOUNDER_META = [
+  { initials: "PB", email: "patrik@82rentals.fi", bg: "bg-brand-primary" },
+  { initials: "VH", email: "ville@82rentals.fi", bg: "bg-brand-turquoise" },
+  { initials: "JL", email: "joonatan@82rentals.fi", bg: "bg-brand-primary" },
 ];
 
 export default function Founders() {
+  const t = useT();
+  const page = t.pages.meista;
+  const founders = FOUNDER_META.map((m, i) => ({
+    ...m,
+    name: page.founders[i].name,
+    role: page.founders[i].role,
+    bio: page.founders[i].bio,
+  }));
   return (
     <section className="section relative">
       <div className="blob-primary w-[260px] h-[260px] -top-10 -right-20" />
       <div className="blob-turquoise w-[220px] h-[220px] bottom-0 -left-10" />
 
       <div className="relative max-w-3xl mb-10 md:mb-14">
-        <span className="section-eyebrow">Tiimi</span>
-        <h2 className="section-title">Kolme tyyppiä, yksi vesijetti.</h2>
+        <span className="section-eyebrow">{page.foundersEyebrow}</span>
+        <h2 className="section-title">{page.foundersTitle}</h2>
         <p className="mt-4 text-brand-secondary/70 text-base sm:text-lg">
-          Helsinkiläinen kolmikko, joka uskoo että parhaat kesäpäivät syntyvät
-          vesillä. Perustimme 82Rentalsin tehdäksemme jetskeilystä yhtä
-          helppoa kuin pizzan tilaaminen.
+          {page.foundersBody}
         </p>
       </div>
 
@@ -81,30 +57,15 @@ export default function Founders() {
             <p className="mt-3 text-sm text-brand-secondary/75 leading-relaxed">
               {f.bio}
             </p>
-            {(f.email || f.instagram) && (
-              <div className="mt-5 flex items-center gap-2">
-                {f.email && (
-                  <a
-                    href={`mailto:${f.email}`}
-                    className="h-9 w-9 rounded-lg bg-brand-primary-50 text-brand-secondary grid place-items-center hover:bg-brand-primary transition-colors"
-                    aria-label={`Lähetä sähköpostia ${f.name}`}
-                  >
-                    <Mail size={15} />
-                  </a>
-                )}
-                {f.instagram && (
-                  <a
-                    href={f.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="h-9 w-9 rounded-lg bg-brand-primary-50 text-brand-secondary grid place-items-center hover:bg-brand-primary transition-colors"
-                    aria-label={`${f.name} Instagram`}
-                  >
-                    <Instagram size={15} />
-                  </a>
-                )}
-              </div>
-            )}
+            <div className="mt-5 flex items-center gap-2">
+              <a
+                href={`mailto:${f.email}`}
+                className="h-9 w-9 rounded-lg bg-brand-primary-50 text-brand-secondary grid place-items-center hover:bg-brand-primary transition-colors"
+                aria-label={`${t.common.email} – ${f.name}`}
+              >
+                <Mail size={15} />
+              </a>
+            </div>
           </motion.article>
         ))}
       </div>

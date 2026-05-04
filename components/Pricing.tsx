@@ -3,70 +3,25 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, ArrowRight, Users, Mail, Phone } from "lucide-react";
+import { useT } from "@/components/LocaleProvider";
 
-const tiers = [
-  {
-    name: "Pikamenoa",
-    duration: "1 tunti",
-    price: 119,
-    fuelHours: 1,
-    description: "Täydellinen ensikosketus saaristoon.",
-    features: [
-      "1 vesijetti, 2 hengelle",
-      "Maksuton toimitus Helsingissä",
-      "Pelastusliivit",
-      "Lyhyt turvaopastus",
-    ],
-    highlight: false,
-  },
-  {
-    name: "Suosikkikesto",
-    duration: "2 tuntia",
-    price: 199,
-    fuelHours: 2,
-    description: "Riittävän pitkä kunnon seikkailuun.",
-    features: [
-      "1 vesijetti, 2 hengelle",
-      "Maksuton toimitus Helsingissä",
-      "Pelastusliivit",
-      "Reittisuositukset",
-      "Ammattilaisvinkit tempuille",
-    ],
-    highlight: true,
-  },
-  {
-    name: "Puoli päivää",
-    duration: "4 tuntia",
-    price: 349,
-    fuelHours: 4,
-    description: "Suomenlinna, Vallisaari ja saunatauko väliin.",
-    features: [
-      "1 vesijetti, 2 hengelle",
-      "Maksuton toimitus Helsingissä",
-      "Pelastusliivit",
-      "Räätälöity reittisuunnittelu",
-      "Etusija säävaraukseen",
-    ],
-    highlight: false,
-  },
-  {
-    name: "Koko päivä",
-    duration: "8 tuntia",
-    price: 599,
-    fuelHours: 8,
-    description: "Aamusta iltaan vesillä, oma kapteenisi vain sinä.",
-    features: [
-      "1 vesijetti, 2 hengelle",
-      "Maksuton toimitus Helsingissä",
-      "Pelastusliivit",
-      "Räätälöity reittisuunnittelu",
-      "Etusija säävaraukseen",
-    ],
-    highlight: false,
-  },
+const TIER_META = [
+  { price: 119, fuelHours: 1, highlight: false },
+  { price: 199, fuelHours: 2, highlight: true },
+  { price: 349, fuelHours: 4, highlight: false },
+  { price: 599, fuelHours: 8, highlight: false },
 ];
 
 export default function Pricing() {
+  const t = useT();
+  const tiers = TIER_META.map((meta, i) => ({
+    ...meta,
+    name: t.pricing.tiers[i].name,
+    duration: t.pricing.tiers[i].duration,
+    description: t.pricing.tiers[i].description,
+    features: t.pricing.tiers[i].features,
+  }));
+
   return (
     <section id="pricing" className="section relative">
       <div className="blob-turquoise w-[260px] h-[260px] -top-10 right-0" />
@@ -88,7 +43,7 @@ export default function Pricing() {
           >
             {tier.highlight && (
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 rounded-full bg-brand-primary px-4 py-1 text-[11px] font-extrabold uppercase tracking-[0.18em] text-brand-secondary shadow-soft whitespace-nowrap">
-                Suosituin
+                {t.pricing.mostPopular}
               </span>
             )}
 
@@ -121,7 +76,7 @@ export default function Pricing() {
                     tier.highlight ? "text-white/70" : "text-brand-secondary/60"
                   }`}
                 >
-                  / vesijetti
+                  {t.common.perJet}
                 </span>
               </div>
               <p
@@ -129,7 +84,10 @@ export default function Pricing() {
                   tier.highlight ? "text-white/70" : "text-brand-secondary/60"
                 }`}
               >
-                + bensa {30 * tier.fuelHours} € (30 € / tunti)
+                {t.pricing.fuelLine.replace(
+                  "{amount}",
+                  String(30 * tier.fuelHours)
+                )}
               </p>
             </div>
 
@@ -158,14 +116,13 @@ export default function Pricing() {
                   : "bg-brand-secondary text-white hover:bg-brand-primary hover:text-brand-secondary"
               }`}
             >
-              Varaa {tier.duration}
+              {t.pricing.bookSuffix} {tier.duration}
               <ArrowRight size={16} />
             </Link>
           </motion.div>
         ))}
       </div>
 
-      {/* Two-up emphasis + custom packages contact note */}
       <div className="relative mt-10 grid md:grid-cols-2 gap-4">
         <div className="rounded-2xl bg-brand-primary-50 border-2 border-brand-primary/40 p-6 flex items-start gap-4">
           <span className="h-12 w-12 rounded-xl bg-brand-primary text-brand-secondary grid place-items-center shrink-0">
@@ -173,11 +130,10 @@ export default function Pricing() {
           </span>
           <div>
             <h4 className="font-display font-bold text-brand-secondary">
-              Yhdellä vesijetillä matkustaa kaksi
+              {t.pricing.twoUpTitle}
             </h4>
             <p className="text-sm text-brand-secondary/70 mt-1.5 leading-relaxed">
-              Sinä ja kaveri, kumppani tai sisarus, samalla pelillä. Ei tarvitse
-              varata kahta jos olette kaksin.
+              {t.pricing.twoUpBody}
             </p>
           </div>
         </div>
@@ -188,20 +144,18 @@ export default function Pricing() {
             <Mail size={22} />
           </span>
           <div className="relative">
-            <h4 className="font-display font-bold">
-              Eri pituiset paketit ja ryhmävaraukset
-            </h4>
+            <h4 className="font-display font-bold">{t.pricing.customTitle}</h4>
             <p className="text-sm text-white/85 mt-1.5 leading-relaxed">
-              Räätälöimme paketin pidemmistä ajoista, polttariporukoista ja
-              tapahtumista. Soita{" "}
+              {t.pricing.customBody}
+              <br />
               <a
                 href="tel:+358401866664"
-                className="underline decoration-brand-primary/60 underline-offset-2 hover:text-brand-primary inline-flex items-center gap-1"
+                className="underline decoration-brand-primary/60 underline-offset-2 hover:text-brand-primary inline-flex items-center gap-1 mt-1"
               >
                 <Phone size={12} />
                 +358 40 186 6664
-              </a>{" "}
-              tai{" "}
+              </a>
+              {" "}·{" "}
               <a
                 href="mailto:82rentals.info@gmail.com"
                 className="underline decoration-brand-primary/60 underline-offset-2 hover:text-brand-primary inline-flex items-center gap-1"
@@ -209,7 +163,6 @@ export default function Pricing() {
                 <Mail size={12} />
                 82rentals.info@gmail.com
               </a>
-              .
             </p>
           </div>
         </div>

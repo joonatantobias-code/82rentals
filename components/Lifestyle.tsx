@@ -5,54 +5,54 @@ import { motion } from "framer-motion";
 import { LOCAL_PHOTOS } from "@/lib/images";
 import BrushUnderline from "@/components/BrushUnderline";
 import CountUp from "@/components/CountUp";
-
-const stats = [
-  {
-    to: 1000,
-    decimals: 0,
-    suffix: "+",
-    label: "Tyytyväistä ajajaa",
-    color: "text-brand-secondary",
-  },
-  {
-    to: 4.9,
-    decimals: 1,
-    suffix: "★",
-    label: "Keskiarvosana",
-    color: "text-brand-primary-600",
-  },
-  {
-    to: 100,
-    decimals: 0,
-    suffix: "%",
-    label: "Toimitus Helsinkiin",
-    color: "text-brand-turquoise",
-  },
-  {
-    to: 60,
-    decimals: 0,
-    suffix: "s",
-    label: "Varaus valmis",
-    color: "text-brand-secondary",
-  },
-];
+import { useT } from "@/components/LocaleProvider";
 
 export default function Lifestyle() {
+  const t = useT();
+  const stats = [
+    {
+      to: 1000,
+      decimals: 0,
+      suffix: "+",
+      label: t.lifestyle.stat1,
+      color: "text-brand-secondary",
+    },
+    {
+      to: 4.9,
+      decimals: 1,
+      suffix: "★",
+      label: t.lifestyle.stat2,
+      color: "text-brand-primary-600",
+    },
+    {
+      to: 100,
+      decimals: 0,
+      suffix: "%",
+      label: t.lifestyle.stat3,
+      color: "text-brand-turquoise",
+    },
+    {
+      to: 60,
+      decimals: 0,
+      suffix: "s",
+      label: t.lifestyle.stat4,
+      color: "text-brand-secondary",
+    },
+  ];
+
   return (
     <section className="relative my-12 md:my-24">
       <div className="relative h-[70vh] min-h-[460px] w-full overflow-hidden">
         <Image
           src={LOCAL_PHOTOS.coupleAction}
-          alt="Kaverit vesillä"
+          alt=""
           fill
           sizes="100vw"
           className="object-cover"
         />
-        {/* Solid color overlays */}
         <div className="absolute inset-0 bg-brand-secondary/70" />
         <div className="absolute inset-0 pattern-dots opacity-15 mix-blend-overlay" />
 
-        {/* Decorative outlined 82 over the photo */}
         <span
           aria-hidden
           className="num82-outline-dark hidden md:block absolute -top-2 right-6 lg:right-14 font-display font-extrabold text-[9rem] lg:text-[12rem] leading-none tracking-tighter select-none pointer-events-none"
@@ -71,7 +71,7 @@ export default function Lifestyle() {
                 className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.22em] text-brand-primary"
               >
                 <span className="h-2 w-2 rounded-full bg-brand-primary" />
-                Tutustu meihin
+                {t.lifestyle.eyebrow}
               </motion.span>
               <motion.h2
                 initial={{ opacity: 0, y: 24 }}
@@ -80,9 +80,9 @@ export default function Lifestyle() {
                 transition={{ duration: 0.6, delay: 0.05 }}
                 className="font-display text-[2.2rem] sm:text-5xl md:text-6xl font-extrabold mt-3 leading-[1.05]"
               >
-                Nuori porukka, johon voit{" "}
+                {t.lifestyle.titleA}{" "}
                 <span className="relative inline-block text-brand-primary">
-                  luottaa
+                  {t.lifestyle.titleHighlight}
                   <BrushUnderline
                     variant="spray"
                     delay={0.7}
@@ -90,7 +90,7 @@ export default function Lifestyle() {
                     thickness={9}
                   />
                 </span>
-                .
+                {t.lifestyle.titleB}
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 18 }}
@@ -99,17 +99,13 @@ export default function Lifestyle() {
                 transition={{ duration: 0.6, delay: 0.15 }}
                 className="mt-5 text-base sm:text-lg text-white/85 max-w-xl"
               >
-                82Rentals on kolmen helsinkiläisen kaverin perustama yritys.
-                Pidämme Spark Trixxin huippukunnossa, vastaamme heti ja saavumme
-                aina sovittuun aikaan. Olemme itse vesillä joka viikko, joten
-                kalustomme on aina kuin omasta tallista.
+                {t.lifestyle.subtitle}
               </motion.p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Floating stats overlap, solid colors */}
       <div className="max-w-7xl mx-auto px-5 sm:px-8 -mt-10 md:-mt-16 relative">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -123,11 +119,7 @@ export default function Lifestyle() {
               <div
                 className={`font-display text-3xl md:text-4xl font-extrabold tabular-nums ${s.color}`}
               >
-                <CountUp
-                  to={s.to}
-                  decimals={s.decimals}
-                  suffix={s.suffix}
-                />
+                <CountUp to={s.to} decimals={s.decimals} suffix={s.suffix} />
               </div>
               <div className="text-[11px] sm:text-sm uppercase tracking-wider text-brand-secondary/65 mt-1">
                 {s.label}

@@ -6,8 +6,10 @@ import { ArrowRight, MapPin, Star } from "lucide-react";
 import { unsplashUrl } from "@/lib/images";
 import { FloatingShapes, GeoBurst } from "@/components/Decorations";
 import BrushUnderline from "@/components/BrushUnderline";
+import { useT } from "@/components/LocaleProvider";
 
 export default function Hero() {
+  const t = useT();
   return (
     <section
       id="top"
@@ -58,11 +60,11 @@ export default function Hero() {
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/12 backdrop-blur-md border border-white/20 text-sm"
             >
               <MapPin size={14} className="text-brand-primary" />
-              <span>Helsinki, Suomi</span>
+              <span>{t.hero.location}</span>
               <span className="opacity-50">•</span>
               <span className="flex items-center gap-1">
                 <Star size={12} className="text-brand-primary fill-brand-primary" />
-                4,9 / 5
+                {t.hero.ratingLabel}
               </span>
             </motion.div>
 
@@ -72,12 +74,12 @@ export default function Hero() {
               transition={{ duration: 0.7, delay: 0.05 }}
               className="font-display font-extrabold text-[2.5rem] sm:text-5xl lg:text-7xl leading-[1.1] sm:leading-[1.06] lg:leading-[1.04] tracking-tight mt-6"
             >
-              Koe kesän{" "}
+              {t.hero.title1}{" "}
               <span className="relative inline-block text-brand-primary">
-                paras päivä
+                {t.hero.titleHighlight}
                 <BrushUnderline variant="spray" delay={0.7} duration={1.1} thickness={10} />
               </span>{" "}
-              vesillä.
+              {t.hero.title2}
             </motion.h1>
 
             <motion.p
@@ -86,9 +88,7 @@ export default function Hero() {
               transition={{ duration: 0.7, delay: 0.15 }}
               className="mt-6 text-lg md:text-xl text-white/85 max-w-xl"
             >
-              Yksi elämä, yksi kesä. Vuokraa Spark Trixx, jätä laituri taakse
-              ja varmista että tästä päivästä puhutaan vielä ensi talvenakin.
-              Me toimitamme.
+              {t.hero.subhead}
             </motion.p>
 
             <motion.div
@@ -98,7 +98,7 @@ export default function Hero() {
               className="mt-8 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3"
             >
               <Link href="/varaa" className="btn-light !px-7">
-                Varaa nyt <ArrowRight size={18} />
+                {t.hero.cta} <ArrowRight size={18} />
               </Link>
             </motion.div>
 
@@ -108,9 +108,9 @@ export default function Hero() {
               transition={{ duration: 0.7, delay: 0.45 }}
               className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm text-white/80"
             >
-              <Bullet text="Maksuton toimitus Helsingissä" />
-              <Bullet text="Ei ajokorttivaatimusta" />
-              <Bullet text="Täysin vakuutettu" />
+              <Bullet text={t.hero.bullet1} />
+              <Bullet text={t.hero.bullet2} />
+              <Bullet text={t.hero.bullet3} />
             </motion.div>
           </div>
 
@@ -143,20 +143,20 @@ export default function Hero() {
                 </span>
                 <div className="relative">
                   <p className="text-xs uppercase tracking-[0.18em] text-brand-primary font-semibold">
-                    Päivän tarjous
+                    {t.hero.offerEyebrow}
                   </p>
                   <h3 className="font-display text-2xl md:text-3xl font-bold mt-2 leading-tight">
-                    Sea-Doo Spark Trixx
+                    {t.hero.offerProduct}
                     <br />
-                    <span className="text-brand-primary">alkaen 119 € / 1h</span>
+                    <span className="text-brand-primary">{t.hero.offerPrice}</span>
                   </h3>
                   <ul className="mt-5 space-y-2.5 text-sm text-white/85">
-                    <Tick text="Toimitus haluamaasi rantaan" />
-                    <Tick text="1–2 hengelle, pelastusliivit mukana" />
-                    <Tick text="Lyhyt opastus, ja menoksi" />
+                    <Tick text={t.hero.offerTick1} />
+                    <Tick text={t.hero.offerTick2} />
+                    <Tick text={t.hero.offerTick3} />
                   </ul>
                   <span className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl bg-brand-primary text-brand-secondary font-bold py-3 text-sm shadow-glow group-hover:bg-white transition-colors min-h-[44px]">
-                    Tarkista saatavuus
+                    {t.hero.offerCta}
                     <ArrowRight
                       size={16}
                       className="transition-transform group-hover:translate-x-0.5"

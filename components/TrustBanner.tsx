@@ -1,16 +1,17 @@
 "use client";
 
 import { Star, Shield, Truck, Fuel, LifeBuoy } from "lucide-react";
-
-const items = [
-  { icon: Star, text: "Arvio 4,9 / 5" },
-  { icon: Truck, text: "Maksuton toimitus Helsingissä" },
-  { icon: Fuel, text: "Polttoaine sisältyy" },
-  { icon: LifeBuoy, text: "Pelastusliivit mukana" },
-  { icon: Shield, text: "Täysin vakuutettu" },
-];
+import { useT } from "@/components/LocaleProvider";
 
 export default function TrustBanner() {
+  const t = useT();
+  const items = [
+    { icon: Star, text: t.trust.rating },
+    { icon: Truck, text: t.trust.delivery },
+    { icon: Fuel, text: t.trust.fuel },
+    { icon: LifeBuoy, text: t.trust.lifeJackets },
+    { icon: Shield, text: t.trust.insured },
+  ];
   // Duplicate the list so the marquee loops seamlessly
   const loop = [...items, ...items, ...items];
   return (
