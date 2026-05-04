@@ -49,7 +49,7 @@ export const dictionary = {
       bullet3: "Täysin vakuutettu",
       offerEyebrow: "2h tarjous",
       offerProduct: "Sea-Doo Spark Trixx",
-      offerPrice: "199 € / 2h",
+      offerPrice: "279 € / 2h",
       offerTick1: "Toimitus haluamaasi rantaan",
       offerTick2: "1–2 hengelle, pelastusliivit mukana",
       offerTick3: "Lyhyt opastus, ja menoksi",
@@ -162,56 +162,67 @@ export const dictionary = {
     pricing: {
       tiers: [
         {
-          name: "Pikamenoa",
+          name: "Nopea kokemus",
           duration: "1 tunti",
-          description: "Täydellinen ensikosketus saaristoon.",
+          description: "Helppo ja nopea irtiotto.",
           features: [
+            "Polttoaine sisältyy",
             "1 vesijetti, 2 hengelle",
             "Maksuton toimitus Helsingissä",
-            "Pelastusliivit",
-            "Lyhyt turvaopastus",
+            "Pelastusliivit ja vakuutus",
           ],
+          tag: "Nopea kokemus",
+          cta: "Varaa nopeasti",
         },
         {
-          name: "Suosikkikesto",
+          name: "Suosituin valinta",
           duration: "2 tuntia",
-          description: "Riittävän pitkä kunnon seikkailuun.",
+          description: "Täydellinen aika nauttia kunnolla. Ei kiirettä, ei stressiä.",
           features: [
+            "Polttoaine sisältyy",
             "1 vesijetti, 2 hengelle",
             "Maksuton toimitus Helsingissä",
-            "Pelastusliivit",
             "Reittisuositukset",
             "Ammattilaisvinkit tempuille",
           ],
+          tag: "Suosituin valinta",
+          cta: "Varaa suosituin",
         },
         {
-          name: "Puoli päivää",
+          name: "Paras arvo",
           duration: "4 tuntia",
-          description: "Suomenlinna, Vallisaari ja saunatauko väliin.",
+          description: "Eniten vapautta vesillä ja paras hinta tunnille.",
           features: [
+            "Polttoaine sisältyy",
             "1 vesijetti, 2 hengelle",
             "Maksuton toimitus Helsingissä",
-            "Pelastusliivit",
             "Räätälöity reittisuunnittelu",
             "Etusija säävaraukseen",
           ],
+          tag: "Paras arvo",
+          cta: "Valitse paras arvo",
         },
         {
           name: "Koko päivä",
           duration: "8 tuntia",
-          description: "Aamusta iltaan vesillä, oma kapteenisi vain sinä.",
+          description: "Premium kokemus ilman kompromisseja, koko päivä sinun.",
           features: [
+            "Polttoaine sisältyy",
             "1 vesijetti, 2 hengelle",
             "Maksuton toimitus Helsingissä",
-            "Pelastusliivit",
             "Räätälöity reittisuunnittelu",
             "Etusija säävaraukseen",
+            "Ei aikarajoitteita fiiliksen mukaan",
           ],
+          tag: "Premium",
+          cta: "Varaa premium päivä",
         },
       ],
-      mostPopular: "Suosituin",
+      mostPopular: "Suosituin valinta",
       bookSuffix: "Varaa",
-      fuelLine: "+ bensa {amount} € (30 € / tunti)",
+      allInclusiveTitle: "Kaikki sisältyy hintaan",
+      allInclusiveBody:
+        "Meillä et maksa polttoaineesta erikseen, kaikki sisältyy hintaan. Tiedät aina etukäteen mitä maksat.",
       twoUpTitle: "Yhdellä vesijetillä matkustaa kaksi",
       twoUpBody:
         "Sinä ja kaveri, kumppani tai sisarus, samalla pelillä. Ei tarvitse varata kahta jos olette kaksin.",
@@ -222,7 +233,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Varaa vesijetti 60 sekunnissa.",
       sectionSubtitle:
-        "Valitse päivä, kesto ja paikka, me hoidamme toimituksen, polttoaineen, liivit ja vakuutuksen.",
+        "Valitse päivä, kesto ja paikka. Polttoaine, toimitus, liivit ja vakuutus aina hintaan.",
       stepLabels: [
         "Vesijetit ja kesto",
         "Päivä ja aloitusaika",
@@ -236,7 +247,7 @@ export const dictionary = {
       qtyHelper:
         "Yhdelle vesijetille mahtuu 1–2 henkilöä. Voit ottaa myös kaksi vesijettiä, jos haluatte ajaa kaksin omillanne. Kalustossa maksimissaan 2 vesijettiä.",
       durationTitle: "Kuinka pitkä ajo?",
-      fuelLine: "+ bensa {amount} €",
+      includedLine: "Polttoaine sisältyy",
       pickDay: "Valitse päivä",
       pickDayHelper: "Selaa kuukausia nuolista",
       startTimeTitle: "Aloitusaika · {date}",
@@ -286,7 +297,7 @@ export const dictionary = {
       summaryQtyValue: "{n}× (2 hengelle)",
       summaryPickup: "Toimitus",
       summaryRent: "Vuokra",
-      summaryFuel: "Bensa ({rate} € / h)",
+      summaryFuelIncluded: "Polttoaine sisältyy",
       summaryDelivery: "Toimitus Helsingissä",
       summaryDeliveryValue: "Sisältyy",
       summaryTotal: "Yhteensä",
@@ -405,9 +416,9 @@ export const dictionary = {
       hinnasto: {
         title: "Hinnasto",
         eyebrow: "Hinnasto",
-        heroTitle: "Selkeä, kaikki sisältyy.",
+        heroTitle: "Aja Helsingissä ilman yllätyksiä.",
         heroDesc:
-          "Toimitus, pelastusliivit ja vakuutus kuuluvat aina hintaan. Bensaveloitus 30 € jokaiselta tunnilta.",
+          "Polttoaine, toimitus, pelastusliivit ja vakuutus aina hintaan. Tiedät aina etukäteen mitä maksat.",
         ctaTitle: "Lukitse hintasi nyt.",
         ctaSubtitle:
           "Hinnat ovat kiinteät, varaa heti, niin saat parhaat ajat itsellesi.",
@@ -519,7 +530,7 @@ export const dictionary = {
         eyebrow: "Varaus",
         heroTitle: "Varaa vesijetti 60 sekunnissa.",
         heroDesc:
-          "Valitse päivä, kesto ja paikka, me hoidamme toimituksen, polttoaineen, liivit ja vakuutuksen.",
+          "Valitse päivä, kesto ja paikka. Polttoaine, toimitus, liivit ja vakuutus aina hintaan.",
         reassurances: [
           {
             title: "Maksuton peruutus",
@@ -634,7 +645,7 @@ export const dictionary = {
       bullet3: "Fully insured",
       offerEyebrow: "2h deal",
       offerProduct: "Sea-Doo Spark Trixx",
-      offerPrice: "€199 / 2h",
+      offerPrice: "€279 / 2h",
       offerTick1: "Delivered to your shore",
       offerTick2: "For 1–2 people, life jackets included",
       offerTick3: "Quick briefing, and you're off",
@@ -747,56 +758,67 @@ export const dictionary = {
     pricing: {
       tiers: [
         {
-          name: "Quick blast",
+          name: "Quick ride",
           duration: "1 hour",
-          description: "The perfect first taste of the archipelago.",
+          description: "An easy, fast escape on the water.",
           features: [
+            "Fuel included",
             "1 jet ski, fits 2 people",
             "Free delivery in Helsinki",
-            "Life jackets",
-            "Quick safety briefing",
+            "Life jackets and insurance",
           ],
+          tag: "Quick ride",
+          cta: "Book quick",
         },
         {
-          name: "Sweet spot",
+          name: "Most popular",
           duration: "2 hours",
-          description: "Long enough for a real adventure.",
+          description: "The sweet spot. No rush, no stress.",
           features: [
+            "Fuel included",
             "1 jet ski, fits 2 people",
             "Free delivery in Helsinki",
-            "Life jackets",
             "Route suggestions",
             "Pro tips for tricks",
           ],
+          tag: "Most popular",
+          cta: "Book the favourite",
         },
         {
-          name: "Half day",
+          name: "Best value",
           duration: "4 hours",
-          description: "Suomenlinna, Vallisaari and a sauna stop in between.",
+          description: "Most freedom on the water and the best price per hour.",
           features: [
+            "Fuel included",
             "1 jet ski, fits 2 people",
             "Free delivery in Helsinki",
-            "Life jackets",
             "Custom route planning",
             "Priority on weather rebooking",
           ],
+          tag: "Best value",
+          cta: "Pick best value",
         },
         {
           name: "Full day",
           duration: "8 hours",
-          description: "Sunrise to sunset on the water, your own captain.",
+          description: "Premium, no compromises. The whole day is yours.",
           features: [
+            "Fuel included",
             "1 jet ski, fits 2 people",
             "Free delivery in Helsinki",
-            "Life jackets",
             "Custom route planning",
             "Priority on weather rebooking",
+            "No time pressure",
           ],
+          tag: "Premium",
+          cta: "Book the premium day",
         },
       ],
       mostPopular: "Most popular",
       bookSuffix: "Book",
-      fuelLine: "+ fuel €{amount} (€30 / hour)",
+      allInclusiveTitle: "Everything is included",
+      allInclusiveBody:
+        "You don't pay for fuel separately, everything is included in the price. You always know exactly what you'll pay.",
       twoUpTitle: "One jet ski fits two",
       twoUpBody:
         "You and a friend, partner or sibling, on the same machine. No need to book two if it's just the two of you.",
@@ -807,7 +829,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Book a jet ski in 60 seconds.",
       sectionSubtitle:
-        "Pick the date, duration and place, we handle delivery, fuel, life jackets and insurance.",
+        "Pick the date, duration and place. Fuel, delivery, life jackets and insurance always included.",
       stepLabels: [
         "Jet skis & duration",
         "Date & start time",
@@ -821,7 +843,7 @@ export const dictionary = {
       qtyHelper:
         "One jet ski fits 1–2 people. You can also take two jet skis if you'd rather ride solo each. Maximum two jet skis per booking.",
       durationTitle: "How long do you want to ride?",
-      fuelLine: "+ fuel €{amount}",
+      includedLine: "Fuel included",
       pickDay: "Pick a day",
       pickDayHelper: "Use the arrows to browse months",
       startTimeTitle: "Start time · {date}",
@@ -871,7 +893,7 @@ export const dictionary = {
       summaryQtyValue: "{n}× (fits 2 people)",
       summaryPickup: "Delivery",
       summaryRent: "Rental",
-      summaryFuel: "Fuel (€{rate} / h)",
+      summaryFuelIncluded: "Fuel included",
       summaryDelivery: "Helsinki delivery",
       summaryDeliveryValue: "Included",
       summaryTotal: "Total",
@@ -990,9 +1012,9 @@ export const dictionary = {
       hinnasto: {
         title: "Pricing",
         eyebrow: "Pricing",
-        heroTitle: "Clear pricing, everything included.",
+        heroTitle: "Ride in Helsinki, no surprises.",
         heroDesc:
-          "Delivery, life jackets and insurance always included in the price. Fuel adds €30 per hour.",
+          "Fuel, delivery, life jackets and insurance always included. You always know exactly what you'll pay.",
         ctaTitle: "Lock in your price now.",
         ctaSubtitle:
           "Prices are fixed, book today and grab the slots that suit you best.",
@@ -1104,7 +1126,7 @@ export const dictionary = {
         eyebrow: "Booking",
         heroTitle: "Book a jet ski in 60 seconds.",
         heroDesc:
-          "Pick a date, duration and place, we handle delivery, fuel, life jackets and insurance.",
+          "Pick a date, duration and place. Fuel, delivery, life jackets and insurance always included.",
         reassurances: [
           {
             title: "Free cancellation",

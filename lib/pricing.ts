@@ -11,33 +11,37 @@ export const DURATIONS: {
   { value: "fullday", label: "Koko päivä (8h)", hours: 8 },
 ];
 
-/** Vuokrahinta per vesijetti (ilman bensaa). */
+/** All-inclusive price per jet ski. Fuel, delivery, life jackets and insurance included. */
 export const BASE_PRICES: Record<Duration, number> = {
-  "1h": 119,
-  "2h": 199,
-  halfday: 349,
-  fullday: 599,
+  "1h": 179,
+  "2h": 279,
+  halfday: 479,
+  fullday: 879,
 };
 
-/** Bensaveloitus euroina per käytetty tunti per vesijetti. */
-export const FUEL_PER_HOUR_EUR = 30;
-
-/** Toimitus on aina ilmainen Helsingin sisällä. */
+/** Delivery is always free inside Helsinki. */
 export const DELIVERY_FEE = 0;
 
-/** Maksimi vesijettimäärä yhteen varaukseen. Meillä on tällä hetkellä 2. */
+/** Maximum jet skis per booking. We currently have 2. */
 export const MAX_QUANTITY = 2;
+
+export type TierTag = "fast" | "popular" | "best-value" | "premium";
+
+export const TIER_TAG: Record<Duration, TierTag> = {
+  "1h": "fast",
+  "2h": "popular",
+  halfday: "best-value",
+  fullday: "premium",
+};
 
 export function calculatePrice(duration: Duration, quantity: number) {
   const dur = DURATIONS.find((d) => d.value === duration)!;
   const qty = Math.max(1, Math.min(MAX_QUANTITY, quantity));
   const base = BASE_PRICES[duration] * qty;
-  const fuel = FUEL_PER_HOUR_EUR * dur.hours * qty;
-  const subtotal = base + fuel;
+  const subtotal = base;
   const total = subtotal + DELIVERY_FEE;
   return {
     base,
-    fuel,
     delivery: DELIVERY_FEE,
     subtotal,
     total,

@@ -24,7 +24,6 @@ import {
   MAX_QUANTITY,
   type Duration,
   calculatePrice,
-  FUEL_PER_HOUR_EUR,
   BASE_PRICES,
 } from "@/lib/pricing";
 import { useLocale, useT } from "@/components/LocaleProvider";
@@ -168,7 +167,7 @@ export default function BookingModule() {
     () =>
       duration
         ? calculatePrice(duration, quantity)
-        : { base: 0, fuel: 0, delivery: 0, subtotal: 0, total: 0, hours: 0 },
+        : { base: 0, delivery: 0, subtotal: 0, total: 0, hours: 0 },
     [duration, quantity]
   );
 
@@ -321,7 +320,6 @@ export default function BookingModule() {
                         <div className="grid grid-cols-2 gap-3">
                           {DURATIONS.map((d) => {
                             const active = duration === d.value;
-                            const fuel = FUEL_PER_HOUR_EUR * d.hours;
                             return (
                               <button
                                 type="button"
@@ -349,7 +347,7 @@ export default function BookingModule() {
                                     active ? "text-white/70" : "text-brand-secondary/60"
                                   }`}
                                 >
-                                  {t.booking.fuelLine.replace("{amount}", String(fuel))}
+                                  {t.booking.includedLine}
                                 </div>
                               </button>
                             );
@@ -637,8 +635,8 @@ export default function BookingModule() {
                   muted
                 />
                 <SumRow
-                  label={t.booking.summaryFuel.replace("{rate}", String(FUEL_PER_HOUR_EUR))}
-                  value={duration ? `${price.fuel} €` : "—"}
+                  label={t.booking.summaryFuelIncluded}
+                  value={t.booking.summaryDeliveryValue}
                   muted
                 />
                 <SumRow

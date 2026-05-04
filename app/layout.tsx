@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s · 82Rentals",
   },
   description:
-    "Vuokraa Sea-Doo Spark Trixx -vesijetti Helsingissä. Tuomme sen suoraan rantaan tai laituriin. Varaa verkossa minuutissa, hinnat alkaen 119 €.",
+    "Vuokraa Sea-Doo Spark Trixx -vesijetti Helsingissä. Tuomme sen suoraan rantaan tai laituriin. Polttoaine, toimitus ja vakuutus aina hintaan. Hinnat alkaen 179 €.",
   applicationName: SITE_NAME,
   keywords: [
     "vesijetin vuokraus",
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "82Rentals · Vesijetin vuokraus Helsingissä",
     description:
-      "Sea-Doo Spark Trixx vesijetti, toimitus haluamaasi rantaan Helsingissä. Hinnat alkaen 119 €.",
+      "Sea-Doo Spark Trixx vesijetti, toimitus haluamaasi rantaan Helsingissä. Polttoaine sisältyy. Hinnat alkaen 179 €.",
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: "fi_FI",
@@ -150,27 +150,31 @@ const localBusinessJsonLd = {
   makesOffer: [
     {
       "@type": "Offer",
-      name: "1 tunnin vuokra",
-      price: "119",
+      name: "1 tunnin vuokra (polttoaine sisältyy)",
+      price: "179",
       priceCurrency: "EUR",
+      url: `${SITE_URL}/varaa`,
     },
     {
       "@type": "Offer",
-      name: "2 tunnin vuokra",
-      price: "199",
+      name: "2 tunnin vuokra (polttoaine sisältyy)",
+      price: "279",
       priceCurrency: "EUR",
+      url: `${SITE_URL}/varaa`,
     },
     {
       "@type": "Offer",
-      name: "Puoli päivää (4 h)",
-      price: "349",
+      name: "Puoli päivää, 4 h (polttoaine sisältyy)",
+      price: "479",
       priceCurrency: "EUR",
+      url: `${SITE_URL}/varaa`,
     },
     {
       "@type": "Offer",
-      name: "Koko päivä (8 h)",
-      price: "599",
+      name: "Koko päivä, 8 h (polttoaine sisältyy)",
+      price: "879",
       priceCurrency: "EUR",
+      url: `${SITE_URL}/varaa`,
     },
   ],
 };
