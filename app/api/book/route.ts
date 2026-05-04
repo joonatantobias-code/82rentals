@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createBooking, ALL_SLOTS, type Slot } from "@/lib/crm";
 import { DURATIONS, MAX_QUANTITY, type Duration } from "@/lib/pricing";
 
+const CRM_URL = process.env.CRM_API_URL;
+
 type Payload = Partial<{
   date: string;
   slot: Slot;
@@ -61,6 +63,42 @@ export async function POST(request: Request) {
       { ok: false, error: `Vesijettien määrä 1–${MAX_QUANTITY}` },
       { status: 400 }
     );
+  }
+
+  // If a CRM is configured, forward the booking there so it lands in the
+  // shared bookings table (single source of truth). Otherwise use the mock.
+  if (CRM_URL) {
+    try {
+      const res = await fetch(`${CRM_URL}/api/public/book`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          date: payload.date,
+          slot: payload.slot,
+          duration: payload.duration,
+          quantity: qty,
+          name: payload.name,
+          phone: payload.phone,
+          email: payload.email,
+          pickup: payload.pickup,
+          notes: payload.notes,
+        }),
+        cache: "no-store",
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        return NextResponse.json(
+          { ok: false, error: data.error || "Varauksen tallennus epäonnistui" },
+          { status: res.status || 500 }
+        );
+      }
+      return NextResponse.json({ ok: true, bookingId: data.booking?.id });
+    } catch (err) {
+      return NextResponse.json(
+        { ok: false, error: "Varauspalvelu ei vastaa, kokeile hetken päästä" },
+        { status: 502 }
+      );
+    }
   }
 
   const booking = await createBooking({
