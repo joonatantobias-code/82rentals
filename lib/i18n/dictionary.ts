@@ -246,7 +246,7 @@ export const dictionary = {
       contactCustomBody:
         "Räätälöimme polttariporukoille, tapahtumiin ja pidempiin ajoihin. Soita tai laita sähköpostia, vastaamme heti.",
       pickupTitle: "Mistä noudat vesijetin?",
-      pickupDefaultBody: "Lähtöpaikka on Herttoniemen satama. Toimitus sisältyy hintaan.",
+      pickupDefaultBody: "Tarkka paikka on Kipparilahden venekerho Herttoniemessä. Sisältyy hintaan, helppo löytää kartalta.",
       pickupOtherTitle: "Tarvitsetko toimituksen muualle?",
       pickupOtherBody: "Onnistuu lisämaksusta sopimuksen mukaan. Soita tai laita sähköpostia ennen varausta, niin sovitaan paikka ja hinta.",
       pickupOrChoose: "Tai valitse pikavalinnoista",
@@ -829,7 +829,7 @@ export const dictionary = {
       contactCustomBody:
         "We tailor for bachelor parties, events and longer rides. Call or email, we reply right away.",
       pickupTitle: "Where do you pick up the jet ski?",
-      pickupDefaultBody: "Pickup is at Herttoniemi marina. Included in the price.",
+      pickupDefaultBody: "Exact spot: Kipparilahden venekerho in Herttoniemi. Included in the price, easy to find on the map.",
       pickupOtherTitle: "Need delivery elsewhere?",
       pickupOtherBody: "Possible with an extra fee, by arrangement. Call or email us before booking and we'll agree on the location and the price.",
       pickupOrChoose: "Or pick a popular spot",

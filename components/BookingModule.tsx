@@ -1,7 +1,18 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
+import { PICKUP, GOOGLE_MAPS_URL, APPLE_MAPS_URL } from "@/lib/pickup";
+
+// Map is client-only and dynamically loaded; reserve fixed height upfront so
+// the surrounding layout doesn't jump while it mounts.
+const PickupMap = dynamic(() => import("./PickupMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="rounded-2xl border-2 border-brand-primary/30 h-[280px] sm:h-[340px] bg-brand-primary-50" />
+  ),
+});
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar as CalendarIcon,
@@ -39,7 +50,7 @@ const ALL_SLOTS: Slot[] = [
 const OPEN_HOUR = 10;
 const CLOSE_HOUR = 20;
 
-const DEFAULT_PICKUP = "Herttoniemen satama";
+const DEFAULT_PICKUP = PICKUP.name;
 
 type DayAvailability = {
   date: string;
@@ -429,17 +440,35 @@ export default function BookingModule() {
                         icon={<MapPin size={16} />}
                         label={t.booking.pickupTitle}
                       >
-                        <div className="rounded-2xl border-2 border-brand-primary/40 bg-brand-primary-50 p-4">
-                          <div className="flex items-start gap-3">
-                            <MapPin size={20} className="text-brand-primary-600 mt-0.5 shrink-0" />
-                            <div className="flex-1">
-                              <div className="font-display font-extrabold text-brand-secondary text-lg">
-                                {DEFAULT_PICKUP}
-                              </div>
-                              <p className="text-sm text-brand-secondary/75 mt-1 leading-relaxed">
-                                {t.booking.pickupDefaultBody}
-                              </p>
-                            </div>
+                        <PickupMap />
+
+                        <div className="mt-3 rounded-2xl border-2 border-brand-primary/40 bg-brand-primary-50 p-4">
+                          <div className="font-display font-extrabold text-brand-secondary text-lg">
+                            {PICKUP.name}
+                          </div>
+                          <div className="text-sm text-brand-secondary/85 mt-0.5">
+                            {PICKUP.area}
+                          </div>
+                          <p className="text-sm text-brand-secondary/75 mt-2 leading-relaxed">
+                            {t.booking.pickupDefaultBody}
+                          </p>
+                          <div className="mt-3 flex flex-wrap gap-2">
+                            <a
+                              href={GOOGLE_MAPS_URL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold hover:bg-brand-primary hover:text-brand-secondary"
+                            >
+                              <MapPin size={14} /> Google Maps
+                            </a>
+                            <a
+                              href={APPLE_MAPS_URL}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 rounded-xl border-2 border-brand-primary/40 bg-white text-brand-secondary px-3 h-10 text-sm font-semibold hover:border-brand-secondary"
+                            >
+                              <MapPin size={14} /> Apple Maps
+                            </a>
                           </div>
                         </div>
 
@@ -464,12 +493,6 @@ export default function BookingModule() {
                               <Mail size={14} /> 82rentals.info@gmail.com
                             </a>
                           </div>
-                        </div>
-                        <div className="mt-3 inline-flex items-center gap-2 rounded-xl bg-brand-primary-50 border border-brand-primary/30 px-3 py-2 text-sm text-brand-secondary">
-                          <MapPin size={14} className="text-brand-primary-600 shrink-0" />
-                          <span>
-                            {t.booking.pickupConfirm} <strong>{pickup}</strong>
-                          </span>
                         </div>
                       </Field>
 
