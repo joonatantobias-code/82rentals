@@ -2,14 +2,7 @@
 
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import {
-  MapContainer,
-  TileLayer,
-  Marker,
-  Tooltip,
-  useMap,
-} from "react-leaflet";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type Harbor = {
   name: string;
@@ -30,94 +23,12 @@ export const HARBORS: Harbor[] = [
 
 const HELSINKI_CENTER: [number, number] = [60.175, 24.96];
 
-function makeIcon(selected: boolean) {
-  const size = selected ? 44 : 32;
-  const color = selected ? "#0A3D62" : "#6EC6FF";
-  const ring = selected ? "#FFFFFF" : "#0A3D62";
-  const html = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="${size}" height="${size}" style="display:block;cursor:pointer;pointer-events:auto;"><path d="M16 1 C 8 1 3 7 3 14 C 3 22 16 31 16 31 C 16 31 29 22 29 14 C 29 7 24 1 16 1 Z" fill="${color}" stroke="${ring}" stroke-width="2.5"/><circle cx="16" cy="13" r="4.5" fill="${ring}"/></svg>`;
-  return L.divIcon({
-    className: "harbor-pin",
-    html,
-    iconSize: [size, size],
-    iconAnchor: [size / 2, size],
-  });
-}
-
 /**
- * One Marker per harbor, each in its own component. The click handler is
- * bound directly on the underlying Leaflet marker via a ref + useEffect, so
- * each marker captures only its own harbor and can never route clicks to a
- * sibling. The console.log is intentional debug output you can verify in
- * the browser DevTools while picking pins.
+ * Map picker without Leaflet markers. Leaflet renders only the tiles; pins
+ * are plain `<button>` elements positioned over the map using
+ * `latLngToContainerPoint`. Each button has a native `onClick` so click
+ * routing is impossible to get wrong.
  */
-function HarborMarker({
-  harbor,
-  selected,
-  onPick,
-}: {
-  harbor: Harbor;
-  selected: string;
-  onPick: (name: string) => void;
-}) {
-  const markerRef = useRef<L.Marker | null>(null);
-  // Keep the latest onPick in a ref so the bound handler always calls the
-  // freshest version without rebinding.
-  const onPickRef = useRef(onPick);
-  useEffect(() => {
-    onPickRef.current = onPick;
-  }, [onPick]);
-
-  // Bind click once per marker. The handler closes over `harbor.name`
-  // directly which is unique per HarborMarker instance.
-  useEffect(() => {
-    const m = markerRef.current;
-    if (!m) return;
-    const handler = () => {
-      // Diagnostic — remove later if noisy
-      // eslint-disable-next-line no-console
-      console.log("[MapPicker] picked", harbor.name);
-      onPickRef.current(harbor.name);
-    };
-    m.on("click", handler);
-    return () => {
-      m.off("click", handler);
-    };
-  }, [harbor.name]);
-
-  const isSelected = selected === harbor.name;
-
-  return (
-    <Marker
-      ref={markerRef}
-      position={[harbor.lat, harbor.lng]}
-      icon={makeIcon(isSelected)}
-      keyboard
-      title={harbor.name}
-      alt={harbor.name}
-    >
-      <Tooltip
-        direction="top"
-        offset={[0, -28]}
-        opacity={1}
-        permanent={isSelected}
-      >
-        <span style={{ fontWeight: 600 }}>{harbor.name}</span>
-      </Tooltip>
-    </Marker>
-  );
-}
-
-/** Smoothly recenters the map on the selected harbor. */
-function FlyToSelected({ selected }: { selected: string }) {
-  const map = useMap();
-  useEffect(() => {
-    if (!selected) return;
-    const h = HARBORS.find((x) => x.name === selected);
-    if (h) map.flyTo([h.lat, h.lng], 13, { duration: 0.6 });
-  }, [selected, map]);
-  return null;
-}
-
 export default function MapPicker({
   selected,
   onPick,
@@ -125,28 +36,123 @@ export default function MapPicker({
   selected: string;
   onPick: (name: string) => void;
 }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<L.Map | null>(null);
+  const [points, setPoints] = useState<
+    { name: string; x: number; y: number }[]
+  >([]);
+
+  // Initialize Leaflet once
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || mapRef.current) return;
+
+    const map = L.map(el, {
+      center: HELSINKI_CENTER,
+      zoom: 11,
+      scrollWheelZoom: false,
+      zoomControl: true,
+      attributionControl: true,
+    });
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap",
+      maxZoom: 19,
+    }).addTo(map);
+
+    mapRef.current = map;
+
+    const recalc = () => {
+      const next = HARBORS.map((h) => {
+        const p = map.latLngToContainerPoint([h.lat, h.lng]);
+        return { name: h.name, x: p.x, y: p.y };
+      });
+      setPoints(next);
+    };
+
+    recalc();
+    map.on("move zoom moveend zoomend resize", recalc);
+    // Trigger one more tick after layout settles
+    setTimeout(recalc, 80);
+
+    return () => {
+      map.off();
+      map.remove();
+      mapRef.current = null;
+    };
+  }, []);
+
+  // Whenever a harbor is selected, smoothly recenter
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !selected) return;
+    const h = HARBORS.find((x) => x.name === selected);
+    if (h) map.flyTo([h.lat, h.lng], 13, { duration: 0.5 });
+  }, [selected]);
+
   return (
-    <div className="rounded-2xl overflow-hidden border-2 border-brand-primary/30 shadow-soft">
-      <MapContainer
-        center={HELSINKI_CENTER}
-        zoom={11}
-        scrollWheelZoom={false}
-        className="h-[320px] sm:h-[380px] w-full"
+    <div className="relative rounded-2xl overflow-hidden border-2 border-brand-primary/30 shadow-soft">
+      <div
+        ref={containerRef}
+        className="h-[320px] sm:h-[380px] w-full bg-brand-primary-50"
+      />
+      {/* Custom pin overlay — pure HTML buttons over the tile layer */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ zIndex: 500 }}
       >
-        <TileLayer
-          attribution='&copy; OpenStreetMap'
-          url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        {HARBORS.map((h) => (
-          <HarborMarker
-            key={h.name}
-            harbor={h}
-            selected={selected}
-            onPick={onPick}
-          />
-        ))}
-        <FlyToSelected selected={selected} />
-      </MapContainer>
+        {points.map((p) => {
+          const isSelected = p.name === selected;
+          const size = isSelected ? 44 : 32;
+          const fill = isSelected ? "#0A3D62" : "#6EC6FF";
+          const ring = isSelected ? "#FFFFFF" : "#0A3D62";
+          return (
+            <button
+              key={p.name}
+              type="button"
+              onClick={() => onPick(p.name)}
+              aria-label={p.name}
+              className="pointer-events-auto absolute group focus:outline-none"
+              style={{
+                left: p.x,
+                top: p.y,
+                transform: "translate(-50%, -100%)",
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 32 32"
+                width={size}
+                height={size}
+                style={{
+                  display: "block",
+                  filter: isSelected
+                    ? "drop-shadow(0 4px 8px rgba(10,61,98,0.4))"
+                    : "drop-shadow(0 2px 4px rgba(10,61,98,0.25))",
+                  transition:
+                    "width 200ms cubic-bezier(.2,.8,.2,1), height 200ms cubic-bezier(.2,.8,.2,1)",
+                }}
+              >
+                <path
+                  d="M16 1 C 8 1 3 7 3 14 C 3 22 16 31 16 31 C 16 31 29 22 29 14 C 29 7 24 1 16 1 Z"
+                  fill={fill}
+                  stroke={ring}
+                  strokeWidth="2.5"
+                />
+                <circle cx="16" cy="13" r="4.5" fill={ring} />
+              </svg>
+              <span
+                className={`absolute left-1/2 top-full mt-1 -translate-x-1/2 px-2 py-0.5 text-[11px] font-semibold rounded-full shadow-soft whitespace-nowrap transition-opacity ${
+                  isSelected
+                    ? "bg-brand-secondary text-white opacity-100"
+                    : "bg-white text-brand-secondary opacity-0 group-hover:opacity-100 group-focus:opacity-100"
+                }`}
+              >
+                {p.name}
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
