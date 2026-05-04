@@ -481,7 +481,9 @@ export default function BookingModule() {
                           type="text"
                           value={name}
                           onChange={(e) => setName(e.target.value)}
+                          placeholder={t.booking.fullNamePlaceholder}
                           className="booking-input"
+                          autoComplete="name"
                         />
                       </Field>
                       <div className="grid sm:grid-cols-2 gap-4">
@@ -490,8 +492,10 @@ export default function BookingModule() {
                             type="tel"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
-                            placeholder="+358 ..."
+                            placeholder={t.booking.phonePlaceholder}
                             className="booking-input"
+                            autoComplete="tel"
+                            inputMode="tel"
                           />
                         </Field>
                         <Field icon={<Mail size={16} />} label={t.common.email}>
@@ -499,7 +503,10 @@ export default function BookingModule() {
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            placeholder={t.booking.emailPlaceholder}
                             className="booking-input"
+                            autoComplete="email"
+                            inputMode="email"
                           />
                         </Field>
                       </div>
