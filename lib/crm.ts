@@ -11,12 +11,13 @@
 import { calculatePrice, MAX_QUANTITY, type Duration } from "./pricing";
 
 /**
- * Vuokraamo on auki klo 10–20. Asiakas voi aloittaa vuokrauksen tasatunnein
- * niin että ajo päättyy viimeistään 20:00. Esim. 8 h ajon viimeinen alku on
- * 12:00. Kaikki mahdolliset aloitustunnit ovat tässä; UI suodattaa keston
+ * Vuokraamo on auki klo 09–22. Asiakas voi aloittaa vuokrauksen tasatunnein
+ * niin että ajo päättyy viimeistään 22:00. Esim. 8 h ajon viimeinen alku on
+ * 14:00. Kaikki mahdolliset aloitustunnit ovat tässä; UI suodattaa keston
  * mukaan.
  */
 export type Slot =
+  | "09:00"
   | "10:00"
   | "11:00"
   | "12:00"
@@ -26,23 +27,17 @@ export type Slot =
   | "16:00"
   | "17:00"
   | "18:00"
-  | "19:00";
+  | "19:00"
+  | "20:00"
+  | "21:00";
 
 export const ALL_SLOTS: Slot[] = [
-  "10:00",
-  "11:00",
-  "12:00",
-  "13:00",
-  "14:00",
-  "15:00",
-  "16:00",
-  "17:00",
-  "18:00",
-  "19:00",
+  "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
+  "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00",
 ];
 
-export const OPEN_HOUR = 10;
-export const CLOSE_HOUR = 20;
+export const OPEN_HOUR = 9;
+export const CLOSE_HOUR = 22;
 
 export type DayAvailability = {
   /** ISO yyyy-mm-dd */

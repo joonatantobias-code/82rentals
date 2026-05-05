@@ -35,11 +35,11 @@ type Slot = string; // "HH:00"
 type T = ReturnType<typeof useT>;
 
 const ALL_SLOTS: Slot[] = [
-  "10:00", "11:00", "12:00", "13:00", "14:00",
-  "15:00", "16:00", "17:00", "18:00", "19:00",
+  "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
+  "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00",
 ];
-const OPEN_HOUR = 10;
-const CLOSE_HOUR = 20;
+const OPEN_HOUR = 9;
+const CLOSE_HOUR = 22;
 
 const DEFAULT_PICKUP = PICKUP.name;
 
