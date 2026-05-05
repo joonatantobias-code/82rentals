@@ -121,6 +121,11 @@ export default function Footer() {
                 {t.footer.varaaLink}
               </Link>
             </li>
+            <li>
+              <Link href="/sopimusehdot" className="hover:text-brand-primary transition-colors">
+                {t.footer.termsLink}
+              </Link>
+            </li>
           </ul>
         </div>
 

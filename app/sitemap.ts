@@ -14,6 +14,7 @@ const routes: {
   { path: "/meista", priority: 0.7, changeFrequency: "monthly" },
   { path: "/ukk", priority: 0.6, changeFrequency: "monthly" },
   { path: "/yhteystiedot", priority: 0.6, changeFrequency: "yearly" },
+  { path: "/sopimusehdot", priority: 0.4, changeFrequency: "yearly" },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

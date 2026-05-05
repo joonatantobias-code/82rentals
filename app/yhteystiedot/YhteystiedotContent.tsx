@@ -1,6 +1,7 @@
 "use client";
 
 import PageHero from "@/components/PageHero";
+import PickupInfo from "@/components/PickupInfo";
 import {
   Mail,
   Phone,
@@ -98,6 +99,18 @@ export default function YhteystiedotContent() {
               {page.seasonBody}
             </p>
           </div>
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-brand-secondary text-center">
+            Lähtöpaikka
+          </h2>
+          <p className="text-center text-brand-secondary/70 mt-2 mb-6">
+            Vesijetit lähtevät vakiopaikalta. Avaa reittiohjeet alta.
+          </p>
+          <PickupInfo />
         </div>
       </section>
     </>
