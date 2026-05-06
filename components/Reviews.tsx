@@ -47,32 +47,43 @@ export default function Reviews() {
   const remaining = all.length - visible;
 
   function loadMore(e: React.MouseEvent<HTMLButtonElement>) {
-    // Iron scroll lock: register a scroll listener that immediately
-    // reverts any scroll change for 500 ms after the click, then
-    // tears itself down. Whatever the browser does — focus scroll,
-    // anchor compensation, layout shift, smooth-scroll continuation
-    // — gets snapped back to the captured (x, y) before the next
-    // paint. This is the only approach that's bulletproof regardless
-    // of where the button sits in the viewport.
+    // Maximum-effort scroll lock. Stacks every defence:
+    //   - blur() the button + tabIndex={-1} so it never gains focus
+    //   - overflow-anchor: none on html, body and the section
+    //   - scroll-event veto for 800 ms (reverts any scroll change)
+    //   - 60 fps interval that also reverts (catches scroll changes
+    //     that don't dispatch a scroll event in the same frame)
+    //   - immediate revert before and after the state update
     const lockY = window.scrollY;
     const lockX = window.scrollX;
     e.currentTarget.blur();
 
-    const handler = () => {
+    const html = document.documentElement;
+    const body = document.body;
+    const prevHtmlAnchor = html.style.overflowAnchor;
+    const prevBodyAnchor = body.style.overflowAnchor;
+    html.style.overflowAnchor = "none";
+    body.style.overflowAnchor = "none";
+
+    const revert = () => {
       if (window.scrollY !== lockY || window.scrollX !== lockX) {
         window.scrollTo(lockX, lockY);
       }
     };
-    window.addEventListener("scroll", handler, { passive: true });
-    // Also fire once immediately so a scroll that already happened
-    // (e.g. focus-induced) before the listener attached is undone.
-    handler();
+
+    revert();
+    window.addEventListener("scroll", revert, { passive: true });
+    const interval = window.setInterval(revert, 16);
 
     setVisible((v) => Math.min(all.length, v + PAGE_SIZE));
+    revert();
 
     window.setTimeout(() => {
-      window.removeEventListener("scroll", handler);
-    }, 500);
+      window.removeEventListener("scroll", revert);
+      window.clearInterval(interval);
+      html.style.overflowAnchor = prevHtmlAnchor;
+      body.style.overflowAnchor = prevBodyAnchor;
+    }, 800);
   }
 
   return (
@@ -145,12 +156,7 @@ export default function Reviews() {
           >
             <button
               type="button"
-              // preventDefault on mousedown blocks the browser from
-              // focusing the button at click time. The browser's
-              // "scroll focused element into view" was triggering an
-              // upward scroll when the button sat at the very top of
-              // the viewport, which my flushSync restore couldn't
-              // always beat.
+              tabIndex={-1}
               onMouseDown={(e) => e.preventDefault()}
               onClick={loadMore}
               className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-[#1a73e8] border border-black/10 bg-white hover:bg-[#1a73e8]/8 hover:border-[#1a73e8]/30 transition-colors"
