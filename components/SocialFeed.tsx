@@ -389,11 +389,15 @@ function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
         <RailIcon icon={<Send size={24} className="-rotate-12" />} label={reel.shares} />
       </div>
 
-      {/* Bottom-left: small @handle, caption, and the music-line. Sits
-          above the bottom nav so it isn't covered. */}
-      <div className="absolute left-3.5 right-14 bottom-9 text-white">
+      {/* Bottom-left text block. text-left explicitly because the parent
+          <button> element ships with text-align: center from the user
+          agent stylesheet — without overriding it the handle, caption,
+          and music line all rendered centred. Username has no leading
+          "@" per the user's preference (real TikTok includes it; we
+          drop it for our brand). */}
+      <div className="absolute left-3.5 right-14 bottom-9 text-white text-left">
         <p className="text-[11px] font-extrabold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
-          @82rentals
+          82rentals
         </p>
         <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
@@ -499,8 +503,9 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
         </span>
       </div>
 
-      {/* Bottom-left text block — sits above the bottom nav strip. */}
-      <div className="absolute left-3.5 right-14 bottom-9 text-white">
+      {/* Bottom-left text block. text-left to override the parent
+          <button>'s default centred alignment. */}
+      <div className="absolute left-3.5 right-14 bottom-9 text-white text-left">
         <div className="flex items-center gap-1.5">
           <BrandAvatar size={22} ring="white" />
           <span className="text-[11.5px] font-extrabold leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
