@@ -292,6 +292,37 @@ function CarouselLayer({
     });
   }, [isActive]);
 
+  // Browsers (especially Chromium) auto-pause autoplay videos when they
+  // scroll out of the viewport. Without this watcher, scrolling away
+  // and back to the carousel left the visible cards on a frozen frame
+  // until the user clicked, because autoplay only fires on initial
+  // load. We watch the active layer's videos via IntersectionObserver
+  // and call .play() the moment they re-intersect with the viewport.
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const observed = videoRefs.current;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const v = entry.target as HTMLVideoElement;
+          if (!isActive) {
+            // Inactive layer should stay paused regardless.
+            if (!v.paused) v.pause();
+            continue;
+          }
+          if (entry.isIntersecting && v.paused) {
+            v.play().catch(() => {});
+          }
+        }
+      },
+      { rootMargin: "200px 0px", threshold: 0.05 }
+    );
+    observed.forEach((v) => {
+      if (v) obs.observe(v);
+    });
+    return () => obs.disconnect();
+  }, [isActive]);
+
   return (
     <div
       aria-hidden={!isActive}
