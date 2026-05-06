@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { flushSync } from "react-dom";
 import { Star, ChevronDown } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
 import { getReviews, getRatingSummary, type Review } from "@/lib/reviews";
@@ -48,35 +47,32 @@ export default function Reviews() {
   const remaining = all.length - visible;
 
   function loadMore(e: React.MouseEvent<HTMLButtonElement>) {
-    // Hard scroll lock with multiple fences. The previous fix worked
-    // when the button was in the middle of the viewport but failed
-    // when it was at the top, because the browser's focus-and-scroll
-    // heuristic can fire on the next frame after our restore. Now we:
-    //   1. snapshot scroll
-    //   2. blur the button
-    //   3. flushSync the state update
-    //   4. snap scroll back synchronously
-    //   5. snap again on the next two animation frames in case any
-    //      browser auto-scroll fires after our task
+    // Iron scroll lock: register a scroll listener that immediately
+    // reverts any scroll change for 500 ms after the click, then
+    // tears itself down. Whatever the browser does — focus scroll,
+    // anchor compensation, layout shift, smooth-scroll continuation
+    // — gets snapped back to the captured (x, y) before the next
+    // paint. This is the only approach that's bulletproof regardless
+    // of where the button sits in the viewport.
     const lockY = window.scrollY;
     const lockX = window.scrollX;
     e.currentTarget.blur();
-    flushSync(() => {
-      setVisible((v) => Math.min(all.length, v + PAGE_SIZE));
-    });
-    if (window.scrollY !== lockY || window.scrollX !== lockX) {
-      window.scrollTo(lockX, lockY);
-    }
-    requestAnimationFrame(() => {
+
+    const handler = () => {
       if (window.scrollY !== lockY || window.scrollX !== lockX) {
         window.scrollTo(lockX, lockY);
       }
-      requestAnimationFrame(() => {
-        if (window.scrollY !== lockY || window.scrollX !== lockX) {
-          window.scrollTo(lockX, lockY);
-        }
-      });
-    });
+    };
+    window.addEventListener("scroll", handler, { passive: true });
+    // Also fire once immediately so a scroll that already happened
+    // (e.g. focus-induced) before the listener attached is undone.
+    handler();
+
+    setVisible((v) => Math.min(all.length, v + PAGE_SIZE));
+
+    window.setTimeout(() => {
+      window.removeEventListener("scroll", handler);
+    }, 500);
   }
 
   return (
