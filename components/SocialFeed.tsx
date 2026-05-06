@@ -206,15 +206,29 @@ function CarouselLayer({
     const abs = Math.abs(offset);
 
     const scale = abs === 0 ? 1 : abs === 1 ? 0.84 : abs === 2 ? 0.66 : 0.5;
-    const opacity = abs === 0 ? 1 : abs === 1 ? 0.92 : abs === 2 ? 0.6 : 0.22;
 
+    // Side cards are NOT opacity-faded any more — that made the cards
+    // behind them bleed through (one video showing under another). Cards
+    // stay fully opaque at the box level; the "fade to back" effect is
+    // produced by an inner dark scrim (see the per-card `<div bg-black>`
+    // overlay that scales its own opacity by absolute offset).
     return {
       transform: `translate(-50%, -50%) translateX(calc(${offset} * var(--carousel-step))) scale(${scale})`,
-      opacity,
+      opacity: 1,
       zIndex: 10 - abs,
-      filter: abs === 0 ? "none" : `saturate(${1 - abs * 0.12})`,
-      transition: `transform ${SLIDE_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, filter 0.5s ease`,
+      transition: `transform ${SLIDE_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease`,
     };
+  }
+
+  function getScrimOpacity(index: number): number {
+    const len = reels.length;
+    if (len === 0) return 0;
+    const offset = computeOffset(index, len, centerIndex);
+    const abs = Math.abs(offset);
+    if (abs === 0) return 0;
+    if (abs === 1) return 0.18;
+    if (abs === 2) return 0.45;
+    return 0.7;
   }
 
   // Three-phase wrap orchestration: slide off left → FLIP teleport → slide in right.
@@ -228,9 +242,13 @@ function CarouselLayer({
         const el = cardRefs.current[i];
         if (el) {
           const targetTransform = el.style.transform;
-          const targetTransition = el.style.transition;
-          const targetOpacity = el.style.opacity;
           const targetFilter = el.style.filter;
+          // Cards are normally fully opaque (so they don't bleed through
+          // each other). During the wrap we *do* want the leaving card
+          // to fade out and the re-entering one to fade in, since
+          // teleporting an opaque card across the screen would be jarring.
+          // We override opacity for phases A/B and restore it on phase C.
+          const restoreTransition = `transform ${SLIDE_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease, filter 0.5s ease`;
 
           const leavingDir = prev < 0 ? -1 : 1;
           const phaseAOff = leavingDir * 4;
@@ -251,9 +269,9 @@ function CarouselLayer({
             node.style.transform = `translate(-50%, -50%) translateX(calc(${phaseBOff} * var(--carousel-step))) scale(0.45)`;
             node.style.opacity = "0";
             void node.offsetHeight;
-            node.style.transition = targetTransition;
+            node.style.transition = restoreTransition;
             node.style.transform = targetTransform;
-            node.style.opacity = targetOpacity;
+            node.style.opacity = "1";
             node.style.filter = targetFilter;
             timersRef.current.delete(i);
           }, PHASE_A_DURATION);
@@ -301,6 +319,7 @@ function CarouselLayer({
       {reels.map((r, i) => {
         const style = getCardStyle(i);
         const isCenter = i === centerIndex;
+        const scrimOpacity = getScrimOpacity(i);
         return (
           <button
             type="button"
@@ -340,6 +359,16 @@ function CarouselLayer({
               <ReelsOverlay reel={r} />
             )}
 
+            {/* Side-card depth scrim. Sits above the video + overlay,
+                below the centred-card play button. Side cards darken as
+                they move further from centre — this is the visual that
+                used to be done with card-level opacity, which leaked
+                neighbouring videos through. */}
+            <div
+              className="absolute inset-0 bg-black pointer-events-none transition-opacity duration-500"
+              style={{ opacity: scrimOpacity }}
+            />
+
             {isCenter && (
               <span className="absolute inset-0 grid place-items-center pointer-events-none">
                 <span className="h-12 w-12 rounded-full bg-white/90 grid place-items-center text-black opacity-0 group-hover/card:opacity-100 transition-opacity">
@@ -367,41 +396,46 @@ function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
     <>
       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/15 pointer-events-none" />
 
-      {/* Top header — Following / For You tabs */}
-      <div className="absolute top-2 left-0 right-0 flex items-center justify-center gap-3 text-white text-[12px] font-semibold">
-        <span className="opacity-70">Following</span>
-        <span className="opacity-40">|</span>
+      {/* Top: real-app header. "Following | For You" sits centred near
+          the top of the card with the active tab underlined; the Search
+          icon mirrors it on the right. Margins match the phone-app
+          ratios (~3.5% from top, ~5% from right). */}
+      <div className="absolute top-3.5 left-0 right-0 flex items-center justify-center gap-3 text-white text-[12.5px] font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+        <span className="opacity-65">Following</span>
+        <span className="opacity-30">|</span>
         <span className="relative">
           For You
-          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-0.5 w-5 bg-white rounded-full" />
+          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2px] w-6 bg-white rounded-full" />
         </span>
       </div>
-      <span className="absolute top-2.5 right-2 text-white/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
-        <Search size={14} />
+      <span className="absolute top-3.5 right-3 text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+        <Search size={16} />
       </span>
 
-      {/* Right rail — bigger on smaller cards so the proportions match a
-          real phone screen, not a desktop thumbnail. */}
-      <div className="absolute right-2 bottom-16 flex flex-col items-center gap-3.5 text-white pointer-events-none">
+      {/* Right rail. Avatar at top of the stack matches TikTok's profile
+          slot (just no +follow chip — we skipped the explicit follow CTA). */}
+      <div className="absolute right-2.5 bottom-20 flex flex-col items-center gap-4 text-white pointer-events-none">
         <BrandAvatar size={36} />
-        <RailIcon icon={<Heart size={22} className="fill-white" />} label={reel.likes} />
-        <RailIcon icon={<MessageCircle size={22} />} label={reel.comments} />
-        <RailIcon icon={<Send size={22} className="-rotate-12" />} label={reel.shares} />
+        <RailIcon icon={<Heart size={24} className="fill-white" />} label={reel.likes} />
+        <RailIcon icon={<MessageCircle size={24} />} label={reel.comments} />
+        <RailIcon icon={<Send size={24} className="-rotate-12" />} label={reel.shares} />
       </div>
 
-      {/* Bottom: caption + music chip. */}
-      <div className="absolute left-3 right-14 bottom-3 text-white">
+      {/* Bottom-left text block. Caption sits above the music line with
+          the spinning disc on the bottom-right corner — that's the slot
+          TikTok uses for the audio cover art. */}
+      <div className="absolute left-3.5 right-14 bottom-3.5 text-white">
         <p className="text-[12px] font-medium leading-snug line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
         </p>
         <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
-          <Music2 size={12} />
+          <Music2 size={13} />
           <span className="truncate">{reel.audioLabel}</span>
         </div>
       </div>
 
       <div
-        className={`absolute bottom-2.5 right-2 h-8 w-8 rounded-full bg-gradient-to-br from-zinc-700 to-black ring-1 ring-white/30 grid place-items-center pointer-events-none ${
+        className={`absolute bottom-3 right-3 h-9 w-9 rounded-full bg-gradient-to-br from-zinc-700 to-black ring-1 ring-white/30 grid place-items-center pointer-events-none ${
           isCenter ? "tiktok-disc-spin" : ""
         }`}
       >
@@ -434,32 +468,38 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
     <>
       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/15 pointer-events-none" />
 
-      <div className="absolute top-2.5 left-3 right-3 flex items-center justify-between text-white">
-        <span className="text-[14px] font-extrabold italic tracking-wide drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+      {/* Top: italic "Reels" wordmark left, Camera icon right. Match
+          mobile-app safe-area margins (3.5% top, 5% sides). */}
+      <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between text-white">
+        <span className="text-[18px] font-extrabold italic tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)] leading-none">
           Reels
         </span>
-        <Camera size={16} className="opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]" />
+        <Camera size={18} className="opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]" />
       </div>
 
-      {/* Right rail — IG ordering: heart, comment, share, save, more. */}
-      <div className="absolute right-2 bottom-20 flex flex-col items-center gap-4 text-white pointer-events-none">
-        <RailIconReels icon={<Heart size={22} />} label={reel.likes} />
-        <RailIconReels icon={<MessageCircle size={22} />} label={reel.comments} />
-        <RailIconReels icon={<Send size={22} className="-rotate-12" />} label={reel.shares} />
-        <RailIconReels icon={<Bookmark size={22} />} />
+      {/* Right rail — IG ordering. */}
+      <div className="absolute right-2.5 bottom-24 flex flex-col items-center gap-4 text-white pointer-events-none">
+        <RailIconReels icon={<Heart size={24} />} label={reel.likes} />
+        <RailIconReels icon={<MessageCircle size={24} />} label={reel.comments} />
+        <RailIconReels icon={<Send size={24} className="-rotate-12" />} label={reel.shares} />
+        <RailIconReels icon={<Bookmark size={24} />} />
         <span className="text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
-          <MoreHorizontal size={22} />
+          <MoreHorizontal size={24} />
         </span>
       </div>
 
-      <div className="absolute left-3 right-14 bottom-3 text-white">
+      {/* Bottom-left text block:
+            avatar (own line)
+            caption
+            ♪ audio · attribution                                          */}
+      <div className="absolute left-3.5 right-14 bottom-3.5 text-white">
         <BrandAvatar size={28} ring="white" />
         <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
         </p>
-        <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-2 py-1 text-[10.5px] font-semibold">
-          <span className="block h-3 w-3 rounded-sm bg-gradient-to-br from-brand-primary to-brand-turquoise" />
-          <span className="truncate max-w-[120px]">{reel.audioLabel}</span>
+        <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+          <Music2 size={13} />
+          <span className="truncate">{reel.audioLabel}</span>
         </div>
       </div>
     </>
