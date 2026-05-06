@@ -1,12 +1,12 @@
 "use client";
 
-import { Star, Gauge, Fuel, LifeBuoy, MapPin } from "lucide-react";
+import { Star, IdCard, Fuel, LifeBuoy, MapPin } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
 
 export default function TrustBanner() {
   const t = useT();
   const items = [
-    { icon: Gauge, text: t.trust.topSpeed },
+    { icon: IdCard, text: t.trust.noLicense },
     { icon: Fuel, text: t.trust.fuel },
     { icon: LifeBuoy, text: t.trust.lifeJackets },
     { icon: Star, text: t.trust.rating },

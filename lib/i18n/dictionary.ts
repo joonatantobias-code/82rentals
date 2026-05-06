@@ -41,7 +41,7 @@ export const dictionary = {
       titleHighlight: "paras päivä",
       title2: "vesillä.",
       subhead:
-        "Nauti lyhyestä kesästä aallonharjalla 80 km/h vauhdissa. Polttoaine, pelastusliivit ja opastus kuuluvat hintaan. Sinä hoidat vain hymyn, joka pysyy kasvoilla pitkään ajon jälkeenkin.",
+        "Nauti lyhyestä kesästä aallonharjalla 82 km/h vauhdissa. Polttoaine, pelastusliivit ja opastus kuuluvat hintaan. Sinä hoidat vain hymyn, joka pysyy kasvoilla pitkään ajon jälkeenkin.",
       cta: "Varaa nyt",
       bullet1: "Aloitus Herttoniemen Kipparilahden satamasta",
       bullet2: "Ei ajokorttivaatimusta",
@@ -55,7 +55,7 @@ export const dictionary = {
       offerCta: "Tarkista saatavuus",
     },
     trust: {
-      topSpeed: "80 km/h huippunopeus",
+      noLicense: "Ei ajokorttivaatimusta",
       fuel: "Polttoaine sisältyy hintaan",
       lifeJackets: "Pelastusliivit mukana",
       rating: "Google arvostelut 4,9 / 5",
@@ -630,7 +630,7 @@ export const dictionary = {
       titleHighlight: "best day",
       title2: "of summer on the water.",
       subhead:
-        "Make the short summer count at 80 km/h on the wave crest. Fuel, life jackets and a quick briefing are on us. You just bring the smile, the kind that stays put long after the engine quiets down.",
+        "Make the short summer count at 82 km/h on the wave crest. Fuel, life jackets and a quick briefing are on us. You just bring the smile, the kind that stays put long after the engine quiets down.",
       cta: "Book now",
       bullet1: "Start from Herttoniemi Kipparilahti marina",
       bullet2: "No license required",
@@ -644,7 +644,7 @@ export const dictionary = {
       offerCta: "Check availability",
     },
     trust: {
-      topSpeed: "80 km/h top speed",
+      noLicense: "No license required",
       fuel: "Fuel included in price",
       lifeJackets: "Life jackets included",
       rating: "Google reviews 4.9 / 5",

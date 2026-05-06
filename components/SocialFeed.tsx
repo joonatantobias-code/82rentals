@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Instagram, Heart, MessageCircle, Play } from "lucide-react";
 import { unsplashUrl, PEXELS_VIDEOS, LOCAL_PHOTOS } from "@/lib/images";
 import BrushUnderline from "@/components/BrushUnderline";
@@ -23,8 +23,6 @@ type Reel = {
   href: string;
 };
 
-// Posters / videos / platform are language-independent; captions come from
-// the dictionary so they translate.
 const REEL_BASE: Omit<Reel, "caption" | "likes">[] = [
   { platform: "tiktok", video: PEXELS_VIDEOS.tricks, poster: LOCAL_PHOTOS.coupleAction, href: "https://www.tiktok.com/@82rentals" },
   { platform: "instagram", video: PEXELS_VIDEOS.blueSea, poster: unsplashUrl("jetskiOcean", { w: 800 }), href: "https://instagram.com/82rentals" },
@@ -43,6 +41,8 @@ type Filter = "tiktok" | "instagram";
 export default function SocialFeed() {
   const t = useT();
   const [filter, setFilter] = useState<Filter>("tiktok");
+  const [centerIndex, setCenterIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   const reels: Reel[] = useMemo(
     () =>
@@ -54,27 +54,66 @@ export default function SocialFeed() {
     [t]
   );
 
-  const filteredReels = useMemo(
+  const filtered = useMemo(
     () => reels.filter((r) => r.platform === filter),
     [reels, filter]
   );
 
-  // Repeat enough copies so the marquee always feels populated even when
-  // the user filters down to one platform.
-  const loop = useMemo(() => {
-    const minLength = 16;
-    const repeats = Math.ceil(minLength / filteredReels.length);
-    const arr: Reel[] = [];
-    for (let i = 0; i < repeats * 2; i++) arr.push(...filteredReels);
-    return arr;
-  }, [filteredReels]);
+  // When the user toggles between TikTok and Instagram, snap to the
+  // first item of the new feed so they see a fresh card in the centre.
+  useEffect(() => {
+    setCenterIndex(0);
+  }, [filter]);
+
+  // Auto-advance every 3 seconds. Pauses while a finger / cursor is on
+  // the carousel so the user can study a card.
+  useEffect(() => {
+    if (paused || filtered.length === 0) return;
+    const id = setInterval(() => {
+      setCenterIndex((i) => (i + 1) % filtered.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [filtered.length, paused]);
+
+  function handleCardClick(index: number, href: string) {
+    if (index === centerIndex) {
+      // Second tap on the centred card opens the post on its platform.
+      window.open(href, "_blank", "noopener,noreferrer");
+    } else {
+      // First tap on a side card slides it to the middle.
+      setCenterIndex(index);
+    }
+  }
+
+  function getCardStyle(index: number): React.CSSProperties {
+    const len = filtered.length;
+    if (len === 0) return { display: "none" };
+    let offset = index - centerIndex;
+    // Wrap to the shortest signed distance so we always animate the
+    // nearest direction, not all the way around.
+    if (offset > len / 2) offset -= len;
+    if (offset < -len / 2) offset += len;
+    const abs = Math.abs(offset);
+    if (abs > 2) return { display: "none" };
+
+    const scale = abs === 0 ? 1 : abs === 1 ? 0.82 : 0.62;
+    const opacity = abs === 0 ? 1 : abs === 1 ? 0.85 : 0.5;
+
+    return {
+      transform: `translate(-50%, -50%) translateX(calc(${offset} * var(--carousel-step))) scale(${scale})`,
+      opacity,
+      zIndex: 10 - abs,
+      filter: abs === 0 ? "none" : "saturate(0.85)",
+      transition:
+        "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, filter 0.5s ease",
+    };
+  }
 
   return (
     <section className="relative py-16 md:py-24 overflow-hidden">
       <div className="blob-primary w-[280px] h-[280px] -top-10 -left-20" />
       <div className="blob-turquoise w-[220px] h-[220px] bottom-10 -right-10" />
 
-      {/* Outlined 82 */}
       <span
         aria-hidden
         className="num82-outline hidden md:block absolute right-4 top-2 font-display font-extrabold text-[6rem] leading-none select-none pointer-events-none tracking-tighter"
@@ -82,7 +121,6 @@ export default function SocialFeed() {
         82
       </span>
 
-      {/* Heading constrained to standard width */}
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative">
         <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-end mb-8 md:mb-10">
           <div>
@@ -105,6 +143,7 @@ export default function SocialFeed() {
               active={filter === "tiktok"}
               onClick={() => setFilter("tiktok")}
               icon={<TikTok size={14} />}
+              accent="tiktok"
             >
               TikTok
             </FilterButton>
@@ -112,6 +151,7 @@ export default function SocialFeed() {
               active={filter === "instagram"}
               onClick={() => setFilter("instagram")}
               icon={<Instagram size={14} />}
+              accent="instagram"
             >
               Instagram
             </FilterButton>
@@ -119,77 +159,106 @@ export default function SocialFeed() {
         </div>
       </div>
 
-      {/* Full-viewport-width carousel */}
+      {/* Centred carousel. The step distance is a CSS variable so the
+          spread scales with the viewport (smaller on phones, generous
+          on desktop). All cards share the same absolute origin and
+          translate horizontally based on their offset from center. */}
       <div
         key={filter}
-        className="group w-screen relative left-1/2 -translate-x-1/2"
+        className="relative w-full mx-auto select-none"
+        style={
+          {
+            "--carousel-step": "clamp(170px, 26vw, 300px)",
+            height: "clamp(420px, 70vw, 560px)",
+          } as React.CSSProperties
+        }
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onTouchStart={() => setPaused(true)}
+        onTouchEnd={() => setPaused(false)}
       >
-        <div className="overflow-hidden py-2">
-          <div
-            className="flex gap-4 w-max marquee-x px-4"
-            style={{ animationDuration: "55s" }}
-          >
-            {loop.map((r, i) => (
-              <a
-                key={i}
-                href={r.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group/card relative block w-[200px] sm:w-[240px] md:w-[260px] aspect-[9/16] rounded-2xl overflow-hidden shadow-soft bg-brand-secondary shrink-0"
+        {filtered.map((r, i) => {
+          const style = getCardStyle(i);
+          const isCenter = i === centerIndex;
+          return (
+            <button
+              type="button"
+              key={`${filter}-${i}`}
+              onClick={() => handleCardClick(i, r.href)}
+              aria-label={isCenter ? `Avaa ${r.platform === "tiktok" ? "TikTokissa" : "Instagramissa"}` : `Siirrä keskelle: ${r.caption}`}
+              style={{ position: "absolute", left: "50%", top: "50%", ...style }}
+              className={`group/card w-[180px] sm:w-[220px] md:w-[260px] lg:w-[280px] aspect-[9/16] rounded-2xl overflow-hidden shadow-soft bg-brand-secondary will-change-transform ${
+                isCenter ? "shadow-glow ring-2 ring-brand-primary/40" : ""
+              }`}
+            >
+              <img
+                src={r.poster}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-brand-secondary/30" />
+
+              <span
+                className={`absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
+                  r.platform === "tiktok"
+                    ? "bg-black text-white"
+                    : "bg-white text-brand-secondary"
+                }`}
               >
-                {/* Static poster instead of autoplaying video. With 16+
-                    cards in the marquee, autoplay was decoding a dozen
-                    streams at once and pinning the GPU. Cards link out
-                    to TikTok/IG anyway, so the poster + Play overlay is
-                    the right affordance. */}
-                <img
-                  src={r.poster}
-                  alt=""
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute inset-0 w-full h-full object-cover scale-105 group-hover/card:scale-110 transition-transform duration-700"
-                />
+                {r.platform === "tiktok" ? <TikTok size={11} /> : <Instagram size={11} />}
+                {r.platform === "tiktok" ? "TikTok" : "Reel"}
+              </span>
 
-                <div className="absolute inset-0 bg-brand-secondary/30" />
-
+              <span className="absolute inset-0 grid place-items-center pointer-events-none">
                 <span
-                  className={`absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                    r.platform === "tiktok"
-                      ? "bg-black text-white"
-                      : "bg-white text-brand-secondary"
+                  className={`h-12 w-12 rounded-full bg-white/90 grid place-items-center text-brand-secondary transition-all ${
+                    isCenter
+                      ? "opacity-100 scale-100 group-hover/card:scale-110"
+                      : "opacity-70"
                   }`}
                 >
-                  {r.platform === "tiktok" ? <TikTok size={11} /> : <Instagram size={11} />}
-                  {r.platform === "tiktok" ? "TikTok" : "Reel"}
+                  <Play size={18} className="fill-brand-secondary translate-x-0.5" />
                 </span>
+              </span>
 
-                <span className="absolute inset-0 grid place-items-center pointer-events-none">
-                  <span className="h-12 w-12 rounded-full bg-white/85 grid place-items-center text-brand-secondary opacity-80 group-hover/card:opacity-100 group-hover/card:scale-110 transition-all">
-                    <Play size={18} className="fill-brand-secondary translate-x-0.5" />
+              <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
+                <p className="text-xs sm:text-sm font-semibold leading-snug line-clamp-2">
+                  {r.caption}
+                </p>
+                <div className="flex items-center gap-3 mt-1.5 text-[11px] text-white/85">
+                  <span className="inline-flex items-center gap-1">
+                    <Heart size={11} className="fill-white" />
+                    {r.likes}
                   </span>
-                </span>
-
-                <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
-                  <p className="text-xs sm:text-sm font-semibold leading-snug line-clamp-2">
-                    {r.caption}
-                  </p>
-                  <div className="flex items-center gap-3 mt-1.5 text-[11px] text-white/85">
-                    <span className="inline-flex items-center gap-1">
-                      <Heart size={11} className="fill-white" />
-                      {r.likes}
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <MessageCircle size={11} />
-                      82
-                    </span>
-                  </div>
+                  <span className="inline-flex items-center gap-1">
+                    <MessageCircle size={11} />
+                    82
+                  </span>
                 </div>
-              </a>
-            ))}
-          </div>
-        </div>
+              </div>
+            </button>
+          );
+        })}
       </div>
 
+      {/* Tiny dot pager so users see how many videos exist on this feed. */}
+      <div className="mt-8 flex justify-center gap-1.5">
+        {filtered.map((_, i) => (
+          <button
+            type="button"
+            key={i}
+            onClick={() => setCenterIndex(i)}
+            aria-label={`Siirry videoon ${i + 1}`}
+            className={`h-2 rounded-full transition-all ${
+              i === centerIndex
+                ? "w-6 bg-brand-secondary"
+                : "w-2 bg-brand-secondary/25 hover:bg-brand-secondary/50"
+            }`}
+          />
+        ))}
+      </div>
     </section>
   );
 }
@@ -198,21 +267,30 @@ function FilterButton({
   active,
   onClick,
   icon,
+  accent,
   children,
 }: {
   active: boolean;
   onClick: () => void;
   icon?: React.ReactNode;
+  accent: "tiktok" | "instagram";
   children: React.ReactNode;
 }) {
+  // Inactive state: white background per design ask. Active uses a
+  // platform-tinted dark fill so the choice reads at a glance.
+  const activeClasses =
+    accent === "tiktok"
+      ? "bg-black text-white border-black"
+      : "bg-brand-secondary text-white border-brand-secondary";
+  const inactiveClasses =
+    "bg-white text-brand-secondary border-brand-primary/30 hover:border-brand-primary";
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors min-h-[44px] ${
-        active
-          ? "bg-brand-secondary text-white border-2 border-brand-secondary"
-          : "bg-white text-brand-secondary border-2 border-brand-primary/30 hover:border-brand-primary"
+      aria-pressed={active}
+      className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all min-h-[44px] border-2 ${
+        active ? activeClasses : inactiveClasses
       }`}
     >
       {icon}
