@@ -118,20 +118,15 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Spec card — entire card is a link to /varaa.
-              Entrance animation only; no infinite float (it forced
-              backdrop-blur to recompute every frame and felt laggy
-              on weaker GPUs, especially over the video background). */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.35, ease: "easeOut" }}
-            className="lg:col-span-5 transform-gpu"
-            style={{ willChange: "transform" }}
-          >
+          {/* Spec card. Entrance is driven by the .offer-card-fade-in
+              keyframe (in globals.css), which ramps backdrop-filter from
+              blur(0) to blur(12px) alongside the translate/opacity so the
+              glass effect builds up smoothly instead of popping in at
+              the end of the fade. */}
+          <div className="lg:col-span-5">
             <Link
               href="/varaa?duration=2h"
-              className="group relative block rounded-2xl bg-brand-secondary/35 backdrop-blur-md border border-white/20 p-6 md:p-7 text-white shadow-glow overflow-hidden hover:bg-brand-secondary/45 hover:border-brand-primary/60 transition-colors"
+              className="offer-card-fade-in group relative block rounded-2xl bg-brand-secondary/35 border border-white/20 p-6 md:p-7 text-white shadow-glow overflow-hidden hover:bg-brand-secondary/45 hover:border-brand-primary/60 transition-colors transform-gpu"
             >
               <span
                 aria-hidden
@@ -162,7 +157,7 @@ export default function Hero() {
                 </span>
               </div>
             </Link>
-          </motion.div>
+          </div>
         </div>
       </div>
 
