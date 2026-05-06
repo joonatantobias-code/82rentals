@@ -8,7 +8,7 @@ import {
   Send,
   Bookmark,
   Music2,
-  MoreHorizontal,
+  Camera,
   Search,
   Play,
 } from "lucide-react";
@@ -351,13 +351,12 @@ function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
     <>
       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/15 pointer-events-none" />
 
-      {/* Top: real-app header. "Following | For You" sits centred near
-          the top of the card with the active tab underlined; the Search
-          icon mirrors it on the right. Margins match the phone-app
-          ratios (~3.5% from top, ~5% from right). */}
-      <div className="absolute top-3.5 left-0 right-0 flex items-center justify-center gap-3 text-white text-[12.5px] font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
-        <span className="opacity-65">Following</span>
-        <span className="opacity-30">|</span>
+      {/* Top header — "Following  For You" centred. No pipe between
+          tabs, just spacing. The active tab carries a thin white
+          underline directly below it. Matches the real TikTok mobile
+          header layout shown in the reference. */}
+      <div className="absolute top-3.5 left-0 right-0 flex items-center justify-center gap-5 text-white text-[12.5px] font-semibold drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+        <span className="opacity-60">Following</span>
         <span className="relative">
           For You
           <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-[2px] w-6 bg-white rounded-full" />
@@ -367,20 +366,28 @@ function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
         <Search size={16} />
       </span>
 
-      {/* Right rail. Avatar at top of the stack matches TikTok's profile
-          slot (just no +follow chip — we skipped the explicit follow CTA). */}
+      {/* Right rail. Avatar at top with the red "+" follow badge below
+          it (TikTok's profile slot), then heart / comment / share with
+          their counts. */}
       <div className="absolute right-2.5 bottom-20 flex flex-col items-center gap-4 text-white pointer-events-none">
-        <BrandAvatar size={36} />
+        <span className="relative">
+          <BrandAvatar size={38} />
+          <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 h-4 w-4 rounded-full bg-[#FE2C55] grid place-items-center text-white text-[11px] font-extrabold leading-none">
+            +
+          </span>
+        </span>
         <RailIcon icon={<Heart size={24} className="fill-white" />} label={reel.likes} />
         <RailIcon icon={<MessageCircle size={24} />} label={reel.comments} />
         <RailIcon icon={<Send size={24} className="-rotate-12" />} label={reel.shares} />
       </div>
 
-      {/* Bottom-left text block. Caption sits above the music line with
-          the spinning disc on the bottom-right corner — that's the slot
-          TikTok uses for the audio cover art. */}
+      {/* Bottom-left: small @handle, caption, and the music-line. The
+          spinning audio cover sits at the bottom-right corner. */}
       <div className="absolute left-3.5 right-14 bottom-3.5 text-white">
-        <p className="text-[12px] font-medium leading-snug line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+        <p className="text-[11px] font-extrabold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+          @82rentals
+        </p>
+        <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
         </p>
         <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
@@ -423,34 +430,47 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
     <>
       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/15 pointer-events-none" />
 
-      {/* Top: italic "Reels" wordmark left, brand avatar right. The
-          avatar replaces the generic camera icon so the channel logo
-          is visible in the top corner where the user expects it. */}
+      {/* Top header — italic "Reels" wordmark left, Camera icon right
+          (the real IG mobile chrome shown in the reference). */}
       <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between text-white">
         <span className="text-[18px] font-extrabold italic tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)] leading-none">
           Reels
         </span>
-        <BrandAvatar size={28} ring="white" />
+        <Camera size={18} className="opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]" />
       </div>
 
-      {/* Right rail — IG ordering. Lowered so the stack sits in the
-          mid-to-lower part of the card the way it does in the IG
-          mobile app, instead of riding too high. */}
-      <div className="absolute right-2.5 bottom-32 flex flex-col items-center gap-4 text-white pointer-events-none">
+      {/* Right rail. Sits in the mid-to-lower part of the card. Heart
+          and comment carry counts; share and bookmark are bare; the
+          stack ends in a small album-art square representing the audio,
+          matching the IG layout in the reference image. */}
+      <div className="absolute right-2.5 bottom-28 flex flex-col items-center gap-4 text-white pointer-events-none">
         <RailIconReels icon={<Heart size={24} />} label={reel.likes} />
         <RailIconReels icon={<MessageCircle size={24} />} label={reel.comments} />
-        <RailIconReels icon={<Send size={24} className="-rotate-12" />} label={reel.shares} />
+        <RailIconReels icon={<Send size={24} className="-rotate-12" />} />
         <RailIconReels icon={<Bookmark size={24} />} />
-        <span className="text-white/95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
-          <MoreHorizontal size={24} />
+        <span
+          className="block h-7 w-7 rounded-md bg-gradient-to-br from-brand-primary to-brand-turquoise ring-1 ring-white/40 grid place-items-center"
+          aria-hidden
+        >
+          <Music2 size={12} className="text-white" />
         </span>
       </div>
 
-      {/* Bottom-left text block: caption above, audio line below. The
-          channel avatar is now in the top-right corner instead of
-          repeating it here. */}
+      {/* Bottom-left: avatar + handle inline (with Follow link), caption,
+          then the audio line. This is the slot where IG Reels shows the
+          channel identity — putting the brand avatar here instead of the
+          top-right corner matches the real Reels layout. */}
       <div className="absolute left-3.5 right-14 bottom-3.5 text-white">
-        <p className="text-[12px] font-medium leading-snug line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+        <div className="flex items-center gap-1.5">
+          <BrandAvatar size={22} ring="white" />
+          <span className="text-[11.5px] font-extrabold leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+            82rentals
+          </span>
+          <span className="text-[10px] opacity-90 leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+            · Seuraa
+          </span>
+        </div>
+        <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-1.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
         </p>
         <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">

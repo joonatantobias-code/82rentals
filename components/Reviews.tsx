@@ -1,14 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Star, ChevronDown } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
 import { getReviews, type Review } from "@/lib/reviews";
 
-// 6 reviews = 3 rows in the 2-column grid, which is the "couple of rows
-// at a time" cadence the user asked for.
-const PAGE_SIZE = 6;
+// 8 reviews = 4 rows in the 2-column grid. Initial render shows 12
+// (six rows) so the section feels populated; each "Lataa lisää" reveals
+// 8 more.
+const INITIAL_VISIBLE = 12;
+const PAGE_SIZE = 8;
 
 // Google's standard avatar palette (the colours their default initial-
 // avatars cycle through). We hash the initials so the same person gets
@@ -35,27 +37,20 @@ function colorForReview(seed: string): string {
 export default function Reviews() {
   const t = useT();
   const all = getReviews();
-  const [visible, setVisible] = useState(PAGE_SIZE);
+  const [visible, setVisible] = useState(INITIAL_VISIBLE);
 
   const visibleReviews = all.slice(0, visible);
   const hasMore = visible < all.length;
   const remaining = all.length - visible;
-  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
-  // Hold the button under the user's finger when revealing more reviews.
-  // The new cards mount above the button, which would otherwise scroll
-  // the whole section down. We compensate by adjusting window scroll by
-  // the button's own movement, so nothing visible moves under the user.
+  // No scroll compensation. Let the document grow naturally — the user
+  // stays at exactly the same scroll position they were on, the new
+  // cards mount below the current viewport, and they can scroll down to
+  // browse them when they want. The previous implementation auto-scrolled
+  // to keep the button under the cursor, which the user read as "the
+  // page jumped down".
   function loadMore() {
-    const before = buttonRef.current?.getBoundingClientRect().top ?? 0;
     setVisible((v) => Math.min(all.length, v + PAGE_SIZE));
-    requestAnimationFrame(() => {
-      const after = buttonRef.current?.getBoundingClientRect().top ?? before;
-      const delta = after - before;
-      if (delta !== 0) {
-        window.scrollBy({ top: delta, left: 0, behavior: "instant" as ScrollBehavior });
-      }
-    });
   }
 
   return (
@@ -98,7 +93,6 @@ export default function Reviews() {
         {hasMore && (
           <div className="mt-6 flex justify-center">
             <button
-              ref={buttonRef}
               type="button"
               onClick={loadMore}
               className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-[#1a73e8] border border-black/10 bg-white hover:bg-[#1a73e8]/8 hover:border-[#1a73e8]/30 transition-colors"
