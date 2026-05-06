@@ -6,6 +6,7 @@ import { ArrowRight, MapPin, Star } from "lucide-react";
 import { unsplashUrl } from "@/lib/images";
 import { FloatingShapes, GeoBurst } from "@/components/Decorations";
 import BrushUnderline from "@/components/BrushUnderline";
+import HeroBackgroundVideo from "@/components/HeroBackgroundVideo";
 import { useT } from "@/components/LocaleProvider";
 
 export default function Hero() {
@@ -15,29 +16,15 @@ export default function Hero() {
       id="top"
       className="relative min-h-[100svh] w-full overflow-hidden flex items-center bg-brand-secondary"
     >
-      {/* Background video, real jet-ski tricks footage. HD instead of UHD
-          to keep first-paint fast — the hero is rendered at most ~1600px
-          wide, so 2560x1440 was wasteful and the 30+ MB download stalled
-          the page on slower connections. */}
+      {/* Background video. Looping is handled by HeroBackgroundVideo,
+          which crossfades between two stacked players so the end → start
+          seam doesn't show. preload="auto" inside it keeps the standby
+          decoder warm so the handoff is jank-free. */}
       <div className="absolute inset-0 z-0">
-        <video
-          className="w-full h-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
+        <HeroBackgroundVideo
+          src="https://videos.pexels.com/video-files/18074526/18074526-hd_1280_720_24fps.mp4"
           poster={unsplashUrl("jetskiSplash", { w: 2400 })}
-        >
-          <source
-            src="https://videos.pexels.com/video-files/18074526/18074526-hd_1280_720_24fps.mp4"
-            type="video/mp4"
-          />
-          <source
-            src="https://videos.pexels.com/video-files/2079270/2079270-hd_1280_720_30fps.mp4"
-            type="video/mp4"
-          />
-        </video>
+        />
         {/* Solid color overlays, no gradients */}
         <div className="absolute inset-0 bg-brand-secondary/65" />
         <div className="absolute inset-0 bg-brand-secondary/30 md:bg-transparent" />
