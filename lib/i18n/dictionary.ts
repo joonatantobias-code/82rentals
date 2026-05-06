@@ -125,7 +125,7 @@ export const dictionary = {
       titleB: ".",
       subtitle:
         "82Rentals on kolmen helsinkiläisen kaverin perustama yritys. Pidämme laitteistomme huippukunnossa, vastaamme nopeasti ja hoidamme aina asiat sovitusti. Olemme itse vesillä viikoittain ja huollamme kalustoa säännöllisesti, jotta vesijetit ovat aina priimakunnossa.",
-      stat1: "Tyytyväistä ajajaa",
+      stat1: "Tyytyväistä asiakasta",
       stat2: "Keskiarvosana",
       stat3: "Huolletut vesijetit",
       stat4: "Varaus valmis",
@@ -702,7 +702,7 @@ export const dictionary = {
       titleB: ".",
       subtitle:
         "82Rentals is run by three Helsinki-based friends. We keep our gear in top shape, reply quickly and handle everything as agreed. We're out on the water every week and service the fleet regularly, so the jet skis are always in prime condition.",
-      stat1: "Happy riders",
+      stat1: "Happy customers",
       stat2: "Average rating",
       stat3: "Serviced jet skis",
       stat4: "Booking time",
