@@ -1,20 +1,54 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { Star, ChevronDown } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
+import {
+  getReviews,
+  getRatingSummary,
+  type Review,
+} from "@/lib/reviews";
 
-const COLORS = ["bg-brand-primary", "bg-brand-turquoise", "bg-brand-primary", "bg-brand-turquoise"];
+const PAGE_SIZE = 6;
+
+// Google's standard avatar palette (the colours their default initial-
+// avatars cycle through). We hash the initials so the same person gets
+// the same colour on every render.
+const AVATAR_COLORS = [
+  "#1A73E8", // blue
+  "#0F9D58", // green
+  "#D93025", // red
+  "#F4B400", // yellow
+  "#A142F4", // purple
+  "#00ACC1", // teal
+  "#F76C5E", // coral
+  "#34A853", // mint
+];
+
+function colorForReview(seed: string): string {
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+}
 
 export default function Reviews() {
   const t = useT();
-  const reviews = t.reviews.items.map((r, i) => ({ ...r, rating: 5, color: COLORS[i % COLORS.length] }));
+  const all = getReviews();
+  const summary = getRatingSummary();
+  const [visible, setVisible] = useState(PAGE_SIZE);
+
+  const visibleReviews = all.slice(0, visible);
+  const hasMore = visible < all.length;
+  const remaining = all.length - visible;
+
   return (
     <section id="reviews" className="section relative">
       <div className="blob-primary w-[280px] h-[280px] -top-10 -left-20" />
       <div className="blob-turquoise w-[260px] h-[260px] bottom-0 -right-20" />
 
-      {/* Outlined 82 — subtle */}
       <span
         aria-hidden
         className="num82-outline hidden md:block absolute -top-4 right-4 font-display font-extrabold text-[8rem] leading-none tracking-tighter select-none pointer-events-none"
@@ -22,94 +56,226 @@ export default function Reviews() {
         82
       </span>
 
-      <div className="relative grid lg:grid-cols-[1fr_2fr] gap-10 lg:gap-14 items-end mb-10 md:mb-12">
-        <div>
+      <div className="relative max-w-5xl mx-auto">
+        {/* Section heading */}
+        <div className="mb-6 md:mb-8">
           <span className="section-eyebrow">{t.reviews.eyebrow}</span>
           <h2 className="section-title">{t.reviews.title}</h2>
         </div>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 lg:justify-end">
-          <div className="flex items-center gap-3">
-            <div className="font-display text-5xl font-extrabold text-brand-secondary leading-none">
-              {t.hero.ratingLabel.split(" ")[0]}
+
+        {/* Google-styled summary card */}
+        <div className="rounded-2xl border border-black/10 bg-white shadow-soft p-5 md:p-6 mb-5">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5">
+            <div className="flex items-center gap-4">
+              <GoogleG size={36} />
+              <div>
+                <p className="font-semibold text-brand-secondary leading-tight">
+                  Google-arvostelut
+                </p>
+                <p className="text-xs text-brand-secondary/60">
+                  {all.length} arvostelua
+                </p>
+              </div>
             </div>
-            <div>
-              <Stars rating={5} />
-              <p className="text-xs text-brand-secondary/60 mt-1">
-                {t.reviews.total}
-              </p>
+            <div className="flex items-center gap-4 sm:ml-auto">
+              <div className="text-center">
+                <div className="font-display text-4xl font-extrabold text-brand-secondary leading-none">
+                  {summary.average.toFixed(1)}
+                </div>
+                <Stars rating={Math.round(summary.average)} />
+              </div>
+              <a
+                href="https://www.google.com/search?q=82rentals+helsinki"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-[#1a73e8] hover:bg-[#1a73e8]/8 transition-colors"
+              >
+                {t.reviews.readGoogle}
+              </a>
             </div>
           </div>
-          <a
-            href="https://www.google.com/search?q=82rentals+helsinki"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white border border-brand-primary/30 text-brand-secondary font-semibold text-sm hover:border-brand-primary transition-colors"
-          >
-            <GoogleG />
-            {t.reviews.readGoogle}
-          </a>
-        </div>
-      </div>
 
-      <div className="relative grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-        {reviews.map((r, i) => (
-          <motion.article
-            key={i}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.5, delay: i * 0.06 }}
-            className="card p-6 flex flex-col h-full"
-          >
-            <div className="flex items-center gap-3">
-              <span
-                className={`h-11 w-11 rounded-full ${r.color} text-brand-secondary grid place-items-center font-display font-extrabold`}
-                aria-hidden
-              >
-                {r.initials}
+          {/* Distribution-style rating bars (Google shows these too). */}
+          <div className="mt-5 hidden sm:grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-1.5 max-w-md">
+            {[5, 4, 3, 2, 1].map((stars) => {
+              const count = all.filter((r) => r.rating === stars).length;
+              const pct = (count / all.length) * 100;
+              return (
+                <RatingBar key={stars} stars={stars} pct={pct} count={count} />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Review cards */}
+        <div className="grid lg:grid-cols-2 gap-3.5">
+          {visibleReviews.map((r, idx) => (
+            <motion.div
+              key={r.id}
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{
+                duration: 0.4,
+                delay: Math.min(0.06 * (idx % PAGE_SIZE), 0.3),
+              }}
+            >
+              <ReviewCard r={r} />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Load more — Google-blue text on light hover, like Google's UI. */}
+        {hasMore && (
+          <div className="mt-6 flex justify-center">
+            <button
+              type="button"
+              onClick={() =>
+                setVisible((v) => Math.min(all.length, v + PAGE_SIZE))
+              }
+              className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-[#1a73e8] border border-black/10 bg-white hover:bg-[#1a73e8]/8 hover:border-[#1a73e8]/30 transition-colors"
+            >
+              Lataa lisää arvosteluita
+              <span className="text-brand-secondary/55 font-normal">
+                ({remaining})
               </span>
-              <div className="min-w-0">
-                <p className="font-semibold text-brand-secondary truncate">
-                  {r.author}
-                </p>
-                <p className="text-xs text-brand-secondary/55">{r.date}</p>
-              </div>
-              <span className="ml-auto">
-                <GoogleG size={18} />
-              </span>
-            </div>
-            <Stars rating={r.rating} className="mt-4" />
-            <p className="text-sm text-brand-secondary/80 leading-relaxed mt-3 flex-1">
-              “{r.text}”
-            </p>
-          </motion.article>
-        ))}
+              <ChevronDown size={16} />
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function Stars({
-  rating,
-  className = "",
-}: {
-  rating: number;
-  className?: string;
-}) {
+function ReviewCard({ r }: { r: Review }) {
+  const color = colorForReview(r.id);
+  const [expanded, setExpanded] = useState(false);
+  const SHORT_LIMIT = 220;
+  const isLong = r.text.length > SHORT_LIMIT;
+  const displayText =
+    !isLong || expanded ? r.text : r.text.slice(0, SHORT_LIMIT).trim() + "…";
+
   return (
-    <div className={`flex items-center gap-0.5 ${className}`}>
+    <article className="rounded-xl border border-black/10 bg-white p-5 hover:border-black/20 transition-colors">
+      <div className="flex items-start gap-3">
+        {r.photoUrl ? (
+          <img
+            src={r.photoUrl}
+            alt=""
+            className="h-10 w-10 rounded-full object-cover shrink-0"
+            loading="lazy"
+          />
+        ) : (
+          <span
+            className="h-10 w-10 rounded-full grid place-items-center text-white text-sm font-medium shrink-0"
+            style={{ background: color }}
+            aria-hidden
+          >
+            {r.initials}
+          </span>
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="font-medium text-brand-secondary text-[15px] leading-tight">
+              {r.author}
+            </span>
+            {r.isLocalGuide && (
+              <span className="inline-flex items-center gap-1 text-[11px] text-brand-secondary/60">
+                <LocalGuideMark />
+                Local Guide
+              </span>
+            )}
+          </div>
+          {(r.reviewCount !== undefined || r.photoCount !== undefined) && (
+            <p className="text-[12px] text-brand-secondary/55 mt-0.5">
+              {r.reviewCount !== undefined && `${r.reviewCount} arvostelua`}
+              {r.reviewCount !== undefined && r.photoCount !== undefined && " · "}
+              {r.photoCount !== undefined && `${r.photoCount} kuvaa`}
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-2 mt-3">
+        <Stars rating={r.rating} />
+        <span className="text-[12px] text-brand-secondary/55">{r.date}</span>
+      </div>
+
+      <p className="text-[14px] text-brand-secondary/85 leading-relaxed mt-2.5 whitespace-pre-line">
+        {displayText}
+        {isLong && !expanded && (
+          <>
+            {" "}
+            <button
+              type="button"
+              onClick={() => setExpanded(true)}
+              className="text-[#1a73e8] font-medium hover:underline"
+            >
+              Lisää
+            </button>
+          </>
+        )}
+      </p>
+    </article>
+  );
+}
+
+function Stars({ rating }: { rating: number }) {
+  return (
+    <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
-          size={16}
+          size={14}
           className={
             i < rating
-              ? "fill-brand-primary text-brand-primary"
-              : "text-brand-secondary/20"
+              ? "fill-[#FBBC04] text-[#FBBC04]"
+              : "text-brand-secondary/15"
           }
         />
       ))}
     </div>
+  );
+}
+
+function RatingBar({
+  stars,
+  pct,
+  count,
+}: {
+  stars: number;
+  pct: number;
+  count: number;
+}) {
+  return (
+    <>
+      <span className="text-[12px] text-brand-secondary/65 tabular-nums">
+        {stars}
+      </span>
+      <span className="self-center h-1.5 rounded-full bg-black/8 overflow-hidden">
+        <span
+          className="block h-full bg-[#FBBC04]"
+          style={{ width: `${pct}%` }}
+        />
+      </span>
+      <span className="text-[12px] text-brand-secondary/55 tabular-nums text-right">
+        {count}
+      </span>
+    </>
+  );
+}
+
+function LocalGuideMark() {
+  // Stylised pinned-mountain badge — Google's Local Guide icon shape.
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" aria-hidden>
+      <path
+        d="M12 2 L20 18 L4 18 Z"
+        fill="#1a73e8"
+      />
+      <circle cx="12" cy="9" r="1.7" fill="white" />
+    </svg>
   );
 }
 
