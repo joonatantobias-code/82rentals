@@ -106,16 +106,6 @@ export default function Hero() {
               </Link>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.7, delay: 0.45 }}
-              className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-sm text-white/80"
-            >
-              <Bullet text={t.hero.bullet1} />
-              <Bullet text={t.hero.bullet2} />
-              <Bullet text={t.hero.bullet3} />
-            </motion.div>
           </div>
 
           {/* Spec card. Entrance is driven by the .offer-card-fade-in
@@ -159,6 +149,20 @@ export default function Hero() {
             </Link>
           </div>
         </div>
+
+        {/* Bullets pulled out of the col-span-7 column so they have the
+            full hero width and stay on a single line on desktop instead
+            of wrapping. Wraps gracefully on mobile. */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.5 }}
+          className="mt-10 lg:mt-14 flex flex-wrap lg:flex-nowrap items-center gap-x-6 lg:gap-x-10 gap-y-3 text-sm text-white/85"
+        >
+          <Bullet text={t.hero.bullet1} />
+          <Bullet text={t.hero.bullet2} />
+          <Bullet text={t.hero.bullet3} />
+        </motion.div>
       </div>
 
       {/* Wave divider, solid color */}
@@ -180,9 +184,9 @@ export default function Hero() {
 
 function Bullet({ text }: { text: string }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 whitespace-nowrap">
       <span className="h-2 w-2 rounded-full bg-brand-primary shrink-0" />
-      {text}
+      <span>{text}</span>
     </div>
   );
 }

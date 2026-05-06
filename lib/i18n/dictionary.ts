@@ -50,7 +50,7 @@ export const dictionary = {
       offerProduct: "Sea-Doo Spark Trixx 2UP",
       offerPrice: "279 € / 2h",
       offerTick1: "Aloitus Herttoniemen Kipparilahden satamasta",
-      offerTick2: "1-2 hengelle, pelastusliivit ja polttoaine kuuluu hintaan",
+      offerTick2: "1-2 hengelle, pelastusliivit ja polttoaine kuuluvat hintaan",
       offerTick3: "Lyhyt opastus ja eikun vain menoksi",
       offerCta: "Tarkista saatavuus",
     },
