@@ -47,12 +47,36 @@ export default function Reviews() {
   const hasMore = visible < all.length;
   const remaining = all.length - visible;
 
-  function loadMore() {
+  function loadMore(e: React.MouseEvent<HTMLButtonElement>) {
+    // Lock the scroll position before the state update lands. The
+    // browser's scroll-anchoring + the focused button's "scroll into
+    // view" behaviour were combining to slide the page down so the
+    // load-more button kept its viewport position. We snapshot the
+    // scroll position now, blur the button, fire the state update,
+    // and restore the scroll position on the next two animation frames
+    // (covers both layout pass and any focus-induced scroll).
+    const lockY = window.scrollY;
+    e.currentTarget.blur();
     setVisible((v) => Math.min(all.length, v + PAGE_SIZE));
+    requestAnimationFrame(() => {
+      if (window.scrollY !== lockY) window.scrollTo(window.scrollX, lockY);
+      requestAnimationFrame(() => {
+        if (window.scrollY !== lockY) window.scrollTo(window.scrollX, lockY);
+      });
+    });
   }
 
   return (
-    <section id="reviews" className="section relative">
+    <section
+      id="reviews"
+      className="section relative"
+      // overflow-anchor: none stops the browser from re-anchoring its
+      // scroll position when items mount inside the section. With it
+      // on, adding cards below was nudging the viewport down to keep
+      // an "anchor element" visible — that's what the user saw as
+      // the page scrolling under their cursor.
+      style={{ overflowAnchor: "none" }}
+    >
       <div className="blob-primary w-[280px] h-[280px] -top-10 -left-20" />
       <div className="blob-turquoise w-[260px] h-[260px] bottom-0 -right-20" />
 
@@ -106,11 +130,15 @@ export default function Reviews() {
         <ReviewWall reviews={visibleReviews} pageSize={PAGE_SIZE} />
 
         {hasMore && (
-          <div className="mt-6 flex justify-center">
+          <div
+            className="mt-6 flex justify-center"
+            style={{ overflowAnchor: "none" }}
+          >
             <button
               type="button"
               onClick={loadMore}
               className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-[#1a73e8] border border-black/10 bg-white hover:bg-[#1a73e8]/8 hover:border-[#1a73e8]/30 transition-colors"
+              style={{ overflowAnchor: "none" }}
             >
               Lataa lisää arvosteluita
               <span className="text-brand-secondary/55 font-normal">
