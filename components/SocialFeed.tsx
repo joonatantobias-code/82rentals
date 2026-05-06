@@ -89,37 +89,24 @@ export default function SocialFeed() {
     }
   }
 
-  // Track each card's previous wrapped offset so we can detect the moment a
-  // card crosses the wrap boundary (e.g. -3 → +3). On that single render we
-  // suppress the transform transition; otherwise the card would streak across
-  // the entire viewport. Result: the card "teleports" while at low opacity,
-  // then animates into its new position on the following render.
+  // Refs to each card's button. We use these to imperatively animate the
+  // wrapping card so it slides in from the right edge instead of teleporting
+  // there (see the wrap-handler effect below).
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const prevOffsetsRef = useRef<Map<number, number>>(new Map());
+
+  function computeOffset(index: number, len: number, ci: number) {
+    let offset = index - ci;
+    if (offset > len / 2) offset -= len;
+    if (offset <= -len / 2) offset += len;
+    return offset;
+  }
 
   function getCardStyle(index: number): React.CSSProperties {
     const len = filtered.length;
     if (len === 0) return { display: "none" };
-    let offset = index - centerIndex;
-    if (offset > len / 2) offset -= len;
-    if (offset <= -len / 2) offset += len;
-
-    const prev = prevOffsetsRef.current.get(index);
-    const wrapped = prev !== undefined && Math.abs(offset - prev) > 4;
-    prevOffsetsRef.current.set(index, offset);
-
+    const offset = computeOffset(index, len, centerIndex);
     const abs = Math.abs(offset);
-
-    // Visibility envelope: ±3. Cards farther than that get parked at the edge
-    // with opacity 0 so re-entry from the right reads as a slide, not a pop.
-    if (abs > 3) {
-      const parkedOffset = offset > 0 ? 4 : -4;
-      return {
-        transform: `translate(-50%, -50%) translateX(calc(${parkedOffset} * var(--carousel-step))) scale(0.45)`,
-        opacity: 0,
-        pointerEvents: "none",
-        transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease",
-      };
-    }
 
     const scale =
       abs === 0 ? 1 : abs === 1 ? 0.84 : abs === 2 ? 0.66 : 0.5;
@@ -131,11 +118,54 @@ export default function SocialFeed() {
       opacity,
       zIndex: 10 - abs,
       filter: abs === 0 ? "none" : `saturate(${1 - abs * 0.12})`,
-      transition: wrapped
-        ? "opacity 0.3s ease"
-        : "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, filter 0.5s ease",
+      transition:
+        "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, filter 0.5s ease",
     };
   }
+
+  // FLIP-style wrap handler. Whenever centerIndex moves and a card jumps
+  // across the wrap boundary (e.g. its offset went from -3 to +3, which on
+  // its own would streak across the whole carousel), this effect snaps the
+  // card to a position one step beyond its target with no transition, then
+  // restores the target inline style. The browser then animates from the
+  // off-screen-right park to the target +3 slot using the normal easing —
+  // which is exactly the "uusi video tulee oikealta" entry the user wants.
+  useEffect(() => {
+    const len = filtered.length;
+    if (len === 0) return;
+    filtered.forEach((_, i) => {
+      const off = computeOffset(i, len, centerIndex);
+      const prev = prevOffsetsRef.current.get(i);
+      if (prev !== undefined && Math.abs(off - prev) > 4) {
+        const el = cardRefs.current[i];
+        if (el) {
+          const targetTransform = el.style.transform;
+          const targetTransition = el.style.transition;
+          const targetOpacity = el.style.opacity;
+          const targetFilter = el.style.filter;
+          const parkOff = off > 0 ? off + 1 : off - 1;
+          el.style.transition = "none";
+          el.style.transform = `translate(-50%, -50%) translateX(calc(${parkOff} * var(--carousel-step))) scale(0.45)`;
+          el.style.opacity = "0";
+          // Force a reflow so the parked state is committed before we
+          // restore the target — that way the next style change is what
+          // the browser interpolates over.
+          void el.offsetHeight;
+          el.style.transition = targetTransition;
+          el.style.transform = targetTransform;
+          el.style.opacity = targetOpacity;
+          el.style.filter = targetFilter;
+        }
+      }
+      prevOffsetsRef.current.set(i, off);
+    });
+  }, [centerIndex, filtered]);
+
+  // Reset offset history when the user switches feeds so we don't
+  // false-detect a wrap on the very first slide of the new feed.
+  useEffect(() => {
+    prevOffsetsRef.current.clear();
+  }, [filter]);
 
   return (
     <section className="relative py-16 md:py-24 overflow-hidden">
@@ -196,11 +226,11 @@ export default function SocialFeed() {
         className="relative w-full mx-auto select-none"
         style={
           {
-            // Step is the per-offset horizontal distance. Tighter than the
-            // card width so adjacent cards tuck slightly behind the center
-            // one, which reads as a layered carousel instead of a
-            // disconnected line.
-            "--carousel-step": "clamp(110px, 16vw, 200px)",
+            // Step (horizontal distance between adjacent card centers) is
+            // intentionally a lot tighter than the card width — adjacent
+            // cards tuck under the centre one, so the user reads it as a
+            // single layered stack rather than a row of separate items.
+            "--carousel-step": "clamp(70px, 10vw, 130px)",
             height: "clamp(380px, 62vw, 500px)",
           } as React.CSSProperties
         }
@@ -216,6 +246,7 @@ export default function SocialFeed() {
             <button
               type="button"
               key={`${filter}-${i}`}
+              ref={(el) => { cardRefs.current[i] = el; }}
               onClick={() => handleCardClick(i, r.href)}
               aria-label={isCenter ? `Avaa ${r.platform === "tiktok" ? "TikTokissa" : "Instagramissa"}` : `Siirrä keskelle: ${r.caption}`}
               style={{ position: "absolute", left: "50%", top: "50%", ...style }}
