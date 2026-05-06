@@ -322,13 +322,17 @@ body {
   will-change: transform, backdrop-filter;
 }
 
-/* Marquee animation for trust banner and social feed carousel */
+/* Marquee animation for trust banner and social feed carousel.
+ * The track contains exactly two identical copies of its content; -50%
+ * therefore lands the second copy in the original position, so the loop
+ * seam is invisible (no snap, no jump). */
 @keyframes marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 .marquee-track {
-  animation: marquee 28s linear infinite;
+  animation: marquee 22s linear infinite;
+  will-change: transform;
 }
 .marquee-x {
   animation: marquee 55s linear infinite;

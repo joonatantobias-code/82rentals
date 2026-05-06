@@ -55,11 +55,11 @@ export const dictionary = {
       offerCta: "Tarkista saatavuus",
     },
     trust: {
-      rating: "Arvio 4,9 / 5",
-      delivery: "Nouto Herttoniemen satamasta",
-      fuel: "Polttoaine sisältyy",
+      topSpeed: "80 km/h huippunopeus",
+      fuel: "Polttoaine sisältyy hintaan",
       lifeJackets: "Pelastusliivit mukana",
-      insured: "Täysin vakuutettu",
+      rating: "Google arvostelut 4,9 / 5",
+      departure: "Lähtö Herttoniemen Kipparilahden satamasta",
     },
     howItWorks: {
       eyebrow: "Näin se toimii",
@@ -644,11 +644,11 @@ export const dictionary = {
       offerCta: "Check availability",
     },
     trust: {
-      rating: "Rated 4.9 / 5",
-      delivery: "Pickup at Herttoniemi marina",
-      fuel: "Fuel included",
+      topSpeed: "80 km/h top speed",
+      fuel: "Fuel included in price",
       lifeJackets: "Life jackets included",
-      insured: "Fully insured",
+      rating: "Google reviews 4.9 / 5",
+      departure: "Start at Herttoniemi Kipparilahti marina",
     },
     howItWorks: {
       eyebrow: "How it works",
