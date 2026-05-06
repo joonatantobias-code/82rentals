@@ -11,6 +11,10 @@ import {
   Camera,
   Search,
   Play,
+  Home,
+  Plus,
+  Inbox,
+  User,
 } from "lucide-react";
 import BrushUnderline from "@/components/BrushUnderline";
 import { useT } from "@/components/LocaleProvider";
@@ -82,20 +86,24 @@ export default function SocialFeed() {
       </span>
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative">
-        <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-end mb-8 md:mb-10">
-          <div>
-            <h2 className="section-title">
+        {/* Heading column is fully left-aligned with text-left and no
+            grid neighbour pulling it sideways. Filter buttons sit on
+            their own line under the subtitle on small screens, and
+            float to the right side of the heading row on desktop. */}
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-5 lg:gap-8 mb-8 md:mb-10">
+          <div className="text-left max-w-2xl">
+            <h2 className="section-title text-left">
               <span className="relative inline-block">
                 Me somessa
                 <BrushUnderline variant="spray" delay={0.4} duration={1.1} thickness={9} />
               </span>
               .
             </h2>
-            <p className="mt-4 text-brand-secondary/70 text-base sm:text-lg max-w-xl">
+            <p className="mt-4 text-brand-secondary/70 text-base sm:text-lg">
               {t.socialFeed.subtitle}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2 w-full lg:w-auto">
+          <div className="flex flex-wrap gap-2 lg:shrink-0 lg:pt-2">
             <FilterButton
               active={filter === "tiktok"}
               onClick={() => setFilter("tiktok")}
@@ -381,9 +389,9 @@ function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
         <RailIcon icon={<Send size={24} className="-rotate-12" />} label={reel.shares} />
       </div>
 
-      {/* Bottom-left: small @handle, caption, and the music-line. The
-          spinning audio cover sits at the bottom-right corner. */}
-      <div className="absolute left-3.5 right-14 bottom-3.5 text-white">
+      {/* Bottom-left: small @handle, caption, and the music-line. Sits
+          above the bottom nav so it isn't covered. */}
+      <div className="absolute left-3.5 right-14 bottom-9 text-white">
         <p className="text-[11px] font-extrabold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           @82rentals
         </p>
@@ -396,14 +404,49 @@ function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
         </div>
       </div>
 
+      {/* Music cover, just above the bottom nav so it doesn't collide. */}
       <div
-        className={`absolute bottom-3 right-3 h-9 w-9 rounded-full bg-gradient-to-br from-zinc-700 to-black ring-1 ring-white/30 grid place-items-center pointer-events-none ${
+        className={`absolute bottom-9 right-3 h-8 w-8 rounded-full bg-gradient-to-br from-zinc-700 to-black ring-1 ring-white/30 grid place-items-center pointer-events-none ${
           isCenter ? "tiktok-disc-spin" : ""
         }`}
       >
-        <span className="block h-3 w-3 rounded-full bg-white/40" />
+        <span className="block h-2.5 w-2.5 rounded-full bg-white/40" />
+      </div>
+
+      {/* TikTok bottom navigation strip — Home, Search, Create, Inbox,
+          Profile. Mirrors the chrome at the bottom of the real TikTok
+          mobile app. */}
+      <div className="absolute left-0 right-0 bottom-0 h-8 px-2 flex items-center justify-around bg-black/45 backdrop-blur-[2px] text-white pointer-events-none">
+        <NavStub icon={<Home size={13} className="fill-white" />} label="Home" />
+        <NavStub icon={<Search size={13} />} label="Search" />
+        <span
+          className="relative h-5 w-7 rounded-md grid place-items-center"
+          style={{
+            background:
+              "linear-gradient(90deg, #25F4EE 0%, #25F4EE 20%, white 20%, white 80%, #FE2C55 80%)",
+          }}
+        >
+          <span className="absolute inset-0 rounded-md bg-white grid place-items-center">
+            <Plus size={13} strokeWidth={3} className="text-black" />
+          </span>
+          <span className="absolute -left-0.5 top-0 bottom-0 w-1.5 rounded-l-md bg-[#25F4EE]" />
+          <span className="absolute -right-0.5 top-0 bottom-0 w-1.5 rounded-r-md bg-[#FE2C55]" />
+        </span>
+        <NavStub icon={<Inbox size={13} />} label="Inbox" />
+        <NavStub icon={<User size={13} />} label="Profile" />
       </div>
     </>
+  );
+}
+
+function NavStub({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <span className="flex flex-col items-center gap-0.5">
+      <span className="leading-none">{icon}</span>
+      <span className="text-[7.5px] font-medium leading-none opacity-90">
+        {label}
+      </span>
+    </span>
   );
 }
 
@@ -439,11 +482,11 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
         <Camera size={18} className="opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]" />
       </div>
 
-      {/* Right rail. Sits in the mid-to-lower part of the card. Heart
-          and comment carry counts; share and bookmark are bare; the
-          stack ends in a small album-art square representing the audio,
-          matching the IG layout in the reference image. */}
-      <div className="absolute right-2.5 bottom-28 flex flex-col items-center gap-4 text-white pointer-events-none">
+      {/* Right rail. Same vertical position as TikTok's so the two
+          platforms look symmetric in the carousel. Heart and comment
+          carry counts; share and bookmark are bare; the stack ends in
+          a small album-art square representing the audio. */}
+      <div className="absolute right-2.5 bottom-20 flex flex-col items-center gap-4 text-white pointer-events-none">
         <RailIconReels icon={<Heart size={24} />} label={reel.likes} />
         <RailIconReels icon={<MessageCircle size={24} />} label={reel.comments} />
         <RailIconReels icon={<Send size={24} className="-rotate-12" />} />
@@ -456,11 +499,8 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
         </span>
       </div>
 
-      {/* Bottom-left: avatar + handle inline (with Follow link), caption,
-          then the audio line. This is the slot where IG Reels shows the
-          channel identity — putting the brand avatar here instead of the
-          top-right corner matches the real Reels layout. */}
-      <div className="absolute left-3.5 right-14 bottom-3.5 text-white">
+      {/* Bottom-left text block — sits above the bottom nav strip. */}
+      <div className="absolute left-3.5 right-14 bottom-9 text-white">
         <div className="flex items-center gap-1.5">
           <BrandAvatar size={22} ring="white" />
           <span className="text-[11.5px] font-extrabold leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
@@ -477,6 +517,17 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
           <Music2 size={13} />
           <span className="truncate">{reel.audioLabel}</span>
         </div>
+      </div>
+
+      {/* IG bottom nav, mirroring the chrome at the bottom of the real
+          Instagram mobile app. Keeps the right rail at the same height
+          as TikTok. */}
+      <div className="absolute left-0 right-0 bottom-0 h-8 px-2 flex items-center justify-around bg-black/45 backdrop-blur-[2px] text-white pointer-events-none">
+        <Home size={15} className="fill-white" />
+        <Search size={15} />
+        <span className="block h-3.5 w-3.5 rounded-[3px] border-[1.5px] border-white" />
+        <Heart size={15} />
+        <BrandAvatar size={16} ring="white" />
       </div>
     </>
   );
