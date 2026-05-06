@@ -65,15 +65,19 @@ export default function Reviews() {
         82
       </span>
 
-      <div className="relative max-w-5xl mx-auto">
+      <div className="relative max-w-7xl mx-auto">
         {/* Section heading */}
         <div className="mb-6 md:mb-8">
           <span className="section-eyebrow">{t.reviews.eyebrow}</span>
           <h2 className="section-title">{t.reviews.title}</h2>
         </div>
 
-        {/* Review cards */}
-        <div className="grid lg:grid-cols-2 gap-3.5">
+        {/* Pinterest-style masonry wall — CSS multi-column. Single column
+            on mobile, two on tablet, four on desktop. Cards keep their
+            natural heights, so the wall has organic varying offsets
+            instead of a rigid grid. break-inside-avoid stops cards from
+            getting split across column boundaries. */}
+        <div className="columns-1 sm:columns-2 lg:columns-4 gap-3.5">
           {visibleReviews.map((r, idx) => (
             <motion.div
               key={r.id}
@@ -82,8 +86,9 @@ export default function Reviews() {
               viewport={{ once: true, amount: 0.2 }}
               transition={{
                 duration: 0.4,
-                delay: Math.min(0.06 * (idx % PAGE_SIZE), 0.3),
+                delay: Math.min(0.04 * (idx % PAGE_SIZE), 0.3),
               }}
+              className="mb-3.5 break-inside-avoid"
             >
               <ReviewCard r={r} />
             </motion.div>

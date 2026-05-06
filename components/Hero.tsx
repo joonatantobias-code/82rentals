@@ -138,11 +138,11 @@ export default function Hero() {
                   <Tick text={t.hero.offerTick2} />
                   <Tick text={t.hero.offerTick3} />
                 </ul>
-                <span className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl bg-brand-primary text-brand-secondary font-bold py-3 text-sm shadow-glow group-hover:bg-white transition-colors min-h-[44px]">
+                <span className="group/btn mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl bg-brand-primary text-brand-secondary font-bold py-3 text-sm shadow-glow hover:bg-white transition-colors min-h-[44px]">
                   {t.hero.offerCta}
                   <ArrowRight
                     size={16}
-                    className="transition-transform group-hover:translate-x-0.5"
+                    className="transition-transform group-hover/btn:translate-x-0.5"
                   />
                 </span>
               </div>
