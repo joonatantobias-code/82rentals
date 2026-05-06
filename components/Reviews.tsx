@@ -95,27 +95,15 @@ export default function Reviews() {
           </a>
         </div>
 
-        {/* Masonry wall — 4 columns on desktop, 2 on tablet, 1 on mobile.
-            CSS multi-column layout gives the organic varying-height look
-            the user asked for; break-inside-avoid keeps each card
-            atomic. */}
-        <div className="columns-1 sm:columns-2 lg:columns-4 gap-3.5">
-          {visibleReviews.map((r, idx) => (
-            <motion.div
-              key={r.id}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{
-                duration: 0.35,
-                delay: Math.min(0.03 * (idx % PAGE_SIZE), 0.2),
-              }}
-              className="mb-3.5 break-inside-avoid"
-            >
-              <ReviewCard r={r} />
-            </motion.div>
-          ))}
-        </div>
+        {/* Masonry wall, JS round-robin into 4 columns. We deliberately
+            don't use CSS multi-column here — that layout rebalances when
+            items are added, so clicking "Lataa lisää" would shift cards
+            between columns and the page jumped under the user's eye.
+            Round-robin distribution into per-column flex stacks means
+            new cards always *append* to the end of their column; nothing
+            already on screen moves. The page just grows downward and the
+            button slides under the new rows. */}
+        <ReviewWall reviews={visibleReviews} pageSize={PAGE_SIZE} />
 
         {hasMore && (
           <div className="mt-6 flex justify-center">
@@ -134,6 +122,80 @@ export default function Reviews() {
         )}
       </div>
     </section>
+  );
+}
+
+function ReviewWall({
+  reviews,
+  pageSize,
+}: {
+  reviews: Review[];
+  pageSize: number;
+}) {
+  // Round-robin into four columns. Index 0,4,8,… → column 0; index 1,5,9,…
+  // → column 1; etc. New reviews always append to the end of their
+  // column, so every card already on screen keeps its exact position
+  // when the user clicks "Lataa lisää".
+  const cols: Review[][] = [[], [], [], []];
+  reviews.forEach((r, i) => {
+    cols[i % 4].push(r);
+  });
+  // Mobile (< sm): collapse to a single column. We still use the round-
+  // robin output so identity stays stable, just rendered as a flat
+  // stack inside one column wrapper.
+  return (
+    <>
+      {/* Desktop / tablet: real columns side by side. */}
+      <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        {cols.map((col, ci) => (
+          <div key={ci} className="flex flex-col gap-3.5">
+            {col.map((r, idx) => (
+              <ReviewCardMotion
+                key={r.id}
+                r={r}
+                idx={idx}
+                pageSize={pageSize}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      {/* Mobile: simple stack. */}
+      <div className="sm:hidden flex flex-col gap-3.5">
+        {reviews.map((r, idx) => (
+          <ReviewCardMotion
+            key={r.id}
+            r={r}
+            idx={idx}
+            pageSize={pageSize}
+          />
+        ))}
+      </div>
+    </>
+  );
+}
+
+function ReviewCardMotion({
+  r,
+  idx,
+  pageSize,
+}: {
+  r: Review;
+  idx: number;
+  pageSize: number;
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{
+        duration: 0.35,
+        delay: Math.min(0.03 * (idx % pageSize), 0.2),
+      }}
+    >
+      <ReviewCard r={r} />
+    </motion.div>
   );
 }
 
