@@ -178,28 +178,46 @@ function CarouselLayer({
     return () => clearInterval(id);
   }, [isActive, len]);
 
-  // Reset ci once a full lap completes. Triggered after the slide that
-  // brought ci to len has had time to finish; the rendered visuals at
-  // ci = len are identical to ci = 0 (same card content at every offset),
-  // just produced by a different copy of each reel — so we briefly turn
-  // transitions off to let the transforms snap silently to ci = 0.
+  // Reset ci back inside [0, len) once it crosses a boundary in either
+  // direction (auto-rotate pushes it past len, or a click on a left-side
+  // card pushes it negative). The visible state is identical at ci and
+  // at ci ± len because each reel has copies at i, i ± len — so we
+  // briefly turn transitions off and snap, invisibly.
   useEffect(() => {
-    if (len === 0 || ci < len) return;
-    const t = setTimeout(() => {
-      setTransitionsOn(false);
-      requestAnimationFrame(() => {
-        setCi((c) => c - len);
-        requestAnimationFrame(() => setTransitionsOn(true));
-      });
-    }, SLIDE_DURATION + 80);
-    return () => clearTimeout(t);
+    if (len === 0) return;
+    if (ci >= len || ci < 0) {
+      const t = setTimeout(() => {
+        setTransitionsOn(false);
+        requestAnimationFrame(() => {
+          setCi((c) => {
+            if (c >= len) return c - len;
+            if (c < 0) return c + len;
+            return c;
+          });
+          requestAnimationFrame(() => setTransitionsOn(true));
+        });
+      }, SLIDE_DURATION + 80);
+      return () => clearTimeout(t);
+    }
   }, [ci, len]);
 
   function handleCardClick(reelIndex: number, postUrl: string) {
-    if (reelIndex === ((ci % len) + len) % len) {
+    // Pick the *visible* copy of the clicked reel — i.e. the one whose
+    // virtualIdx is closest to current ci. Setting ci to that virtualIdx
+    // makes the carousel slide in the direction of the clicked side
+    // (right-side click slides left, left-side click slides right),
+    // which is what the user expects. Without this, clicking a card
+    // that lives on the right side of the carousel could wrap the
+    // shorter way through the index range and slide the wrong direction.
+    const candidates = [reelIndex - len, reelIndex, reelIndex + len];
+    let bestVirtualIdx = candidates[0];
+    for (const v of candidates) {
+      if (Math.abs(v - ci) < Math.abs(bestVirtualIdx - ci)) bestVirtualIdx = v;
+    }
+    if (bestVirtualIdx === ci) {
       window.open(postUrl, "_blank", "noopener,noreferrer");
     } else {
-      setCi(reelIndex);
+      setCi(bestVirtualIdx);
     }
   }
 
@@ -486,21 +504,18 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
         <Camera size={18} className="opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]" />
       </div>
 
-      {/* Right rail. Same vertical position as TikTok's so the two
-          platforms look symmetric in the carousel. Heart and comment
-          carry counts; share and bookmark are bare; the stack ends in
-          a small album-art square representing the audio. */}
-      <div className="absolute right-2.5 bottom-20 flex flex-col items-center gap-4 text-white pointer-events-none">
+      {/* Right rail. Sits low in the card (bottom-12) so the icon
+          stack reads at roughly the same height range that real IG
+          Reels uses for the engagement column. The album-art square
+          at the bottom of the rail is gone — its music-note glyph
+          read as TikTok styling, which doesn't belong on the Reels
+          card. The audio attribution still lives in the bottom-left
+          text block. */}
+      <div className="absolute right-2.5 bottom-12 flex flex-col items-center gap-4 text-white pointer-events-none">
         <RailIconReels icon={<Heart size={24} />} label={reel.likes} />
         <RailIconReels icon={<MessageCircle size={24} />} label={reel.comments} />
         <RailIconReels icon={<Send size={24} className="-rotate-12" />} />
         <RailIconReels icon={<Bookmark size={24} />} />
-        <span
-          className="block h-7 w-7 rounded-md bg-gradient-to-br from-brand-primary to-brand-turquoise ring-1 ring-white/40 grid place-items-center"
-          aria-hidden
-        >
-          <Music2 size={12} className="text-white" />
-        </span>
       </div>
 
       {/* Bottom-left text block. text-left to override the parent
