@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Instagram,
   Heart,
@@ -16,7 +10,6 @@ import {
   Music2,
   MoreHorizontal,
   Search,
-  Camera,
   Play,
 } from "lucide-react";
 import BrushUnderline from "@/components/BrushUnderline";
@@ -24,7 +17,6 @@ import { useT } from "@/components/LocaleProvider";
 import { getReels, type Platform, type Reel } from "@/lib/socialFeed";
 
 const SLIDE_DURATION = 850;
-const PHASE_A_DURATION = SLIDE_DURATION;
 const FILTER_FADE_MS = 280;
 
 function TikTokGlyph({ size = 18 }: { size?: number }) {
@@ -92,16 +84,12 @@ export default function SocialFeed() {
       <div className="max-w-7xl mx-auto px-5 sm:px-8 relative">
         <div className="grid lg:grid-cols-[1fr_auto] gap-6 items-end mb-8 md:mb-10">
           <div>
-            {t.socialFeed.eyebrow && (
-              <span className="section-eyebrow">{t.socialFeed.eyebrow}</span>
-            )}
             <h2 className="section-title">
-              {t.socialFeed.titleA && <>{t.socialFeed.titleA} </>}
               <span className="relative inline-block">
-                {t.socialFeed.titleHighlight}
+                Me somessa
                 <BrushUnderline variant="spray" delay={0.4} duration={1.1} thickness={9} />
               </span>
-              {t.socialFeed.titleB}
+              .
             </h2>
             <p className="mt-4 text-brand-secondary/70 text-base sm:text-lg max-w-xl">
               {t.socialFeed.subtitle}
@@ -152,9 +140,15 @@ export default function SocialFeed() {
   );
 }
 
-/* One platform's stack of cards. Lives in absolute layout inside the
- * shared carousel container so two layers can occupy the same space and
- * cross-fade without remounting any DOM. */
+/* One platform's stack of cards. Renders each reel THREE times (a left
+ * shadow at virtual position i-len, a main copy at i, a right shadow at
+ * i+len). Both the leaving copy and the entering copy are real React
+ * elements, so the wrap arrives in PARALLEL with the rest of the slide
+ * — the leftmost slides off-left at the same pace and over the same
+ * duration as the new card sliding in from the right.
+ *
+ * Two layers (one per platform) live in the same absolute container and
+ * cross-fade by opacity, so toggling the filter never unmounts a video. */
 function CarouselLayer({
   reels,
   platform,
@@ -164,144 +158,110 @@ function CarouselLayer({
   platform: Platform;
   isActive: boolean;
 }) {
-  const [centerIndex, setCenterIndex] = useState(0);
+  const len = reels.length;
+  const [ci, setCi] = useState(0);
+  const [transitionsOn, setTransitionsOn] = useState(true);
+  const videoRefs = useRef<Map<string, HTMLVideoElement | null>>(new Map());
 
-  // Auto-advance every 3 s — only for the active platform; the inactive
-  // one stays on whatever card it was on when last visible, so when the
-  // user comes back the carousel feels like it kept its place.
+  // Auto-advance only for the active platform.
   useEffect(() => {
-    if (!isActive || reels.length === 0) return;
-    const id = setInterval(() => {
-      setCenterIndex((i) => (i + 1) % reels.length);
-    }, 3000);
+    if (!isActive || len === 0) return;
+    const id = setInterval(() => setCi((c) => c + 1), 3000);
     return () => clearInterval(id);
-  }, [isActive, reels.length, centerIndex]);
+  }, [isActive, len]);
 
-  function handleCardClick(index: number, postUrl: string) {
-    if (index === centerIndex) {
+  // Reset ci once a full lap completes. Triggered after the slide that
+  // brought ci to len has had time to finish; the rendered visuals at
+  // ci = len are identical to ci = 0 (same card content at every offset),
+  // just produced by a different copy of each reel — so we briefly turn
+  // transitions off to let the transforms snap silently to ci = 0.
+  useEffect(() => {
+    if (len === 0 || ci < len) return;
+    const t = setTimeout(() => {
+      setTransitionsOn(false);
+      requestAnimationFrame(() => {
+        setCi((c) => c - len);
+        requestAnimationFrame(() => setTransitionsOn(true));
+      });
+    }, SLIDE_DURATION + 80);
+    return () => clearTimeout(t);
+  }, [ci, len]);
+
+  function handleCardClick(reelIndex: number, postUrl: string) {
+    if (reelIndex === ((ci % len) + len) % len) {
       window.open(postUrl, "_blank", "noopener,noreferrer");
     } else {
-      setCenterIndex(index);
+      setCi(reelIndex);
     }
   }
 
-  const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
-  const prevOffsetsRef = useRef<Map<number, number>>(new Map());
-  const timersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(
-    new Map()
-  );
+  // 3 copies per reel. Each entry has a stable virtualIdx so its offset
+  // computation is just `virtualIdx - ci` — no wrap-to-nearest.
+  const cardEntries = useMemo(() => {
+    const arr: Array<{
+      reel: Reel;
+      reelIndex: number;
+      virtualIdx: number;
+      copyKey: string;
+    }> = [];
+    reels.forEach((r, i) => {
+      arr.push({ reel: r, reelIndex: i, virtualIdx: i - len, copyKey: "left" });
+      arr.push({ reel: r, reelIndex: i, virtualIdx: i, copyKey: "main" });
+      arr.push({ reel: r, reelIndex: i, virtualIdx: i + len, copyKey: "right" });
+    });
+    return arr;
+  }, [reels, len]);
 
-  function computeOffset(index: number, len: number, ci: number) {
-    let offset = index - ci;
-    if (offset > len / 2) offset -= len;
-    if (offset <= -len / 2) offset += len;
-    return offset;
-  }
+  const transition = transitionsOn
+    ? `transform ${SLIDE_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1), opacity ${SLIDE_DURATION}ms ease, filter 0.5s ease`
+    : "none";
 
-  function getCardStyle(index: number): React.CSSProperties {
-    const len = reels.length;
-    if (len === 0) return { display: "none" };
-    const offset = computeOffset(index, len, centerIndex);
+  function getCardStyle(virtualIdx: number): React.CSSProperties {
+    const offset = virtualIdx - ci;
     const abs = Math.abs(offset);
-
+    // Beyond the visible band + a small parking margin, hide entirely
+    // (no transitions, no z-index) so far-out copies don't waste paint.
+    if (abs > 4) {
+      return {
+        transform: `translate(-50%, -50%) translateX(calc(${offset > 0 ? 4 : -4} * var(--carousel-step))) scale(0.45)`,
+        opacity: 0,
+        zIndex: 0,
+        pointerEvents: "none",
+        transition,
+      };
+    }
     const scale = abs === 0 ? 1 : abs === 1 ? 0.84 : abs === 2 ? 0.66 : 0.5;
-
-    // Side cards are NOT opacity-faded any more — that made the cards
-    // behind them bleed through (one video showing under another). Cards
-    // stay fully opaque at the box level; the "fade to back" effect is
-    // produced by an inner dark scrim (see the per-card `<div bg-black>`
-    // overlay that scales its own opacity by absolute offset).
+    // abs === 4 acts as the "parked just past the visible edge" position
+    // — needed so a fade-in slide from offset 4 → 3 (or 4 → -3) reads as
+    // a real entry instead of a pop-in.
+    const opacity = abs <= 3 ? 1 : 0;
     return {
       transform: `translate(-50%, -50%) translateX(calc(${offset} * var(--carousel-step))) scale(${scale})`,
-      opacity: 1,
-      zIndex: 10 - abs,
-      transition: `transform ${SLIDE_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1), filter 0.5s ease`,
+      opacity,
+      zIndex: abs <= 3 ? 10 - abs : 0,
+      filter: abs === 0 ? "none" : `saturate(${1 - abs * 0.12})`,
+      transition,
     };
   }
 
-  function getScrimOpacity(index: number): number {
-    const len = reels.length;
-    if (len === 0) return 0;
-    const offset = computeOffset(index, len, centerIndex);
+  function getScrimOpacity(virtualIdx: number): number {
+    const offset = virtualIdx - ci;
     const abs = Math.abs(offset);
     if (abs === 0) return 0;
-    if (abs === 1) return 0.18;
-    if (abs === 2) return 0.45;
-    return 0.7;
+    if (abs <= 1) return 0.18;
+    if (abs <= 2) return 0.4;
+    if (abs <= 3) return 0.62;
+    return 0.62;
   }
 
-  // Three-phase wrap orchestration: slide off left → FLIP teleport → slide in right.
-  useLayoutEffect(() => {
-    const len = reels.length;
-    if (len === 0) return;
-    reels.forEach((_, i) => {
-      const off = computeOffset(i, len, centerIndex);
-      const prev = prevOffsetsRef.current.get(i);
-      if (prev !== undefined && Math.abs(off - prev) > 4) {
-        const el = cardRefs.current[i];
-        if (el) {
-          const targetTransform = el.style.transform;
-          const targetFilter = el.style.filter;
-          // Cards are normally fully opaque (so they don't bleed through
-          // each other). During the wrap we *do* want the leaving card
-          // to fade out and the re-entering one to fade in, since
-          // teleporting an opaque card across the screen would be jarring.
-          // We override opacity for phases A/B and restore it on phase C.
-          const restoreTransition = `transform ${SLIDE_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1), opacity 0.45s ease, filter 0.5s ease`;
-
-          const leavingDir = prev < 0 ? -1 : 1;
-          const phaseAOff = leavingDir * 4;
-          const phaseBOff = -leavingDir * 4;
-
-          el.style.transition = `transform ${PHASE_A_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1), opacity ${PHASE_A_DURATION}ms ease, filter 0.4s ease`;
-          el.style.transform = `translate(-50%, -50%) translateX(calc(${phaseAOff} * var(--carousel-step))) scale(0.45)`;
-          el.style.opacity = "0";
-          el.style.filter = "saturate(0.4)";
-
-          const pending = timersRef.current.get(i);
-          if (pending) clearTimeout(pending);
-
-          const tid = setTimeout(() => {
-            const node = cardRefs.current[i];
-            if (!node) return;
-            node.style.transition = "none";
-            node.style.transform = `translate(-50%, -50%) translateX(calc(${phaseBOff} * var(--carousel-step))) scale(0.45)`;
-            node.style.opacity = "0";
-            void node.offsetHeight;
-            node.style.transition = restoreTransition;
-            node.style.transform = targetTransform;
-            node.style.opacity = "1";
-            node.style.filter = targetFilter;
-            timersRef.current.delete(i);
-          }, PHASE_A_DURATION);
-          timersRef.current.set(i, tid);
-        }
-      }
-      prevOffsetsRef.current.set(i, off);
+  // Pause inactive-layer videos to save decoder cost; resume on activation.
+  useEffect(() => {
+    videoRefs.current.forEach((v) => {
+      if (!v) return;
+      if (isActive) v.play().catch(() => {});
+      else v.pause();
     });
-  }, [centerIndex, reels]);
-
-  // Pause this layer's videos when it becomes inactive; play them when
-  // active. Saves on decoder load for the inactive feed.
-  useEffect(() => {
-    if (isActive) {
-      videoRefs.current.forEach((v) => {
-        v?.play().catch(() => {});
-      });
-    } else {
-      videoRefs.current.forEach((v) => v?.pause());
-    }
   }, [isActive]);
-
-  // Cleanup pending phase-B timers on unmount.
-  useEffect(() => {
-    const timers = timersRef.current;
-    return () => {
-      timers.forEach((id) => clearTimeout(id));
-      timers.clear();
-    };
-  }, []);
 
   return (
     <div
@@ -316,23 +276,23 @@ function CarouselLayer({
         } as React.CSSProperties
       }
     >
-      {reels.map((r, i) => {
-        const style = getCardStyle(i);
-        const isCenter = i === centerIndex;
-        const scrimOpacity = getScrimOpacity(i);
+      {cardEntries.map((entry) => {
+        const { reel, reelIndex, virtualIdx, copyKey } = entry;
+        const offset = virtualIdx - ci;
+        const isCenter = offset === 0;
+        const style = getCardStyle(virtualIdx);
+        const scrimOpacity = getScrimOpacity(virtualIdx);
+        const refKey = `${reel.id}-${copyKey}`;
         return (
           <button
             type="button"
-            key={r.id}
-            ref={(el) => {
-              cardRefs.current[i] = el;
-            }}
-            onClick={() => handleCardClick(i, r.postUrl)}
-            tabIndex={isActive ? 0 : -1}
+            key={refKey}
+            onClick={() => handleCardClick(reelIndex, reel.postUrl)}
+            tabIndex={isActive && Math.abs(offset) <= 3 ? 0 : -1}
             aria-label={
               isCenter
-                ? `Avaa ${r.platform === "tiktok" ? "TikTokissa" : "Instagramissa"}`
-                : `Siirrä keskelle: ${r.caption}`
+                ? `Avaa ${reel.platform === "tiktok" ? "TikTokissa" : "Instagramissa"}`
+                : `Siirrä keskelle: ${reel.caption}`
             }
             style={{ position: "absolute", left: "50%", top: "50%", ...style }}
             className={`group/card w-[170px] sm:w-[200px] md:w-[230px] lg:w-[250px] aspect-[9/16] rounded-2xl overflow-hidden shadow-soft bg-black will-change-transform ${
@@ -341,10 +301,10 @@ function CarouselLayer({
           >
             <video
               ref={(el) => {
-                videoRefs.current[i] = el;
+                videoRefs.current.set(refKey, el);
               }}
-              src={r.videoUrl}
-              poster={r.posterUrl}
+              src={reel.videoUrl}
+              poster={reel.posterUrl}
               autoPlay={isActive}
               muted
               loop
@@ -354,18 +314,13 @@ function CarouselLayer({
             />
 
             {platform === "tiktok" ? (
-              <TikTokOverlay reel={r} isCenter={isCenter} />
+              <TikTokOverlay reel={reel} isCenter={isCenter} />
             ) : (
-              <ReelsOverlay reel={r} />
+              <ReelsOverlay reel={reel} />
             )}
 
-            {/* Side-card depth scrim. Sits above the video + overlay,
-                below the centred-card play button. Side cards darken as
-                they move further from centre — this is the visual that
-                used to be done with card-level opacity, which leaked
-                neighbouring videos through. */}
             <div
-              className="absolute inset-0 bg-black pointer-events-none transition-opacity duration-500"
+              className="absolute inset-0 bg-white pointer-events-none transition-opacity duration-500"
               style={{ opacity: scrimOpacity }}
             />
 
@@ -468,17 +423,20 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
     <>
       <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/15 pointer-events-none" />
 
-      {/* Top: italic "Reels" wordmark left, Camera icon right. Match
-          mobile-app safe-area margins (3.5% top, 5% sides). */}
+      {/* Top: italic "Reels" wordmark left, brand avatar right. The
+          avatar replaces the generic camera icon so the channel logo
+          is visible in the top corner where the user expects it. */}
       <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between text-white">
         <span className="text-[18px] font-extrabold italic tracking-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)] leading-none">
           Reels
         </span>
-        <Camera size={18} className="opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]" />
+        <BrandAvatar size={28} ring="white" />
       </div>
 
-      {/* Right rail — IG ordering. */}
-      <div className="absolute right-2.5 bottom-24 flex flex-col items-center gap-4 text-white pointer-events-none">
+      {/* Right rail — IG ordering. Lowered so the stack sits in the
+          mid-to-lower part of the card the way it does in the IG
+          mobile app, instead of riding too high. */}
+      <div className="absolute right-2.5 bottom-32 flex flex-col items-center gap-4 text-white pointer-events-none">
         <RailIconReels icon={<Heart size={24} />} label={reel.likes} />
         <RailIconReels icon={<MessageCircle size={24} />} label={reel.comments} />
         <RailIconReels icon={<Send size={24} className="-rotate-12" />} label={reel.shares} />
@@ -488,13 +446,11 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
         </span>
       </div>
 
-      {/* Bottom-left text block:
-            avatar (own line)
-            caption
-            ♪ audio · attribution                                          */}
+      {/* Bottom-left text block: caption above, audio line below. The
+          channel avatar is now in the top-right corner instead of
+          repeating it here. */}
       <div className="absolute left-3.5 right-14 bottom-3.5 text-white">
-        <BrandAvatar size={28} ring="white" />
-        <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+        <p className="text-[12px] font-medium leading-snug line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
         </p>
         <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">

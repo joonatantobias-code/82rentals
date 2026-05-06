@@ -1,15 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Star, ChevronDown } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
-import {
-  getReviews,
-  getRatingSummary,
-  type Review,
-} from "@/lib/reviews";
+import { getReviews, type Review } from "@/lib/reviews";
 
+// 6 reviews = 3 rows in the 2-column grid, which is the "couple of rows
+// at a time" cadence the user asked for.
 const PAGE_SIZE = 6;
 
 // Google's standard avatar palette (the colours their default initial-
@@ -37,12 +35,28 @@ function colorForReview(seed: string): string {
 export default function Reviews() {
   const t = useT();
   const all = getReviews();
-  const summary = getRatingSummary();
   const [visible, setVisible] = useState(PAGE_SIZE);
 
   const visibleReviews = all.slice(0, visible);
   const hasMore = visible < all.length;
   const remaining = all.length - visible;
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+
+  // Hold the button under the user's finger when revealing more reviews.
+  // The new cards mount above the button, which would otherwise scroll
+  // the whole section down. We compensate by adjusting window scroll by
+  // the button's own movement, so nothing visible moves under the user.
+  function loadMore() {
+    const before = buttonRef.current?.getBoundingClientRect().top ?? 0;
+    setVisible((v) => Math.min(all.length, v + PAGE_SIZE));
+    requestAnimationFrame(() => {
+      const after = buttonRef.current?.getBoundingClientRect().top ?? before;
+      const delta = after - before;
+      if (delta !== 0) {
+        window.scrollBy({ top: delta, left: 0, behavior: "instant" as ScrollBehavior });
+      }
+    });
+  }
 
   return (
     <section id="reviews" className="section relative">
@@ -63,50 +77,6 @@ export default function Reviews() {
           <h2 className="section-title">{t.reviews.title}</h2>
         </div>
 
-        {/* Google-styled summary card */}
-        <div className="rounded-2xl border border-black/10 bg-white shadow-soft p-5 md:p-6 mb-5">
-          <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-            <div className="flex items-center gap-4">
-              <GoogleG size={36} />
-              <div>
-                <p className="font-semibold text-brand-secondary leading-tight">
-                  Google-arvostelut
-                </p>
-                <p className="text-xs text-brand-secondary/60">
-                  {all.length} arvostelua
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4 sm:ml-auto">
-              <div className="text-center">
-                <div className="font-display text-4xl font-extrabold text-brand-secondary leading-none">
-                  {summary.average.toFixed(1)}
-                </div>
-                <Stars rating={Math.round(summary.average)} />
-              </div>
-              <a
-                href="https://www.google.com/search?q=82rentals+helsinki"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-[#1a73e8] hover:bg-[#1a73e8]/8 transition-colors"
-              >
-                {t.reviews.readGoogle}
-              </a>
-            </div>
-          </div>
-
-          {/* Distribution-style rating bars (Google shows these too). */}
-          <div className="mt-5 hidden sm:grid grid-cols-[auto_1fr_auto] gap-x-3 gap-y-1.5 max-w-md">
-            {[5, 4, 3, 2, 1].map((stars) => {
-              const count = all.filter((r) => r.rating === stars).length;
-              const pct = (count / all.length) * 100;
-              return (
-                <RatingBar key={stars} stars={stars} pct={pct} count={count} />
-              );
-            })}
-          </div>
-        </div>
-
         {/* Review cards */}
         <div className="grid lg:grid-cols-2 gap-3.5">
           {visibleReviews.map((r, idx) => (
@@ -125,14 +95,12 @@ export default function Reviews() {
           ))}
         </div>
 
-        {/* Load more — Google-blue text on light hover, like Google's UI. */}
         {hasMore && (
           <div className="mt-6 flex justify-center">
             <button
+              ref={buttonRef}
               type="button"
-              onClick={() =>
-                setVisible((v) => Math.min(all.length, v + PAGE_SIZE))
-              }
+              onClick={loadMore}
               className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium text-[#1a73e8] border border-black/10 bg-white hover:bg-[#1a73e8]/8 hover:border-[#1a73e8]/30 transition-colors"
             >
               Lataa lisää arvosteluita
@@ -239,33 +207,6 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-function RatingBar({
-  stars,
-  pct,
-  count,
-}: {
-  stars: number;
-  pct: number;
-  count: number;
-}) {
-  return (
-    <>
-      <span className="text-[12px] text-brand-secondary/65 tabular-nums">
-        {stars}
-      </span>
-      <span className="self-center h-1.5 rounded-full bg-black/8 overflow-hidden">
-        <span
-          className="block h-full bg-[#FBBC04]"
-          style={{ width: `${pct}%` }}
-        />
-      </span>
-      <span className="text-[12px] text-brand-secondary/55 tabular-nums text-right">
-        {count}
-      </span>
-    </>
-  );
-}
-
 function LocalGuideMark() {
   // Stylised pinned-mountain badge — Google's Local Guide icon shape.
   return (
@@ -279,25 +220,3 @@ function LocalGuideMark() {
   );
 }
 
-function GoogleG({ size = 16 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden>
-      <path
-        fill="#4285F4"
-        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
-      />
-      <path
-        fill="#34A853"
-        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
-      />
-      <path
-        fill="#FBBC05"
-        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
-      />
-      <path
-        fill="#EA4335"
-        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
-      />
-    </svg>
-  );
-}
