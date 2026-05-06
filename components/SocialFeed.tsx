@@ -20,7 +20,7 @@ import BrushUnderline from "@/components/BrushUnderline";
 import { useT } from "@/components/LocaleProvider";
 import { getReels, type Platform, type Reel } from "@/lib/socialFeed";
 
-const SLIDE_DURATION = 850;
+const SLIDE_DURATION = 650;
 const FILTER_FADE_MS = 280;
 
 function TikTokGlyph({ size = 18 }: { size?: number }) {
@@ -180,23 +180,26 @@ function CarouselLayer({
 
   // Reset ci back inside [0, len) once it crosses a boundary in either
   // direction (auto-rotate pushes it past len, or a click on a left-side
-  // card pushes it negative). The visible state is identical at ci and
-  // at ci ± len because each reel has copies at i, i ± len — so we
-  // briefly turn transitions off and snap, invisibly.
+  // card pushes it negative). The visible state at ci and ci ± len is
+  // identical because each reel has copies at i, i ± len — so we batch
+  // both state updates into one render with transitions off and snap.
   useEffect(() => {
     if (len === 0) return;
     if (ci >= len || ci < 0) {
       const t = setTimeout(() => {
+        // React 18 batches both setState calls in this callback into a
+        // single render → render 1: transitions off + new ci, browser
+        // commits the snap with no animation. Then RAF re-enables
+        // transitions. No intermediate "transitions off, old ci" paint
+        // means no chance for the user to see a flicker.
         setTransitionsOn(false);
-        requestAnimationFrame(() => {
-          setCi((c) => {
-            if (c >= len) return c - len;
-            if (c < 0) return c + len;
-            return c;
-          });
-          requestAnimationFrame(() => setTransitionsOn(true));
+        setCi((c) => {
+          if (c >= len) return c - len;
+          if (c < 0) return c + len;
+          return c;
         });
-      }, SLIDE_DURATION + 80);
+        requestAnimationFrame(() => setTransitionsOn(true));
+      }, SLIDE_DURATION + 40);
       return () => clearTimeout(t);
     }
   }, [ci, len]);
@@ -346,8 +349,15 @@ function CarouselLayer({
             )}
 
             <div
-              className="absolute inset-0 bg-white pointer-events-none transition-opacity duration-500"
-              style={{ opacity: scrimOpacity }}
+              className="absolute inset-0 bg-white pointer-events-none"
+              style={{
+                opacity: scrimOpacity,
+                // Sync scrim with the main slide transition so it never
+                // animates a "darkening flash" during a wrap reset.
+                transition: transitionsOn
+                  ? `opacity ${SLIDE_DURATION}ms ease`
+                  : "none",
+              }}
             />
 
             {isCenter && (
