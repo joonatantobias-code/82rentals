@@ -1,12 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Instagram, Heart, MessageCircle, Play } from "lucide-react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  Instagram,
+  Heart,
+  MessageCircle,
+  Send,
+  Bookmark,
+  Music2,
+  MoreHorizontal,
+  Play,
+} from "lucide-react";
 import { unsplashUrl, PEXELS_VIDEOS, LOCAL_PHOTOS } from "@/lib/images";
 import BrushUnderline from "@/components/BrushUnderline";
 import { useT } from "@/components/LocaleProvider";
 
-function TikTok({ size = 18 }: { size?: number }) {
+function TikTokGlyph({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.59 2.59 0 0 1-2.59-2.59 2.59 2.59 0 0 1 3.42-2.46V9.79a5.82 5.82 0 0 0-5.43 9.36 5.83 5.83 0 0 0 9.18-1.31 5.82 5.82 0 0 0 .76-2.84V9.39a7.36 7.36 0 0 0 4.31 1.39V7.69a4.32 4.32 0 0 1-2.91-1.87Z" />
@@ -42,11 +51,13 @@ const REEL_BASE: Omit<Reel, "caption" | "likes">[] = [
 
 type Filter = "tiktok" | "instagram";
 
+const SLIDE_DURATION = 850;
+const PHASE_A_DURATION = 700;
+
 export default function SocialFeed() {
   const t = useT();
   const [filter, setFilter] = useState<Filter>("tiktok");
   const [centerIndex, setCenterIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
 
   const reels: Reel[] = useMemo(
     () =>
@@ -63,35 +74,32 @@ export default function SocialFeed() {
     [reels, filter]
   );
 
-  // When the user toggles between TikTok and Instagram, snap to the
-  // first item of the new feed so they see a fresh card in the centre.
+  // Snap to the first reel of the new feed when the user toggles platforms.
   useEffect(() => {
     setCenterIndex(0);
   }, [filter]);
 
-  // Auto-advance every 3 seconds. Pauses while a finger / cursor is on
-  // the carousel so the user can study a card.
+  // Auto-advance every 3 seconds. The interval is reset whenever centerIndex
+  // changes — so a manual click doesn't get clobbered 0.4 s later by an
+  // already-running timer. No hover/touch pause: a stray cursor over the
+  // carousel was constantly resetting the timer in the previous build, which
+  // is why the user reported the rotation feeling like it never fired.
   useEffect(() => {
-    if (paused || filtered.length === 0) return;
+    if (filtered.length === 0) return;
     const id = setInterval(() => {
       setCenterIndex((i) => (i + 1) % filtered.length);
     }, 3000);
     return () => clearInterval(id);
-  }, [filtered.length, paused]);
+  }, [filtered.length, centerIndex]);
 
   function handleCardClick(index: number, href: string) {
     if (index === centerIndex) {
-      // Second tap on the centred card opens the post on its platform.
       window.open(href, "_blank", "noopener,noreferrer");
     } else {
-      // First tap on a side card slides it to the middle.
       setCenterIndex(index);
     }
   }
 
-  // Refs to each card's button. We use these to imperatively animate the
-  // wrapping card so it slides in from the right edge instead of teleporting
-  // there (see the wrap-handler effect below).
   const cardRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const prevOffsetsRef = useRef<Map<number, number>>(new Map());
 
@@ -108,29 +116,34 @@ export default function SocialFeed() {
     const offset = computeOffset(index, len, centerIndex);
     const abs = Math.abs(offset);
 
-    const scale =
-      abs === 0 ? 1 : abs === 1 ? 0.84 : abs === 2 ? 0.66 : 0.5;
-    const opacity =
-      abs === 0 ? 1 : abs === 1 ? 0.92 : abs === 2 ? 0.6 : 0.22;
+    const scale = abs === 0 ? 1 : abs === 1 ? 0.84 : abs === 2 ? 0.66 : 0.5;
+    const opacity = abs === 0 ? 1 : abs === 1 ? 0.92 : abs === 2 ? 0.6 : 0.22;
 
     return {
       transform: `translate(-50%, -50%) translateX(calc(${offset} * var(--carousel-step))) scale(${scale})`,
       opacity,
       zIndex: 10 - abs,
       filter: abs === 0 ? "none" : `saturate(${1 - abs * 0.12})`,
-      transition:
-        "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, filter 0.5s ease",
+      transition: `transform ${SLIDE_DURATION}ms cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, filter 0.5s ease`,
     };
   }
 
-  // FLIP-style wrap handler. Whenever centerIndex moves and a card jumps
-  // across the wrap boundary (e.g. its offset went from -3 to +3, which on
-  // its own would streak across the whole carousel), this effect snaps the
-  // card to a position one step beyond its target with no transition, then
-  // restores the target inline style. The browser then animates from the
-  // off-screen-right park to the target +3 slot using the normal easing —
-  // which is exactly the "uusi video tulee oikealta" entry the user wants.
-  useEffect(() => {
+  // Three-phase wrap orchestration. When a card crosses the wrap boundary
+  // (e.g. its previous offset was -3 and the new offset is +3), the React
+  // render alone would animate it as a single streak across the carousel.
+  // Instead:
+  //   Phase A — slide it past the left edge (offset -4) with full
+  //             transition + opacity → 0, so it looks like a real exit.
+  //   Phase B — once that lands, FLIP-teleport it past the right edge
+  //             (offset +4) with no transition.
+  //   Phase C — restore the React-target inline style; the browser
+  //             interpolates from +4 back to +3, giving the new arrival
+  //             a smooth slide-in.
+  // useLayoutEffect runs synchronously after commit but before paint, so
+  // the user never sees the freshly-rendered "+3 with no animation" frame.
+  const timersRef = useRef<Map<number, ReturnType<typeof setTimeout>>>(new Map());
+
+  useLayoutEffect(() => {
     const len = filtered.length;
     if (len === 0) return;
     filtered.forEach((_, i) => {
@@ -143,29 +156,61 @@ export default function SocialFeed() {
           const targetTransition = el.style.transition;
           const targetOpacity = el.style.opacity;
           const targetFilter = el.style.filter;
-          const parkOff = off > 0 ? off + 1 : off - 1;
-          el.style.transition = "none";
-          el.style.transform = `translate(-50%, -50%) translateX(calc(${parkOff} * var(--carousel-step))) scale(0.45)`;
+
+          // The leaving direction is the side the card was on before wrap.
+          const leavingDir = prev < 0 ? -1 : 1;
+          const phaseAOff = leavingDir * 4;
+          const phaseBOff = -leavingDir * 4;
+
+          // Phase A — slide off the leaving edge.
+          el.style.transition = `transform ${PHASE_A_DURATION}ms cubic-bezier(0.4, 0, 0.6, 1), opacity ${PHASE_A_DURATION}ms ease, filter 0.4s ease`;
+          el.style.transform = `translate(-50%, -50%) translateX(calc(${phaseAOff} * var(--carousel-step))) scale(0.45)`;
           el.style.opacity = "0";
-          // Force a reflow so the parked state is committed before we
-          // restore the target — that way the next style change is what
-          // the browser interpolates over.
-          void el.offsetHeight;
-          el.style.transition = targetTransition;
-          el.style.transform = targetTransform;
-          el.style.opacity = targetOpacity;
-          el.style.filter = targetFilter;
+          el.style.filter = "saturate(0.4)";
+
+          // Cancel any pending phase B for this card to avoid races on
+          // rapid centerIndex changes (e.g. dot-pager click during auto).
+          const pending = timersRef.current.get(i);
+          if (pending) clearTimeout(pending);
+
+          const tid = setTimeout(() => {
+            const node = cardRefs.current[i];
+            if (!node) return;
+            // Phase B — instant teleport to the entry side.
+            node.style.transition = "none";
+            node.style.transform = `translate(-50%, -50%) translateX(calc(${phaseBOff} * var(--carousel-step))) scale(0.45)`;
+            node.style.opacity = "0";
+            // Force a reflow so the parked state lands before phase C.
+            void node.offsetHeight;
+            // Phase C — restore the React-target style, browser animates.
+            node.style.transition = targetTransition;
+            node.style.transform = targetTransform;
+            node.style.opacity = targetOpacity;
+            node.style.filter = targetFilter;
+            timersRef.current.delete(i);
+          }, PHASE_A_DURATION);
+          timersRef.current.set(i, tid);
         }
       }
       prevOffsetsRef.current.set(i, off);
     });
   }, [centerIndex, filtered]);
 
-  // Reset offset history when the user switches feeds so we don't
-  // false-detect a wrap on the very first slide of the new feed.
+  // Reset offset history + cancel pending phase Bs when feed switches.
   useEffect(() => {
     prevOffsetsRef.current.clear();
+    timersRef.current.forEach((id) => clearTimeout(id));
+    timersRef.current.clear();
   }, [filter]);
+
+  // Cleanup on unmount.
+  useEffect(() => {
+    const timers = timersRef.current;
+    return () => {
+      timers.forEach((id) => clearTimeout(id));
+      timers.clear();
+    };
+  }, []);
 
   return (
     <section className="relative py-16 md:py-24 overflow-hidden">
@@ -200,7 +245,7 @@ export default function SocialFeed() {
             <FilterButton
               active={filter === "tiktok"}
               onClick={() => setFilter("tiktok")}
-              icon={<TikTok size={14} />}
+              icon={<TikTokGlyph size={14} />}
               accent="tiktok"
             >
               TikTok
@@ -217,27 +262,15 @@ export default function SocialFeed() {
         </div>
       </div>
 
-      {/* Centred carousel. The step distance is a CSS variable so the
-          spread scales with the viewport (smaller on phones, generous
-          on desktop). All cards share the same absolute origin and
-          translate horizontally based on their offset from center. */}
       <div
         key={filter}
         className="relative w-full mx-auto select-none"
         style={
           {
-            // Step (horizontal distance between adjacent card centers) is
-            // intentionally a lot tighter than the card width — adjacent
-            // cards tuck under the centre one, so the user reads it as a
-            // single layered stack rather than a row of separate items.
             "--carousel-step": "clamp(70px, 10vw, 130px)",
             height: "clamp(380px, 62vw, 500px)",
           } as React.CSSProperties
         }
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onTouchStart={() => setPaused(true)}
-        onTouchEnd={() => setPaused(false)}
       >
         {filtered.map((r, i) => {
           const style = getCardStyle(i);
@@ -246,19 +279,20 @@ export default function SocialFeed() {
             <button
               type="button"
               key={`${filter}-${i}`}
-              ref={(el) => { cardRefs.current[i] = el; }}
+              ref={(el) => {
+                cardRefs.current[i] = el;
+              }}
               onClick={() => handleCardClick(i, r.href)}
-              aria-label={isCenter ? `Avaa ${r.platform === "tiktok" ? "TikTokissa" : "Instagramissa"}` : `Siirrä keskelle: ${r.caption}`}
+              aria-label={
+                isCenter
+                  ? `Avaa ${r.platform === "tiktok" ? "TikTokissa" : "Instagramissa"}`
+                  : `Siirrä keskelle: ${r.caption}`
+              }
               style={{ position: "absolute", left: "50%", top: "50%", ...style }}
-              className={`group/card w-[160px] sm:w-[190px] md:w-[220px] lg:w-[240px] aspect-[9/16] rounded-2xl overflow-hidden shadow-soft bg-brand-secondary will-change-transform ${
+              className={`group/card w-[160px] sm:w-[190px] md:w-[220px] lg:w-[240px] aspect-[9/16] rounded-2xl overflow-hidden shadow-soft bg-black will-change-transform ${
                 isCenter ? "shadow-glow ring-2 ring-brand-primary/40" : ""
               }`}
             >
-              {/* Live video. Each filter has 7 cards so at most 7 decoders run
-                  concurrently, all using HD (8 MB) Pexels sources reused
-                  across cards (browser dedupes the network fetch). The
-                  poster is the still fallback for the brief metadata-load
-                  moment. */}
               <video
                 src={r.video}
                 poster={r.poster}
@@ -269,52 +303,27 @@ export default function SocialFeed() {
                 preload="metadata"
                 className="absolute inset-0 w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-brand-secondary/30" />
 
-              <span
-                className={`absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider ${
-                  r.platform === "tiktok"
-                    ? "bg-black text-white"
-                    : "bg-white text-brand-secondary"
-                }`}
-              >
-                {r.platform === "tiktok" ? <TikTok size={11} /> : <Instagram size={11} />}
-                {r.platform === "tiktok" ? "TikTok" : "Reel"}
-              </span>
+              {r.platform === "tiktok" ? (
+                <TikTokOverlay reel={r} isCenter={isCenter} />
+              ) : (
+                <ReelsOverlay reel={r} isCenter={isCenter} />
+              )}
 
-              <span className="absolute inset-0 grid place-items-center pointer-events-none">
-                <span
-                  className={`h-12 w-12 rounded-full bg-white/90 grid place-items-center text-brand-secondary transition-all ${
-                    isCenter
-                      ? "opacity-100 scale-100 group-hover/card:scale-110"
-                      : "opacity-70"
-                  }`}
-                >
-                  <Play size={18} className="fill-brand-secondary translate-x-0.5" />
+              {/* Centered Play affordance — visible only on the centred card
+                  so the user knows clicking again opens the post. */}
+              {isCenter && (
+                <span className="absolute inset-0 grid place-items-center pointer-events-none">
+                  <span className="h-12 w-12 rounded-full bg-white/90 grid place-items-center text-black opacity-0 group-hover/card:opacity-100 transition-opacity">
+                    <Play size={18} className="fill-black translate-x-0.5" />
+                  </span>
                 </span>
-              </span>
-
-              <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
-                <p className="text-xs sm:text-sm font-semibold leading-snug line-clamp-2">
-                  {r.caption}
-                </p>
-                <div className="flex items-center gap-3 mt-1.5 text-[11px] text-white/85">
-                  <span className="inline-flex items-center gap-1">
-                    <Heart size={11} className="fill-white" />
-                    {r.likes}
-                  </span>
-                  <span className="inline-flex items-center gap-1">
-                    <MessageCircle size={11} />
-                    82
-                  </span>
-                </div>
-              </div>
+              )}
             </button>
           );
         })}
       </div>
 
-      {/* Tiny dot pager so users see how many videos exist on this feed. */}
       <div className="mt-8 flex justify-center gap-1.5">
         {filtered.map((_, i) => (
           <button
@@ -334,6 +343,129 @@ export default function SocialFeed() {
   );
 }
 
+/* TikTok-style overlay: vertical icon stack right side (avatar+follow,
+ * heart, comment, share), bottom @username + caption + music attribution
+ * with a tiny rotating disc. Background tint biased to black to match
+ * TikTok's UI feel. */
+function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
+  return (
+    <>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/30" />
+
+      {/* Top row: TikTok wordmark */}
+      <div className="absolute top-2 left-0 right-0 flex justify-center text-white text-[11px] font-bold tracking-wide">
+        <span className="opacity-90">For You</span>
+      </div>
+      <div className="absolute top-2 right-2 text-white/90">
+        <TikTokGlyph size={14} />
+      </div>
+
+      {/* Right rail */}
+      <div className="absolute right-1.5 bottom-14 flex flex-col items-center gap-3 text-white pointer-events-none">
+        <div className="relative">
+          <span className="block h-8 w-8 rounded-full ring-2 ring-white bg-gradient-to-br from-brand-primary to-brand-turquoise" />
+          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-4 w-4 rounded-full bg-[#FE2C55] grid place-items-center text-white text-[10px] font-bold leading-none">
+            +
+          </span>
+        </div>
+        <RailIcon icon={<Heart size={16} className="fill-white" />} label={reel.likes} />
+        <RailIcon icon={<MessageCircle size={16} />} label="82" />
+        <RailIcon icon={<Send size={16} className="-rotate-12" />} label="Jaa" />
+      </div>
+
+      {/* Bottom block: handle + caption + music */}
+      <div className="absolute left-2.5 right-12 bottom-2 text-white">
+        <p className="text-[11px] font-extrabold leading-tight">@82rentals</p>
+        <p className="text-[10.5px] font-medium leading-snug mt-0.5 line-clamp-2">
+          {reel.caption}
+        </p>
+        <div className="flex items-center gap-1.5 mt-1.5 text-[10px] font-medium">
+          <Music2 size={10} />
+          <span className="truncate">82Rentals · alkuperäinen ääni</span>
+        </div>
+      </div>
+
+      {/* Spinning music disc bottom-right corner — TikTok signature touch */}
+      <div
+        className={`absolute bottom-2 right-2 h-7 w-7 rounded-full bg-gradient-to-br from-zinc-700 to-black ring-1 ring-white/30 grid place-items-center pointer-events-none ${
+          isCenter ? "tiktok-disc-spin" : ""
+        }`}
+      >
+        <span className="block h-2.5 w-2.5 rounded-full bg-white/40" />
+      </div>
+    </>
+  );
+}
+
+function RailIcon({ icon, label }: { icon: React.ReactNode; label: string }) {
+  return (
+    <div className="flex flex-col items-center gap-0.5">
+      <span className="h-7 w-7 rounded-full bg-black/35 grid place-items-center">
+        {icon}
+      </span>
+      <span className="text-[9px] font-bold leading-none">{label}</span>
+    </div>
+  );
+}
+
+/* Instagram Reels-style overlay: vertical icon stack right side (heart,
+ * comment, share, save, more), top username + verified, bottom caption
+ * + audio chip with album-art square. */
+function ReelsOverlay({ reel }: { reel: Reel; isCenter: boolean }) {
+  return (
+    <>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/30" />
+
+      {/* Top row: Reels label */}
+      <div className="absolute top-2 left-2 right-2 flex items-center justify-between text-white">
+        <span className="text-[11px] font-extrabold italic tracking-wide drop-shadow">
+          Reels
+        </span>
+        <Instagram size={14} className="opacity-90" />
+      </div>
+
+      {/* Right rail — IG order: heart, comment, share, save, more */}
+      <div className="absolute right-2 bottom-16 flex flex-col items-center gap-3.5 text-white pointer-events-none">
+        <RailIconReels icon={<Heart size={18} />} label={reel.likes} />
+        <RailIconReels icon={<MessageCircle size={18} />} label="82" />
+        <RailIconReels icon={<Send size={18} className="-rotate-12" />} />
+        <RailIconReels icon={<Bookmark size={18} />} />
+        <span className="text-white/95">
+          <MoreHorizontal size={18} />
+        </span>
+      </div>
+
+      {/* Bottom block: avatar + handle on a row, caption, audio chip */}
+      <div className="absolute left-2.5 right-12 bottom-2 text-white">
+        <div className="flex items-center gap-1.5">
+          <span className="block h-5 w-5 rounded-full ring-1 ring-white bg-gradient-to-br from-[#FFC371] via-[#FF5F6D] to-[#833AB4]" />
+          <span className="text-[11px] font-extrabold leading-none">82rentals</span>
+          <span className="h-2.5 w-2.5 rounded-full bg-[#3897F0] grid place-items-center text-[7px] font-black leading-none">
+            ✓
+          </span>
+          <span className="text-[10px] opacity-90 ml-0.5">· Seuraa</span>
+        </div>
+        <p className="text-[10.5px] font-medium leading-snug mt-1 line-clamp-2">
+          {reel.caption}
+        </p>
+        <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-white/15 backdrop-blur-sm px-2 py-0.5 text-[9.5px] font-semibold">
+          <span className="block h-3 w-3 rounded-sm bg-gradient-to-br from-brand-primary to-brand-turquoise" />
+          <span className="truncate max-w-[110px]">82Rentals · Original audio</span>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function RailIconReels({ icon, label }: { icon: React.ReactNode; label?: string }) {
+  return (
+    <div className="flex flex-col items-center gap-0.5">
+      <span className="text-white drop-shadow">{icon}</span>
+      {label && <span className="text-[9px] font-bold leading-none">{label}</span>}
+    </div>
+  );
+}
+
 function FilterButton({
   active,
   onClick,
@@ -347,12 +479,10 @@ function FilterButton({
   accent: "tiktok" | "instagram";
   children: React.ReactNode;
 }) {
-  // Inactive state: white background per design ask. Active uses a
-  // platform-tinted dark fill so the choice reads at a glance.
   const activeClasses =
     accent === "tiktok"
       ? "bg-black text-white border-black"
-      : "bg-brand-secondary text-white border-brand-secondary";
+      : "bg-gradient-to-br from-[#FFC371] via-[#FF5F6D] to-[#833AB4] text-white border-transparent";
   const inactiveClasses =
     "bg-white text-brand-secondary border-brand-primary/30 hover:border-brand-primary";
   return (

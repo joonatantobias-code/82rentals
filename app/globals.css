@@ -322,6 +322,15 @@ body {
   will-change: transform, backdrop-filter;
 }
 
+/* TikTok music disc — slow spin on the centred card so the overlay
+ * reads as "live", matching the rotating-album-art convention. */
+@keyframes tiktok-disc-spin {
+  to { transform: rotate(360deg); }
+}
+.tiktok-disc-spin {
+  animation: tiktok-disc-spin 6s linear infinite;
+}
+
 /* Marquee animation for trust banner and social feed carousel.
  * The track contains exactly two identical copies of its content; -50%
  * therefore lands the second copy in the original position, so the loop
