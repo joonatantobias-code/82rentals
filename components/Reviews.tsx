@@ -4,26 +4,25 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Star, ChevronDown } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
-import { getReviews, type Review } from "@/lib/reviews";
+import { getReviews, getRatingSummary, type Review } from "@/lib/reviews";
 
-// 8 reviews = 4 rows in the 2-column grid. Initial render shows 12
-// (six rows) so the section feels populated; each "Lataa lisää" reveals
-// 8 more.
 const INITIAL_VISIBLE = 12;
 const PAGE_SIZE = 8;
 
-// Google's standard avatar palette (the colours their default initial-
-// avatars cycle through). We hash the initials so the same person gets
-// the same colour on every render.
+// Avatar palette mirroring the colours Google's review widget uses for
+// initial-avatars. Hashed by the review id so each reviewer keeps the
+// same colour every render.
 const AVATAR_COLORS = [
-  "#1A73E8", // blue
+  "#7B5CD6", // purple
   "#0F9D58", // green
   "#D93025", // red
   "#F4B400", // yellow
-  "#A142F4", // purple
+  "#1A73E8", // blue
   "#00ACC1", // teal
   "#F76C5E", // coral
   "#34A853", // mint
+  "#5E6F89", // slate
+  "#E91E63", // pink
 ];
 
 function colorForReview(seed: string): string {
@@ -34,21 +33,20 @@ function colorForReview(seed: string): string {
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
 }
 
+function firstLetter(name: string): string {
+  return (name.trim()[0] || "?").toUpperCase();
+}
+
 export default function Reviews() {
   const t = useT();
   const all = getReviews();
+  const summary = getRatingSummary();
   const [visible, setVisible] = useState(INITIAL_VISIBLE);
 
   const visibleReviews = all.slice(0, visible);
   const hasMore = visible < all.length;
   const remaining = all.length - visible;
 
-  // No scroll compensation. Let the document grow naturally — the user
-  // stays at exactly the same scroll position they were on, the new
-  // cards mount below the current viewport, and they can scroll down to
-  // browse them when they want. The previous implementation auto-scrolled
-  // to keep the button under the cursor, which the user read as "the
-  // page jumped down".
   function loadMore() {
     setVisible((v) => Math.min(all.length, v + PAGE_SIZE));
   }
@@ -66,27 +64,51 @@ export default function Reviews() {
       </span>
 
       <div className="relative max-w-7xl mx-auto">
-        {/* Section heading */}
         <div className="mb-6 md:mb-8">
           <span className="section-eyebrow">{t.reviews.eyebrow}</span>
           <h2 className="section-title">{t.reviews.title}</h2>
         </div>
 
-        {/* Pinterest-style masonry wall — CSS multi-column. Single column
-            on mobile, two on tablet, four on desktop. Cards keep their
-            natural heights, so the wall has organic varying offsets
-            instead of a rigid grid. break-inside-avoid stops cards from
-            getting split across column boundaries. */}
+        {/* Google-styled summary header — full Google wordmark, plain
+            "Erinomainen" descriptor, gold stars + average + total, and
+            a "Kirjoita oma arviosi" pill on the right. Built from the
+            reference shot so the section reads as a real Google reviews
+            widget, not a custom card. */}
+        <div className="rounded-2xl bg-zinc-100 p-4 md:p-5 mb-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5 flex-wrap">
+          <GoogleWordmark />
+          <span className="text-[15px] font-medium text-zinc-800">Erinomainen</span>
+          <div className="flex items-center gap-2 text-[15px] font-medium text-zinc-800">
+            <Stars rating={Math.round(summary.average)} size={16} />
+            <span>
+              {summary.average.toFixed(1)}{" "}
+              <span className="text-zinc-400">|</span>{" "}
+              {all.length} arvostelut
+            </span>
+          </div>
+          <a
+            href="https://www.google.com/search?q=82rentals+helsinki"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-auto rounded-full bg-white px-4 py-2 text-sm font-semibold border border-zinc-200 hover:border-zinc-300 transition-colors text-zinc-900"
+          >
+            Kirjoita oma arviosi
+          </a>
+        </div>
+
+        {/* Masonry wall — 4 columns on desktop, 2 on tablet, 1 on mobile.
+            CSS multi-column layout gives the organic varying-height look
+            the user asked for; break-inside-avoid keeps each card
+            atomic. */}
         <div className="columns-1 sm:columns-2 lg:columns-4 gap-3.5">
           {visibleReviews.map((r, idx) => (
             <motion.div
               key={r.id}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{
-                duration: 0.4,
-                delay: Math.min(0.04 * (idx % PAGE_SIZE), 0.3),
+                duration: 0.35,
+                delay: Math.min(0.03 * (idx % PAGE_SIZE), 0.2),
               }}
               className="mb-3.5 break-inside-avoid"
             >
@@ -124,52 +146,43 @@ function ReviewCard({ r }: { r: Review }) {
     !isLong || expanded ? r.text : r.text.slice(0, SHORT_LIMIT).trim() + "…";
 
   return (
-    <article className="rounded-xl border border-black/10 bg-white p-5 hover:border-black/20 transition-colors">
+    <article className="relative rounded-2xl bg-zinc-100 p-5">
+      {/* Card-corner Google G mark, like Google's own review widget. */}
+      <span aria-hidden className="absolute top-4 right-4">
+        <GoogleGCircle size={20} />
+      </span>
+
       <div className="flex items-start gap-3">
         {r.photoUrl ? (
           <img
             src={r.photoUrl}
             alt=""
-            className="h-10 w-10 rounded-full object-cover shrink-0"
+            className="h-11 w-11 rounded-full object-cover shrink-0"
             loading="lazy"
           />
         ) : (
           <span
-            className="h-10 w-10 rounded-full grid place-items-center text-white text-sm font-medium shrink-0"
+            className="h-11 w-11 rounded-full grid place-items-center text-white text-[18px] font-medium shrink-0"
             style={{ background: color }}
             aria-hidden
           >
-            {r.initials}
+            {firstLetter(r.author)}
           </span>
         )}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <span className="font-medium text-brand-secondary text-[15px] leading-tight">
-              {r.author}
-            </span>
-            {r.isLocalGuide && (
-              <span className="inline-flex items-center gap-1 text-[11px] text-brand-secondary/60">
-                <LocalGuideMark />
-                Local Guide
-              </span>
-            )}
-          </div>
-          {(r.reviewCount !== undefined || r.photoCount !== undefined) && (
-            <p className="text-[12px] text-brand-secondary/55 mt-0.5">
-              {r.reviewCount !== undefined && `${r.reviewCount} arvostelua`}
-              {r.reviewCount !== undefined && r.photoCount !== undefined && " · "}
-              {r.photoCount !== undefined && `${r.photoCount} kuvaa`}
-            </p>
-          )}
+        <div className="flex-1 min-w-0 pr-7">
+          <p className="font-semibold text-zinc-900 text-[15px] leading-tight truncate">
+            {r.author}
+          </p>
+          <p className="text-[13px] text-zinc-500 mt-0.5">{r.date}</p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 mt-3">
-        <Stars rating={r.rating} />
-        <span className="text-[12px] text-brand-secondary/55">{r.date}</span>
+      <div className="flex items-center gap-1.5 mt-3">
+        <Stars rating={r.rating} size={15} />
+        <VerifiedTick />
       </div>
 
-      <p className="text-[14px] text-brand-secondary/85 leading-relaxed mt-2.5 whitespace-pre-line">
+      <p className="text-[14px] text-zinc-800 mt-3 leading-relaxed whitespace-pre-line">
         {displayText}
         {isLong && !expanded && (
           <>
@@ -177,9 +190,9 @@ function ReviewCard({ r }: { r: Review }) {
             <button
               type="button"
               onClick={() => setExpanded(true)}
-              className="text-[#1a73e8] font-medium hover:underline"
+              className="text-zinc-500 font-medium hover:underline"
             >
-              Lisää
+              Lue lisää
             </button>
           </>
         )}
@@ -188,17 +201,17 @@ function ReviewCard({ r }: { r: Review }) {
   );
 }
 
-function Stars({ rating }: { rating: number }) {
+function Stars({ rating, size = 14 }: { rating: number; size?: number }) {
   return (
     <div className="flex gap-0.5">
       {Array.from({ length: 5 }).map((_, i) => (
         <Star
           key={i}
-          size={14}
+          size={size}
           className={
             i < rating
               ? "fill-[#FBBC04] text-[#FBBC04]"
-              : "text-brand-secondary/15"
+              : "fill-zinc-300 text-zinc-300"
           }
         />
       ))}
@@ -206,16 +219,63 @@ function Stars({ rating }: { rating: number }) {
   );
 }
 
-function LocalGuideMark() {
-  // Stylised pinned-mountain badge — Google's Local Guide icon shape.
+function VerifiedTick() {
   return (
-    <svg width="11" height="11" viewBox="0 0 24 24" aria-hidden>
-      <path
-        d="M12 2 L20 18 L4 18 Z"
-        fill="#1a73e8"
-      />
-      <circle cx="12" cy="9" r="1.7" fill="white" />
-    </svg>
+    <span
+      className="inline-flex h-3.5 w-3.5 rounded-full bg-[#1a73e8] items-center justify-center"
+      aria-hidden
+    >
+      <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
+        <path
+          d="M2.5 6.5 L5 9 L9.5 3.5"
+          stroke="white"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+    </span>
   );
 }
 
+function GoogleWordmark() {
+  // Hand-rolled "Google" wordmark in the brand colours. Sticking with
+  // a system sans rendering keeps it crisp without bundling a font.
+  return (
+    <span
+      className="text-[28px] font-medium leading-none tracking-tight"
+      style={{ fontFamily: "'Helvetica Neue', Arial, sans-serif" }}
+      aria-label="Google"
+    >
+      <span style={{ color: "#4285F4" }}>G</span>
+      <span style={{ color: "#EA4335" }}>o</span>
+      <span style={{ color: "#FBBC05" }}>o</span>
+      <span style={{ color: "#4285F4" }}>g</span>
+      <span style={{ color: "#34A853" }}>l</span>
+      <span style={{ color: "#EA4335" }}>e</span>
+    </span>
+  );
+}
+
+function GoogleGCircle({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 48 48" aria-hidden>
+      <path
+        fill="#4285F4"
+        d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"
+      />
+      <path
+        fill="#34A853"
+        d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"
+      />
+      <path
+        fill="#EA4335"
+        d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"
+      />
+    </svg>
+  );
+}
