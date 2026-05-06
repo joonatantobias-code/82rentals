@@ -46,10 +46,13 @@ export function unsplashUrl(
 
 // A few shorthands for the Pexels jet-ski videos we keep for the social
 // preview section. Listed here so the component just refers to a key name.
+// Use HD (1280x720) instead of UHD (2560x1440). UHD files are 30-44 MB; HD
+// is 4-9 MB. Same visual quality at the rendered card size, but ~4x lighter
+// to download and decode.
 export const PEXELS_VIDEOS = {
-  tricks: "https://videos.pexels.com/video-files/18074526/18074526-uhd_2560_1440_24fps.mp4",
-  blueSea: "https://videos.pexels.com/video-files/2079270/2079270-uhd_2560_1440_30fps.mp4",
-  fast: "https://videos.pexels.com/video-files/4763824/4763824-uhd_2560_1440_24fps.mp4",
+  tricks: "https://videos.pexels.com/video-files/18074526/18074526-hd_1280_720_24fps.mp4",
+  blueSea: "https://videos.pexels.com/video-files/2079270/2079270-hd_1280_720_30fps.mp4",
+  fast: "https://videos.pexels.com/video-files/4763824/4763824-hd_1280_720_24fps.mp4",
 } as const;
 
 // Local high-quality Spark photos. Files live under /public/skuutit/.

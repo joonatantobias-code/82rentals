@@ -15,7 +15,10 @@ export default function Hero() {
       id="top"
       className="relative min-h-[100svh] w-full overflow-hidden flex items-center bg-brand-secondary"
     >
-      {/* Background video, real jet-ski tricks footage */}
+      {/* Background video, real jet-ski tricks footage. HD instead of UHD
+          to keep first-paint fast — the hero is rendered at most ~1600px
+          wide, so 2560x1440 was wasteful and the 30+ MB download stalled
+          the page on slower connections. */}
       <div className="absolute inset-0 z-0">
         <video
           className="w-full h-full object-cover"
@@ -23,14 +26,15 @@ export default function Hero() {
           muted
           loop
           playsInline
+          preload="metadata"
           poster={unsplashUrl("jetskiSplash", { w: 2400 })}
         >
           <source
-            src="https://videos.pexels.com/video-files/18074526/18074526-uhd_2560_1440_24fps.mp4"
+            src="https://videos.pexels.com/video-files/18074526/18074526-hd_1280_720_24fps.mp4"
             type="video/mp4"
           />
           <source
-            src="https://videos.pexels.com/video-files/2079270/2079270-uhd_2560_1440_30fps.mp4"
+            src="https://videos.pexels.com/video-files/2079270/2079270-hd_1280_720_30fps.mp4"
             type="video/mp4"
           />
         </video>

@@ -137,16 +137,18 @@ export default function SocialFeed() {
                 rel="noopener noreferrer"
                 className="group/card relative block w-[200px] sm:w-[240px] md:w-[260px] aspect-[9/16] rounded-2xl overflow-hidden shadow-soft bg-brand-secondary shrink-0"
               >
-                <video
+                {/* Static poster instead of autoplaying video. With 16+
+                    cards in the marquee, autoplay was decoding a dozen
+                    streams at once and pinning the GPU. Cards link out
+                    to TikTok/IG anyway, so the poster + Play overlay is
+                    the right affordance. */}
+                <img
+                  src={r.poster}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
                   className="absolute inset-0 w-full h-full object-cover scale-105 group-hover/card:scale-110 transition-transform duration-700"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  poster={r.poster}
-                >
-                  <source src={r.video} type="video/mp4" />
-                </video>
+                />
 
                 <div className="absolute inset-0 bg-brand-secondary/30" />
 
@@ -162,7 +164,7 @@ export default function SocialFeed() {
                 </span>
 
                 <span className="absolute inset-0 grid place-items-center pointer-events-none">
-                  <span className="h-12 w-12 rounded-full bg-white/85 grid place-items-center text-brand-secondary opacity-0 group-hover/card:opacity-100 transition-opacity">
+                  <span className="h-12 w-12 rounded-full bg-white/85 grid place-items-center text-brand-secondary opacity-80 group-hover/card:opacity-100 group-hover/card:scale-110 transition-all">
                     <Play size={18} className="fill-brand-secondary translate-x-0.5" />
                   </span>
                 </span>
