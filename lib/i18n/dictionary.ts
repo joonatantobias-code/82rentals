@@ -79,10 +79,10 @@ export const dictionary = {
         "Me haemme vesijetin pois. Ei perävaunuja, ei parkkihuolia, vain muistoja.",
     },
     socialFeed: {
-      eyebrow: "Me somessa",
-      titleA: "Lyhyt kesä,",
-      titleHighlight: "pitkä",
-      titleB: " feed.",
+      eyebrow: "Live feed",
+      titleA: "Me",
+      titleHighlight: "somessa",
+      titleB: ".",
       subtitle:
         "Älä missaa kesän kuumimpia arvontoja, vinkkejä ja päivityksiä seuraamalla meitä someissa. Pysy aina aallon harjalla!",
     },
@@ -656,10 +656,10 @@ export const dictionary = {
         "We pick the jet ski up. No trailers, no parking headaches, just memories.",
     },
     socialFeed: {
-      eyebrow: "We're on social",
-      titleA: "Short summer,",
-      titleHighlight: "long",
-      titleB: " feed.",
+      eyebrow: "Live feed",
+      titleA: "On",
+      titleHighlight: "social",
+      titleB: ".",
       subtitle:
         "Don't miss the season's hottest giveaways, tips and updates by following us on social. Stay on the wave crest, always.",
     },
