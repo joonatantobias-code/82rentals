@@ -96,6 +96,10 @@ export const dictionary = {
         { caption: "Ensimmäinen ajo", likes: "2,8k" },
         { caption: "Synttärilahja kaverille", likes: "15,1k" },
         { caption: "Päivä joka jää muistiin", likes: "6,2k" },
+        { caption: "Kaveriporukan kesän paras päivä", likes: "18,6k" },
+        { caption: "Saaristoreitti kahdelle", likes: "7,4k" },
+        { caption: "Aamuauringossa ennen kaupunkia", likes: "10,9k" },
+        { caption: "Helsinki keulasta katsottuna", likes: "13,2k" },
       ],
     },
     reviews: {
@@ -685,6 +689,10 @@ export const dictionary = {
         { caption: "First ride", likes: "2.8k" },
         { caption: "Birthday surprise for a friend", likes: "15.1k" },
         { caption: "A day that sticks with you", likes: "6.2k" },
+        { caption: "Squad's best day of summer", likes: "18.6k" },
+        { caption: "Two-up archipelago run", likes: "7.4k" },
+        { caption: "Sunrise before the city wakes", likes: "10.9k" },
+        { caption: "Helsinki from the bow", likes: "13.2k" },
       ],
     },
     reviews: {

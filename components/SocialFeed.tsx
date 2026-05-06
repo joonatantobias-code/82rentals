@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Instagram, Heart, MessageCircle, Play } from "lucide-react";
 import { unsplashUrl, PEXELS_VIDEOS, LOCAL_PHOTOS } from "@/lib/images";
 import BrushUnderline from "@/components/BrushUnderline";
@@ -34,6 +34,10 @@ const REEL_BASE: Omit<Reel, "caption" | "likes">[] = [
   { platform: "instagram", video: PEXELS_VIDEOS.blueSea, poster: LOCAL_PHOTOS.blueSide, href: "https://instagram.com/82rentals" },
   { platform: "tiktok", video: PEXELS_VIDEOS.fast, poster: LOCAL_PHOTOS.blue1, href: "https://www.tiktok.com/@82rentals" },
   { platform: "instagram", video: PEXELS_VIDEOS.tricks, poster: unsplashUrl("jetskiAction3", { w: 800 }), href: "https://instagram.com/82rentals" },
+  { platform: "tiktok", video: PEXELS_VIDEOS.blueSea, poster: LOCAL_PHOTOS.blue2, href: "https://www.tiktok.com/@82rentals" },
+  { platform: "instagram", video: PEXELS_VIDEOS.fast, poster: unsplashUrl("jetskiAction2", { w: 800 }), href: "https://instagram.com/82rentals" },
+  { platform: "tiktok", video: PEXELS_VIDEOS.fast, poster: unsplashUrl("helsinki2", { w: 800 }), href: "https://www.tiktok.com/@82rentals" },
+  { platform: "instagram", video: PEXELS_VIDEOS.tricks, poster: LOCAL_PHOTOS.coupleAction, href: "https://instagram.com/82rentals" },
 ];
 
 type Filter = "tiktok" | "instagram";
@@ -85,27 +89,51 @@ export default function SocialFeed() {
     }
   }
 
+  // Track each card's previous wrapped offset so we can detect the moment a
+  // card crosses the wrap boundary (e.g. -3 → +3). On that single render we
+  // suppress the transform transition; otherwise the card would streak across
+  // the entire viewport. Result: the card "teleports" while at low opacity,
+  // then animates into its new position on the following render.
+  const prevOffsetsRef = useRef<Map<number, number>>(new Map());
+
   function getCardStyle(index: number): React.CSSProperties {
     const len = filtered.length;
     if (len === 0) return { display: "none" };
     let offset = index - centerIndex;
-    // Wrap to the shortest signed distance so we always animate the
-    // nearest direction, not all the way around.
     if (offset > len / 2) offset -= len;
-    if (offset < -len / 2) offset += len;
-    const abs = Math.abs(offset);
-    if (abs > 2) return { display: "none" };
+    if (offset <= -len / 2) offset += len;
 
-    const scale = abs === 0 ? 1 : abs === 1 ? 0.82 : 0.62;
-    const opacity = abs === 0 ? 1 : abs === 1 ? 0.85 : 0.5;
+    const prev = prevOffsetsRef.current.get(index);
+    const wrapped = prev !== undefined && Math.abs(offset - prev) > 4;
+    prevOffsetsRef.current.set(index, offset);
+
+    const abs = Math.abs(offset);
+
+    // Visibility envelope: ±3. Cards farther than that get parked at the edge
+    // with opacity 0 so re-entry from the right reads as a slide, not a pop.
+    if (abs > 3) {
+      const parkedOffset = offset > 0 ? 4 : -4;
+      return {
+        transform: `translate(-50%, -50%) translateX(calc(${parkedOffset} * var(--carousel-step))) scale(0.45)`,
+        opacity: 0,
+        pointerEvents: "none",
+        transition: "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease",
+      };
+    }
+
+    const scale =
+      abs === 0 ? 1 : abs === 1 ? 0.84 : abs === 2 ? 0.66 : 0.5;
+    const opacity =
+      abs === 0 ? 1 : abs === 1 ? 0.92 : abs === 2 ? 0.6 : 0.22;
 
     return {
       transform: `translate(-50%, -50%) translateX(calc(${offset} * var(--carousel-step))) scale(${scale})`,
       opacity,
       zIndex: 10 - abs,
-      filter: abs === 0 ? "none" : "saturate(0.85)",
-      transition:
-        "transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease, filter 0.5s ease",
+      filter: abs === 0 ? "none" : `saturate(${1 - abs * 0.12})`,
+      transition: wrapped
+        ? "opacity 0.3s ease"
+        : "transform 0.85s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease, filter 0.5s ease",
     };
   }
 
@@ -168,8 +196,12 @@ export default function SocialFeed() {
         className="relative w-full mx-auto select-none"
         style={
           {
-            "--carousel-step": "clamp(170px, 26vw, 300px)",
-            height: "clamp(420px, 70vw, 560px)",
+            // Step is the per-offset horizontal distance. Tighter than the
+            // card width so adjacent cards tuck slightly behind the center
+            // one, which reads as a layered carousel instead of a
+            // disconnected line.
+            "--carousel-step": "clamp(110px, 16vw, 200px)",
+            height: "clamp(380px, 62vw, 500px)",
           } as React.CSSProperties
         }
         onMouseEnter={() => setPaused(true)}
@@ -187,15 +219,23 @@ export default function SocialFeed() {
               onClick={() => handleCardClick(i, r.href)}
               aria-label={isCenter ? `Avaa ${r.platform === "tiktok" ? "TikTokissa" : "Instagramissa"}` : `Siirrä keskelle: ${r.caption}`}
               style={{ position: "absolute", left: "50%", top: "50%", ...style }}
-              className={`group/card w-[180px] sm:w-[220px] md:w-[260px] lg:w-[280px] aspect-[9/16] rounded-2xl overflow-hidden shadow-soft bg-brand-secondary will-change-transform ${
+              className={`group/card w-[160px] sm:w-[190px] md:w-[220px] lg:w-[240px] aspect-[9/16] rounded-2xl overflow-hidden shadow-soft bg-brand-secondary will-change-transform ${
                 isCenter ? "shadow-glow ring-2 ring-brand-primary/40" : ""
               }`}
             >
-              <img
-                src={r.poster}
-                alt=""
-                loading="lazy"
-                decoding="async"
+              {/* Live video. Each filter has 7 cards so at most 7 decoders run
+                  concurrently, all using HD (8 MB) Pexels sources reused
+                  across cards (browser dedupes the network fetch). The
+                  poster is the still fallback for the brief metadata-load
+                  moment. */}
+              <video
+                src={r.video}
+                poster={r.poster}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-brand-secondary/30" />
