@@ -47,13 +47,15 @@ export default function Reviews() {
   const remaining = all.length - visible;
 
   function loadMore(e: React.MouseEvent<HTMLButtonElement>) {
-    // Maximum-effort scroll lock. Stacks every defence:
-    //   - blur() the button + tabIndex={-1} so it never gains focus
-    //   - overflow-anchor: none on html, body and the section
-    //   - scroll-event veto for 800 ms (reverts any scroll change)
-    //   - 60 fps interval that also reverts (catches scroll changes
-    //     that don't dispatch a scroll event in the same frame)
-    //   - immediate revert before and after the state update
+    // Scroll lock — short and self-releasing so the user regains
+    // free scroll the moment they actually try to move the page.
+    //   - blur() + tabIndex={-1} so the button never gets focused.
+    //   - overflow-anchor: none on html/body for the lock window.
+    //   - revert any scroll change for the next 220 ms (just long
+    //     enough for the layout to settle after setVisible).
+    //   - if the user tries to scroll deliberately (wheel,
+    //     touchmove, keyboard arrow keys, page down/up), the lock
+    //     releases immediately so subsequent scrolling is silky.
     const lockY = window.scrollY;
     const lockX = window.scrollX;
     e.currentTarget.blur();
@@ -65,25 +67,41 @@ export default function Reviews() {
     html.style.overflowAnchor = "none";
     body.style.overflowAnchor = "none";
 
+    let active = true;
     const revert = () => {
+      if (!active) return;
       if (window.scrollY !== lockY || window.scrollX !== lockX) {
         window.scrollTo(lockX, lockY);
       }
     };
 
+    function release() {
+      if (!active) return;
+      active = false;
+      window.removeEventListener("scroll", revert);
+      window.removeEventListener("wheel", release);
+      window.removeEventListener("touchmove", release);
+      window.removeEventListener("keydown", release);
+      window.clearInterval(interval);
+      html.style.overflowAnchor = prevHtmlAnchor;
+      body.style.overflowAnchor = prevBodyAnchor;
+    }
+
     revert();
     window.addEventListener("scroll", revert, { passive: true });
     const interval = window.setInterval(revert, 16);
 
+    // User-input listeners. wheel / touchmove / keydown all release
+    // the lock the instant the user signals intent to scroll, so the
+    // 0.4 s "lag after click" the user reported is gone.
+    window.addEventListener("wheel", release, { passive: true });
+    window.addEventListener("touchmove", release, { passive: true });
+    window.addEventListener("keydown", release);
+
     setVisible((v) => Math.min(all.length, v + PAGE_SIZE));
     revert();
 
-    window.setTimeout(() => {
-      window.removeEventListener("scroll", revert);
-      window.clearInterval(interval);
-      html.style.overflowAnchor = prevHtmlAnchor;
-      body.style.overflowAnchor = prevBodyAnchor;
-    }, 800);
+    window.setTimeout(release, 220);
   }
 
   return (
