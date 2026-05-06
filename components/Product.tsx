@@ -15,10 +15,17 @@ import {
 import { LOCAL_PHOTOS } from "@/lib/images";
 import { useT } from "@/components/LocaleProvider";
 
+// Real photos of our own Sea-Doo Spark Trixx — shot in Seinäjoki —
+// followed by a couple of action stock shots so the gallery still has
+// some variety. The main hero (active=0) is one of our own.
 const gallery = [
-  LOCAL_PHOTOS.blue1,
-  LOCAL_PHOTOS.blueSide,
-  LOCAL_PHOTOS.blue2,
+  LOCAL_PHOTOS.ownSpark4,
+  LOCAL_PHOTOS.ownSpark1,
+  LOCAL_PHOTOS.ownSpark2,
+  LOCAL_PHOTOS.ownSpark3,
+  LOCAL_PHOTOS.ownSpark5,
+  LOCAL_PHOTOS.ownSpark6,
+  LOCAL_PHOTOS.ownSpark7,
   LOCAL_PHOTOS.coupleAction,
 ];
 

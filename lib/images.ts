@@ -64,4 +64,13 @@ export const LOCAL_PHOTOS = {
   redRider: "/skuutit/spark-red-rider.png",
   coupleAction: "/skuutit/spark-couple-action.png",
   founders: "/skuutit/founders.jpg",
+  // Real photos of our own Sea-Doo Spark Trixx, shot in Seinäjoki.
+  // Used as the primary product gallery on /vesijetti.
+  ownSpark1: "/skuutit/seinajoki-1.jpg",
+  ownSpark2: "/skuutit/seinajoki-2.jpg",
+  ownSpark3: "/skuutit/seinajoki-3.jpg",
+  ownSpark4: "/skuutit/seinajoki-4.jpg",
+  ownSpark5: "/skuutit/seinajoki-5.jpg",
+  ownSpark6: "/skuutit/seinajoki-6.jpg",
+  ownSpark7: "/skuutit/seinajoki-7.jpg",
 } as const;
