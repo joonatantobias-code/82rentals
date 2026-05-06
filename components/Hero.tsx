@@ -114,57 +114,50 @@ export default function Hero() {
             </motion.div>
           </div>
 
-          {/* Floating spec card — entire card is a link to /varaa */}
+          {/* Spec card — entire card is a link to /varaa.
+              Entrance animation only; no infinite float (it forced
+              backdrop-blur to recompute every frame and felt laggy
+              on weaker GPUs, especially over the video background). */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
-            className="lg:col-span-5"
+            transition={{ duration: 0.6, delay: 0.35, ease: "easeOut" }}
+            className="lg:col-span-5 transform-gpu"
+            style={{ willChange: "transform" }}
           >
-            <motion.div
-              animate={{ y: [-6, 6, -6] }}
-              transition={{
-                duration: 5.5,
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: 1.3,
-              }}
+            <Link
+              href="/varaa?duration=2h"
+              className="group relative block rounded-2xl bg-brand-secondary/35 backdrop-blur-md border border-white/20 p-6 md:p-7 text-white shadow-glow overflow-hidden hover:bg-brand-secondary/45 hover:border-brand-primary/60 transition-colors"
             >
-              <Link
-                href="/varaa?duration=2h"
-                className="group relative block rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 p-6 md:p-7 text-white shadow-glow overflow-hidden hover:bg-white/15 hover:border-brand-primary/60 transition-colors"
+              <span
+                aria-hidden
+                className="num82-outline-dark absolute -right-2 -top-1 font-display font-extrabold text-[5.5rem] leading-none select-none pointer-events-none tracking-tight"
               >
-                {/* Custom number mark in the corner */}
-                <span
-                  aria-hidden
-                  className="num82-outline-dark absolute -right-2 -top-1 font-display font-extrabold text-[5.5rem] leading-none select-none pointer-events-none tracking-tight"
-                >
-                  82
+                82
+              </span>
+              <div className="relative">
+                <p className="text-xs uppercase tracking-[0.18em] text-brand-primary font-semibold">
+                  {t.hero.offerEyebrow}
+                </p>
+                <h3 className="font-display text-2xl md:text-3xl font-bold mt-2 leading-tight">
+                  {t.hero.offerProduct}
+                  <br />
+                  <span className="text-brand-primary">{t.hero.offerPrice}</span>
+                </h3>
+                <ul className="mt-5 space-y-2.5 text-sm text-white/85">
+                  <Tick text={t.hero.offerTick1} />
+                  <Tick text={t.hero.offerTick2} />
+                  <Tick text={t.hero.offerTick3} />
+                </ul>
+                <span className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl bg-brand-primary text-brand-secondary font-bold py-3 text-sm shadow-glow group-hover:bg-white transition-colors min-h-[44px]">
+                  {t.hero.offerCta}
+                  <ArrowRight
+                    size={16}
+                    className="transition-transform group-hover:translate-x-0.5"
+                  />
                 </span>
-                <div className="relative">
-                  <p className="text-xs uppercase tracking-[0.18em] text-brand-primary font-semibold">
-                    {t.hero.offerEyebrow}
-                  </p>
-                  <h3 className="font-display text-2xl md:text-3xl font-bold mt-2 leading-tight">
-                    {t.hero.offerProduct}
-                    <br />
-                    <span className="text-brand-primary">{t.hero.offerPrice}</span>
-                  </h3>
-                  <ul className="mt-5 space-y-2.5 text-sm text-white/85">
-                    <Tick text={t.hero.offerTick1} />
-                    <Tick text={t.hero.offerTick2} />
-                    <Tick text={t.hero.offerTick3} />
-                  </ul>
-                  <span className="mt-6 inline-flex items-center justify-center gap-2 w-full rounded-2xl bg-brand-primary text-brand-secondary font-bold py-3 text-sm shadow-glow group-hover:bg-white transition-colors min-h-[44px]">
-                    {t.hero.offerCta}
-                    <ArrowRight
-                      size={16}
-                      className="transition-transform group-hover:translate-x-0.5"
-                    />
-                  </span>
-                </div>
-              </Link>
-            </motion.div>
+              </div>
+            </Link>
           </motion.div>
         </div>
       </div>

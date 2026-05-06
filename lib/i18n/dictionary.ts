@@ -41,7 +41,7 @@ export const dictionary = {
       titleHighlight: "paras päivä",
       title2: "vesillä.",
       subhead:
-        "Yksi elämä, yksi kesä. Vuokraa Spark Trixx, jätä laituri taakse ja varmista että tästä päivästä puhutaan vielä ensi talvenakin. Lähtö Herttoniemen satamasta.",
+        "Aamukahvi laiturilla, lounas saaressa, paluu auringonlaskussa. Spark Trixxillä saaristo on yhden ohjaustangon takana — lähtö Herttoniemen satamasta.",
       cta: "Varaa nyt",
       bullet1: "Nouto Herttoniemen satamasta",
       bullet2: "Ei ajokorttivaatimusta",
@@ -630,7 +630,7 @@ export const dictionary = {
       titleHighlight: "best day",
       title2: "of summer on the water.",
       subhead:
-        "One life, one summer. Rent the Spark Trixx, leave the dock behind and turn this day into the story you'll still tell next winter. Pickup from Herttoniemi marina.",
+        "Coffee on the dock, lunch on an island, sunset on the way back. With the Spark Trixx the archipelago is one throttle away — pickup at Herttoniemi marina.",
       cta: "Book now",
       bullet1: "Pickup at Herttoniemi marina",
       bullet2: "No license required",
