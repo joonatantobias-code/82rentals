@@ -425,7 +425,7 @@ function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
           drop it for our brand). */}
       <div className="absolute left-3.5 right-14 bottom-9 text-white text-left">
         <p className="text-[11px] font-extrabold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
-          82rentals
+          82Rentals
         </p>
         <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
@@ -534,7 +534,7 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
         <div className="flex items-center gap-1.5">
           <BrandAvatar size={22} ring="white" />
           <span className="text-[11.5px] font-extrabold leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
-            82rentals
+            82Rentals
           </span>
           <span className="text-[10px] opacity-90 leading-none drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
             · Seuraa
