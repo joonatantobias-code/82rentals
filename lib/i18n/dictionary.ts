@@ -124,10 +124,10 @@ export const dictionary = {
       titleHighlight: "luottaa",
       titleB: ".",
       subtitle:
-        "82Rentals on kolmen helsinkiläisen kaverin perustama yritys. Pidämme Spark Trixxin huippukunnossa, vastaamme heti ja saavumme aina sovittuun aikaan. Olemme itse vesillä joka viikko, joten kalustomme on aina kuin omasta tallista.",
+        "82Rentals on kolmen helsinkiläisen kaverin perustama yritys. Pidämme laitteistomme huippukunnossa, vastaamme nopeasti ja hoidamme aina asiat sovitusti. Olemme itse vesillä viikoittain ja huollamme kalustoa säännöllisesti, jotta vesijetit ovat aina priimakunnossa.",
       stat1: "Tyytyväistä ajajaa",
       stat2: "Keskiarvosana",
-      stat3: "Helppo nouto Herttoniemestä",
+      stat3: "Huolletut vesijetit",
       stat4: "Varaus valmis",
     },
     cta: {
@@ -701,10 +701,10 @@ export const dictionary = {
       titleHighlight: "trust",
       titleB: ".",
       subtitle:
-        "82Rentals is run by three Helsinki-based friends. We keep the Spark Trixx in top shape, reply right away and arrive exactly when we said we would. We're on the water every week ourselves, so the kit is always like our own.",
+        "82Rentals is run by three Helsinki-based friends. We keep our gear in top shape, reply quickly and handle everything as agreed. We're out on the water every week and service the fleet regularly, so the jet skis are always in prime condition.",
       stat1: "Happy riders",
       stat2: "Average rating",
-      stat3: "Easy pickup in Herttoniemi",
+      stat3: "Serviced jet skis",
       stat4: "Booking time",
     },
     cta: {

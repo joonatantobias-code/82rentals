@@ -63,4 +63,5 @@ export const LOCAL_PHOTOS = {
   yellowRider: "/skuutit/spark-trixx-yellow-rider.png",
   redRider: "/skuutit/spark-red-rider.png",
   coupleAction: "/skuutit/spark-couple-action.png",
+  founders: "/skuutit/founders.jpg",
 } as const;

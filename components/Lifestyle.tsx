@@ -11,7 +11,7 @@ export default function Lifestyle() {
   const t = useT();
   const stats = [
     {
-      to: 1000,
+      to: 130,
       decimals: 0,
       suffix: "+",
       label: t.lifestyle.stat1,
@@ -44,11 +44,12 @@ export default function Lifestyle() {
     <section className="relative my-12 md:my-24">
       <div className="relative h-[70vh] min-h-[460px] w-full overflow-hidden">
         <Image
-          src={LOCAL_PHOTOS.coupleAction}
+          src={LOCAL_PHOTOS.founders}
           alt=""
           fill
           sizes="100vw"
           className="object-cover"
+          priority={false}
         />
         <div className="absolute inset-0 bg-brand-secondary/70" />
         <div className="absolute inset-0 pattern-dots opacity-15 mix-blend-overlay" />
