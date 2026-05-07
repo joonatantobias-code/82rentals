@@ -6,40 +6,42 @@ import { LOCAL_PHOTOS } from "@/lib/images";
 import { useT } from "@/components/LocaleProvider";
 
 type HotspotSpec = {
+  // Dot position, % of container.
   x: number;
   y: number;
+  // Label centre position, % of container.
   labelX: number;
   labelY: number;
   labelAnchor: "right" | "left";
   number: string;
 };
 
-// Calibrated against LOCAL_PHOTOS.ownSpark1 (Spark Trixx side-profile,
-// Seinäjoki). The four jet-ski features actually live in a band
-// y≈55–68 % of the 4:3 frame.
+// Dot positions calibrated against the actual seinajoki-1 image
+// content. Read each title and pin it on the matching feature:
 //
-// Dot positions:
-//   01 Säädettävä ohjaustanko → handlebar T-bar above the front of
-//      the unit
-//   02 Sininen Trixx istuin   → green/yellow Trixx seat
-//   03 90 hv Rotax            → front bonnet over the engine
-//   04 Kevyt runko            → hull side at the Sea-Doo wordmark
+//   01 Säädettävä ohjaustanko → black T-bar at the very top of the
+//      jet ski (x≈51, y≈45 — the handlebars)
+//   02 Sininen Trixx istuin   → highest point of the green/yellow
+//      seat (x≈66, y≈54)
+//   03 90 hv Rotax            → middle of the front bonnet, where
+//      the engine lives under the cover (x≈42, y≈60)
+//   04 Kevyt runko            → side of the hull at the Sea-Doo
+//      wordmark (x≈74, y≈58)
 //
-// Labels pinned to the four corners (centres pulled in to 22 / 75 %
-// so the 220 px cards stay well inside the container — no clipping
-// at the right edge any more), connectors run diagonally between dot
-// and label.
+// Labels pinned to the four corners of the image, connectors run
+// diagonally between dot and label so each card has its own free
+// quadrant.
 const HOTSPOTS: HotspotSpec[] = [
-  { x: 52, y: 56, labelX: 75, labelY: 18, labelAnchor: "right", number: "01" },
-  { x: 64, y: 60, labelX: 78, labelY: 82, labelAnchor: "right", number: "02" },
-  { x: 33, y: 64, labelX: 22, labelY: 18, labelAnchor: "left", number: "03" },
-  { x: 68, y: 66, labelX: 22, labelY: 82, labelAnchor: "left", number: "04" },
+  { x: 51, y: 45, labelX: 76, labelY: 16, labelAnchor: "right", number: "01" },
+  { x: 66, y: 54, labelX: 78, labelY: 84, labelAnchor: "right", number: "02" },
+  { x: 42, y: 60, labelX: 22, labelY: 16, labelAnchor: "left", number: "03" },
+  { x: 74, y: 58, labelX: 22, labelY: 84, labelAnchor: "left", number: "04" },
 ];
 
-// Each hotspot's full sequence (dot → line → label) takes about 1 s.
-// We stagger 0.65 s between, so the four read as a smooth wave from
-// 01 → 02 → 03 → 04 with a gentle overlap rather than four hard pops.
-const STAGGER = 0.65;
+// 0.6 s stagger reads as a clear sequential wave 01 → 02 → 03 → 04
+// while still feeling fluid (each new hotspot starts as the previous
+// one's label is settling).
+const STAGGER = 0.6;
 
 export default function Anatomy() {
   const t = useT();
@@ -82,10 +84,11 @@ export default function Anatomy() {
               preserveAspectRatio="none"
               aria-hidden
             >
-              {/* Each connector is two stroked lines: a soft white halo
-                  underneath, the brand-primary line on top. Together they
-                  read clearly against any photo content. The halo is
-                  drawn first so it sits behind. */}
+              {/* Each connector is two lines: a wider dark halo
+                  underneath for contrast against bright sky / asphalt,
+                  a bright white line on top so the actual stroke is
+                  what catches the eye. Both layers animate the same
+                  pathLength so they grow as one. */}
               {hotspots.map((h, i) => (
                 <motion.line
                   key={`halo-${i}`}
@@ -93,8 +96,8 @@ export default function Anatomy() {
                   y1={h.y}
                   x2={h.labelX}
                   y2={h.labelY}
-                  stroke="white"
-                  strokeWidth="0.9"
+                  stroke="#0A3D62"
+                  strokeWidth="1.6"
                   strokeOpacity="0.55"
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
@@ -115,8 +118,8 @@ export default function Anatomy() {
                   y1={h.y}
                   x2={h.labelX}
                   y2={h.labelY}
-                  stroke="#6EC6FF"
-                  strokeWidth="0.45"
+                  stroke="white"
+                  strokeWidth="0.7"
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
                   initial={{ pathLength: 0, opacity: 0 }}
@@ -180,8 +183,6 @@ function Dot({ x, y, delay }: { x: number; y: number; delay: number }) {
       whileInView={{ scale: 1, opacity: 1 }}
       viewport={{ once: true, amount: 0.4 }}
       transition={{
-        // Slightly softer spring than before — less bouncy, more
-        // confident landing. damping ratio ≈ 0.85.
         type: "spring",
         stiffness: 240,
         damping: 22,
@@ -195,8 +196,8 @@ function Dot({ x, y, delay }: { x: number; y: number; delay: number }) {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <span className="absolute inline-flex h-7 w-7 rounded-full bg-brand-primary/40 animate-pulse-ring" />
-      <span className="relative inline-flex h-5 w-5 rounded-full bg-brand-primary border-2 border-white shadow-soft" />
+      <span className="absolute inline-flex h-7 w-7 rounded-full bg-white/30 animate-pulse-ring" />
+      <span className="relative inline-flex h-5 w-5 rounded-full bg-white border-[2.5px] border-brand-primary shadow-soft" />
     </motion.span>
   );
 }
@@ -220,11 +221,11 @@ function Label({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8, scale: 0.96 }}
+      initial={{ opacity: 0, y: 10, scale: 0.94 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1], delay }}
-      className={`absolute rounded-xl bg-white shadow-soft border border-brand-primary/30 px-4 py-3 w-[220px] ${
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay }}
+      className={`absolute rounded-xl bg-white border border-brand-primary/40 shadow-[0_2px_6px_rgba(15,23,42,0.12),0_18px_36px_-12px_rgba(15,23,42,0.32)] px-4 py-3 w-[220px] ${
         anchor === "left" ? "text-right" : "text-left"
       }`}
       style={{
