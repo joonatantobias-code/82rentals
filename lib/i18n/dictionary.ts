@@ -341,7 +341,7 @@ export const dictionary = {
         productEyebrow: "Laitteisto",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doon leikkisin vesijetti. Nopea, ketterä ja järjettömän hauska. Yhden ajon jälkeen ymmärrät, miksi pää kääntyy joka laiturilla.",
+          "Sea-Doon leikkisin vesijetti. Nopea, ketterä ja järjettömän hauska.",
         productCta: "Varaa tämä vesijetti",
         features: [
           {
@@ -357,8 +357,8 @@ export const dictionary = {
             text: "Mukava 2up istuin, kaveri tai kumppani mahtuu kyytiin.",
           },
           {
-            title: "Täysin vakuutettu",
-            text: "Vakuutus ja pelastusliivit sisältyvät vuokraan. Turvallinen myös vasta-alkajalle.",
+            title: "Täysin turvallinen",
+            text: "Pelastusliivit, paikannin ja muut turvavarusteet kuuluvat aina hintaan.",
           },
         ],
         anatomyEyebrow: "Tutustu jettiin",
@@ -918,7 +918,7 @@ export const dictionary = {
         productEyebrow: "The hardware",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doo's most playful jet ski. Fast, agile and ridiculously fun. One ride and you'll see why heads turn at every dock.",
+          "Sea-Doo's most playful jet ski. Fast, agile and ridiculously fun.",
         productCta: "Book this jet ski",
         features: [
           {
@@ -934,8 +934,8 @@ export const dictionary = {
             text: "Comfy 2-up seat, bring a friend or partner along for the ride.",
           },
           {
-            title: "Fully insured",
-            text: "Insurance and life jackets included with every rental. Safe even for first-timers.",
+            title: "Completely safe",
+            text: "Life jackets, a GPS tracker and the rest of the safety gear are always included in the price.",
           },
         ],
         anatomyEyebrow: "Get to know it",
