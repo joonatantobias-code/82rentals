@@ -14,11 +14,16 @@ type Hotspot = {
   text: string;
 };
 
+// Hotspot positions calibrated for the side-profile shot of our own
+// jet ski (LOCAL_PHOTOS.ownSpark1 — Sea-Doo Spark Trixx on the
+// trailer). The image is rendered with object-cover, so coordinates
+// are roughly: jet-ski body lives in the middle band y≈40–62%,
+// handlebars sit centre-top, hull on the right.
 const HOTSPOT_POSITIONS: Pick<Hotspot, "x" | "y" | "side" | "number">[] = [
-  { x: 52, y: 22, side: "right", number: "01" },
-  { x: 38, y: 38, side: "left", number: "02" },
-  { x: 28, y: 56, side: "left", number: "03" },
-  { x: 70, y: 70, side: "right", number: "04" },
+  { x: 56, y: 36, side: "right", number: "01" },
+  { x: 60, y: 48, side: "right", number: "02" },
+  { x: 42, y: 54, side: "left", number: "03" },
+  { x: 24, y: 62, side: "left", number: "04" },
 ];
 
 export default function Anatomy() {
@@ -43,25 +48,18 @@ export default function Anatomy() {
 
       <div className="relative rounded-2xl overflow-hidden bg-brand-primary-50 ring-1 ring-brand-primary/30 max-w-4xl mx-auto">
         <div className="relative aspect-[4/3] w-full">
-          {/* Blurred backdrop extends the studio shot to fill the frame */}
+          {/* Real side-profile shot of our own Sea-Doo Spark Trixx
+              (Seinäjoki). object-cover so the jet-ski fills the frame
+              cleanly — no blurred-letterbox padding for the studio
+              stock photo we used to ship here. */}
           <Image
-            src={LOCAL_PHOTOS.blue1}
-            alt=""
+            src={LOCAL_PHOTOS.ownSpark1}
+            alt="Sea-Doo Spark Trixx 2up sivuprofiilista"
             fill
             sizes="(min-width: 1024px) 800px, 100vw"
-            className="object-cover scale-110 blur-2xl opacity-50"
-            aria-hidden
+            className="object-cover"
           />
-          <div className="absolute inset-0 bg-brand-primary-50/40" />
-          {/* Sharp foreground */}
-          <Image
-            src={LOCAL_PHOTOS.blue1}
-            alt="Sea-Doo Spark Trixx"
-            fill
-            sizes="(min-width: 1024px) 800px, 100vw"
-            className="relative object-contain p-3 md:p-6"
-          />
-          <div className="absolute inset-0 bg-brand-secondary/8" />
+          <div className="absolute inset-0 bg-brand-secondary/10" />
 
           {/* Hotspots (desktop only — mobile gets a list below) */}
           <div className="hidden md:block absolute inset-0">
