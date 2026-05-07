@@ -31,15 +31,18 @@ const HOTSPOTS: HotspotSpec[] = [
 ];
 
 const STAGGER = 0.6;
-const FLOAT_AMPLITUDE_PX = 4;
-// 1 viewBox unit (Y) ≈ 1 % of the container's height. The image
-// container is 4:3 with max-w-4xl (~672 px tall on desktop), so
-// 1 viewBox unit ≈ 6.72 px. 0.6 viewBox units ≈ 4 px → matches the
-// label's ±4 px float. The two motion sources stay in lockstep
-// even though they're animated separately, because they share the
-// same duration, easing, and start delay.
-const FLOAT_AMPLITUDE_VB = 0.6;
-const FLOAT_DURATION = 7;
+// Slow, breathy ±5 px / ±2 px drift. Both axes use the same timing
+// (duration / ease / delay) on label and line, so the card and the
+// line endpoint stay locked together. Line origin (x1, y1) and the
+// dot stay completely static — only the endpoint dances with the
+// label.
+const FLOAT_AMPLITUDE_Y_PX = 5;
+const FLOAT_AMPLITUDE_X_PX = 2;
+// Viewbox amplitudes ≈ pixels / container size in that axis at the
+// reference 896x672 size (max-w-4xl, aspect 4:3).
+const FLOAT_AMPLITUDE_Y_VB = 0.75; // ≈ 5 px on a 672 px-tall container
+const FLOAT_AMPLITUDE_X_VB = 0.25; // ≈ 2 px on a 896 px-wide container
+const FLOAT_DURATION = 12;
 
 export default function Anatomy() {
   const t = useT();
@@ -87,44 +90,61 @@ export default function Anatomy() {
                   Endpoints (x1,y1) live on the dot's centre and never
                   move; (x2,y2) tracks the floating label, so the line
                   visibly stretches/contracts in lockstep with the card. */}
+              {/* Each connector is a single solid white line. The
+                  pathLength draw-on animation was producing visible
+                  segmentation on some renders ("dashed" look the user
+                  reported); replaced with a plain opacity fade. The
+                  line is solid from frame 1 of its visibility, just
+                  invisible until the entry delay. */}
               {hotspots.map((h, i) => {
-                const startDelay = i * STAGGER + 0.3;
+                const startDelay = i * STAGGER + 0.4;
                 const floatDelay = i * STAGGER + 1.1;
                 return (
                   <motion.line
                     key={`line-${i}`}
                     x1={h.x}
                     y1={h.y}
-                    x2={h.labelX}
                     stroke="white"
-                    strokeWidth="2.6"
+                    strokeWidth="3"
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                     style={{
                       filter:
-                        "drop-shadow(0 1px 2px rgba(10, 61, 98, 0.55)) drop-shadow(0 0 1px rgba(10, 61, 98, 0.45))",
+                        "drop-shadow(0 1.5px 3px rgba(10, 61, 98, 0.6))",
                     }}
-                    initial={{ pathLength: 0, opacity: 0, y2: h.labelY }}
+                    initial={{
+                      opacity: 0,
+                      x2: h.labelX,
+                      y2: h.labelY,
+                    }}
                     animate={{
-                      pathLength: 1,
                       opacity: 1,
+                      x2: [
+                        h.labelX,
+                        h.labelX + FLOAT_AMPLITUDE_X_VB,
+                        h.labelX - FLOAT_AMPLITUDE_X_VB,
+                        h.labelX + FLOAT_AMPLITUDE_X_VB,
+                        h.labelX,
+                      ],
                       y2: [
                         h.labelY,
-                        h.labelY - FLOAT_AMPLITUDE_VB,
-                        h.labelY + FLOAT_AMPLITUDE_VB,
-                        h.labelY - FLOAT_AMPLITUDE_VB,
+                        h.labelY - FLOAT_AMPLITUDE_Y_VB,
+                        h.labelY + FLOAT_AMPLITUDE_Y_VB,
+                        h.labelY - FLOAT_AMPLITUDE_Y_VB,
                         h.labelY,
                       ],
                     }}
                     transition={{
-                      pathLength: {
+                      opacity: {
                         duration: 0.6,
                         ease: [0.22, 1, 0.36, 1],
                         delay: startDelay,
                       },
-                      opacity: {
-                        duration: 0.6,
-                        delay: startDelay,
+                      x2: {
+                        duration: FLOAT_DURATION,
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                        delay: floatDelay,
                       },
                       y2: {
                         duration: FLOAT_DURATION,
@@ -245,11 +265,18 @@ function Label({
         animate={{
           opacity: 1,
           scale: 1,
+          x: [
+            0,
+            FLOAT_AMPLITUDE_X_PX,
+            -FLOAT_AMPLITUDE_X_PX,
+            FLOAT_AMPLITUDE_X_PX,
+            0,
+          ],
           y: [
             0,
-            -FLOAT_AMPLITUDE_PX,
-            FLOAT_AMPLITUDE_PX,
-            -FLOAT_AMPLITUDE_PX,
+            -FLOAT_AMPLITUDE_Y_PX,
+            FLOAT_AMPLITUDE_Y_PX,
+            -FLOAT_AMPLITUDE_Y_PX,
             0,
           ],
         }}
@@ -263,6 +290,12 @@ function Label({
             duration: 0.5,
             ease: [0.22, 1, 0.36, 1],
             delay: entryDelay,
+          },
+          x: {
+            duration: FLOAT_DURATION,
+            ease: "easeInOut",
+            repeat: Infinity,
+            delay: floatDelay,
           },
           y: {
             duration: FLOAT_DURATION,
