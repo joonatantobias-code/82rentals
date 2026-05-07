@@ -18,10 +18,10 @@ type HotspotSpec = {
 // render the line's start point AND the dot's centre — both inside
 // one SVG with the same viewBox — so the two can never disagree.
 const HOTSPOTS: HotspotSpec[] = [
-  { x: 51, y: 45, labelX: 72, labelY: 14, labelAnchor: "right", number: "01" },
-  { x: 66, y: 54, labelX: 72, labelY: 86, labelAnchor: "right", number: "02" },
-  { x: 42, y: 60, labelX: 28, labelY: 14, labelAnchor: "left", number: "03" },
-  { x: 74, y: 58, labelX: 28, labelY: 86, labelAnchor: "left", number: "04" },
+  { x: 47, y: 33, labelX: 76, labelY: 17, labelAnchor: "right", number: "01" },
+  { x: 60, y: 46, labelX: 77, labelY: 76, labelAnchor: "right", number: "02" },
+  { x: 31, y: 58, labelX: 23, labelY: 31, labelAnchor: "left", number: "03" },
+  { x: 57, y: 58, labelX: 33, labelY: 75, labelAnchor: "left", number: "04" },
 ];
 
 const STAGGER = 0.6;
