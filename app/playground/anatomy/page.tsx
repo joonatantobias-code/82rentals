@@ -84,7 +84,7 @@ export default function AnatomyPlayground() {
   );
 
   return (
-    <main className="min-h-screen bg-slate-100 p-6 sm:p-10 select-none">
+    <main className="min-h-screen bg-slate-100 p-6 sm:p-10">
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -185,7 +185,7 @@ export default function AnatomyPlayground() {
                   e.preventDefault();
                   setActive({ kind: "dot", index: i });
                 }}
-                className="absolute h-7 w-7 rounded-full cursor-grab active:cursor-grabbing"
+                className="absolute h-7 w-7 rounded-full cursor-grab active:cursor-grabbing select-none"
                 style={{
                   left: `${h.x}%`,
                   top: `${h.y}%`,
@@ -216,7 +216,7 @@ export default function AnatomyPlayground() {
                     e.preventDefault();
                     setActive({ kind: "label", index: i });
                   }}
-                  className={`rounded-xl bg-white border border-brand-primary/40 shadow-[0_2px_6px_rgba(15,23,42,0.12),0_18px_36px_-12px_rgba(15,23,42,0.32)] px-4 py-3 w-[220px] cursor-grab active:cursor-grabbing ${
+                  className={`rounded-xl bg-white border border-brand-primary/40 shadow-[0_2px_6px_rgba(15,23,42,0.12),0_18px_36px_-12px_rgba(15,23,42,0.32)] px-4 py-3 w-[220px] cursor-grab active:cursor-grabbing select-none ${
                     h.labelAnchor === "left" ? "text-right" : "text-left"
                   } ${
                     active?.kind === "label" && active.index === i

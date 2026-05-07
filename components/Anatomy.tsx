@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { LOCAL_PHOTOS } from "@/lib/images";
 import { useT } from "@/components/LocaleProvider";
@@ -15,9 +15,6 @@ type HotspotSpec = {
   number: string;
 };
 
-// Dot positions (% of container). The same x/y values are used to
-// render the line's start point AND the dot's centre — both inside
-// one SVG with the same viewBox — so the two can never disagree.
 const HOTSPOTS: HotspotSpec[] = [
   { x: 47, y: 33, labelX: 76, labelY: 17, labelAnchor: "right", number: "01" },
   { x: 60, y: 46, labelX: 77, labelY: 76, labelAnchor: "right", number: "02" },
@@ -25,18 +22,17 @@ const HOTSPOTS: HotspotSpec[] = [
   { x: 57, y: 58, labelX: 33, labelY: 75, labelAnchor: "left", number: "04" },
 ];
 
-const STAGGER = 0.6;
-// Slow ambient drift on the label and the line endpoint. Both axes
-// use the same timing, easing and start delay so the card and the
-// line dance in lockstep. Line origin and dot stay fully static.
+const STAGGER = 0.55;
 const FLOAT_AMPLITUDE_Y_PX = 5;
 const FLOAT_AMPLITUDE_X_PX = 2;
-// SVG viewBox is 100x100 with preserveAspectRatio="none", so 1 unit
-// in either axis ≈ 1 % of the container. Convert px → vb at the
-// reference 896×672 size.
-const FLOAT_AMPLITUDE_Y_VB = 0.75; // ≈ 5 px on a 672 px-tall container
-const FLOAT_AMPLITUDE_X_VB = 0.25; // ≈ 2 px on a 896 px-wide container
+const FLOAT_AMPLITUDE_Y_VB = 0.75;
+const FLOAT_AMPLITUDE_X_VB = 0.25;
 const FLOAT_DURATION = 12;
+
+// Tasteful "easeOutExpo"-style curve used everywhere a thing settles
+// into its resting position. Distinct from the float's plain easeInOut
+// so the entry feels deliberate against the slow drift afterwards.
+const SETTLE_EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 export default function Anatomy() {
   const t = useT();
@@ -47,25 +43,29 @@ export default function Anatomy() {
     text: page.hotspots[i].text,
   }));
 
-  // The whole hotspot choreography (dot pop → line draw → label pop
-  // → infinite drift) is gated on this ref entering the viewport.
-  //
-  // The negative top/bottom margins collapse the IntersectionObserver
-  // root rect to a thin horizontal band right around the centre of the
-  // viewport, so the trigger doesn't fire as soon as the bottom of the
-  // photo peeks in — it fires when the photo is actually being looked
-  // at (its top has reached roughly viewport-centre). Without this,
-  // amount-based triggers were firing while the user was still scrolling
-  // toward the section, which made the entry animation play out before
-  // they arrived.
-  //
-  // `once: true` keeps the float looping after entry instead of
-  // resetting on scroll-out.
   const stageRef = useRef<HTMLDivElement>(null);
   const inView = useInView(stageRef, {
     once: true,
     margin: "-35% 0px -35% 0px",
   });
+
+  // Hover state lives on the parent so the dot, line and label of the
+  // same hotspot can all light up together when any one of them is
+  // hovered. Null = nothing hovered.
+  const [hovered, setHovered] = useState<number | null>(null);
+
+  // After the entry choreography has fully landed we flip this flag,
+  // which switches the dots' rx/ry transition from the slow entry curve
+  // (with per-index stagger delay) to a snappy hover curve. Without
+  // this, the first hover would re-use the entry transition and feel
+  // sluggish.
+  const [entered, setEntered] = useState(false);
+  useEffect(() => {
+    if (!inView) return;
+    const totalMs = (HOTSPOTS.length * STAGGER + 0.65) * 1000;
+    const id = window.setTimeout(() => setEntered(true), totalMs);
+    return () => window.clearTimeout(id);
+  }, [inView]);
 
   return (
     <section className="section relative">
@@ -93,12 +93,11 @@ export default function Anatomy() {
           />
           <div className="absolute inset-0 bg-brand-secondary/15" />
 
-          {/* Single SVG owns BOTH the connector lines and the dots.
-              Same viewBox + same coordinate values means line origin
-              and dot centre are pixel-identical. Move a hotspot's
-              x/y in HOTSPOTS and both move together. Labels stay as
-              HTML divs (positioned by percentage) so they remain
-              accessible text content. */}
+          {/* Single SVG owns the lines, dots, sonar-pulses and hover
+              halos. All four layers share the same viewBox/coordinate
+              values so anchors are pixel-locked together. Render order
+              matters: lines and pulses sit beneath the halos, halos sit
+              beneath the dots. */}
           <div className="hidden md:block absolute inset-0">
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none"
@@ -107,9 +106,6 @@ export default function Anatomy() {
               aria-hidden
             >
               <defs>
-                {/* Soft drop shadow under both lines and dots so they
-                    pop off bright sky / pale asphalt without needing
-                    a second SVG element. */}
                 <filter
                   id="hotspot-shadow"
                   x="-50%"
@@ -128,19 +124,24 @@ export default function Anatomy() {
               </defs>
 
               {hotspots.map((h, i) => {
-                const lineDelay = i * STAGGER + 0.4;
-                const floatDelay = i * STAGGER + 1.1;
+                const lineDelay = i * STAGGER + 0.32;
+                const floatDelay = i * STAGGER + 0.95;
+                const isHover = hovered === i;
                 return (
                   <motion.line
                     key={`line-${i}`}
                     x1={h.x}
                     y1={h.y}
                     stroke="white"
-                    strokeWidth="3"
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
                     filter="url(#hotspot-shadow)"
-                    initial={{ opacity: 0, x2: h.labelX, y2: h.labelY }}
+                    initial={{
+                      opacity: 0,
+                      x2: h.labelX,
+                      y2: h.labelY,
+                      strokeWidth: 3,
+                    }}
                     animate={
                       inView
                         ? {
@@ -159,13 +160,19 @@ export default function Anatomy() {
                               h.labelY - FLOAT_AMPLITUDE_Y_VB,
                               h.labelY,
                             ],
+                            strokeWidth: isHover ? 4 : 3,
                           }
-                        : { opacity: 0, x2: h.labelX, y2: h.labelY }
+                        : {
+                            opacity: 0,
+                            x2: h.labelX,
+                            y2: h.labelY,
+                            strokeWidth: 3,
+                          }
                     }
                     transition={{
                       opacity: {
-                        duration: 0.6,
-                        ease: [0.22, 1, 0.36, 1],
+                        duration: 0.55,
+                        ease: SETTLE_EASE,
                         delay: lineDelay,
                       },
                       x2: {
@@ -180,44 +187,118 @@ export default function Anatomy() {
                         repeat: Infinity,
                         delay: floatDelay,
                       },
+                      strokeWidth: { duration: 0.22, ease: SETTLE_EASE },
                     }}
                   />
                 );
               })}
 
-              {/* Dots are <ellipse> (not <circle>) so they render
-                  ROUND on a 4:3 container under preserveAspectRatio
-                  "none". 1 viewBox-X-unit ≈ 1 % of container width and
-                  1 viewBox-Y-unit ≈ 1 % of container height — the X
-                  axis is therefore stretched 4/3× more than Y. We
-                  compensate with rx ≈ ry × 3/4 so the rendered shape
-                  is a true circle of ≈ 18 px on a 4:3 container. The
-                  same h.x / h.y feeds the circle's centre and the
-                  matching line's (x1, y1), so the two are
-                  pixel-locked together. */}
+              {/* Sonar pulse — a thin brand-primary ring that expands and
+                  fades once at entry. Adds a subtle "ping" cue that the
+                  dot has just landed without being noisy on the rest. */}
               {hotspots.map((h, i) => (
                 <motion.ellipse
-                  key={`dot-${i}`}
+                  key={`pulse-${i}`}
                   cx={h.x}
                   cy={h.y}
-                  fill="white"
+                  fill="none"
                   stroke="#6EC6FF"
-                  strokeWidth="3.2"
+                  strokeWidth="1.6"
                   vectorEffect="non-scaling-stroke"
-                  filter="url(#hotspot-shadow)"
-                  initial={{ rx: 0, ry: 0, opacity: 0 }}
+                  initial={{ rx: 1.05, ry: 1.4, opacity: 0 }}
                   animate={
                     inView
-                      ? { rx: 1.05, ry: 1.4, opacity: 1 }
-                      : { rx: 0, ry: 0, opacity: 0 }
+                      ? {
+                          rx: [1.05, 4.6],
+                          ry: [1.4, 6.1],
+                          opacity: [0, 0.55, 0],
+                        }
+                      : { rx: 1.05, ry: 1.4, opacity: 0 }
                   }
                   transition={{
-                    duration: 0.55,
-                    ease: [0.22, 1, 0.36, 1],
-                    delay: i * STAGGER,
+                    duration: 1.35,
+                    ease: SETTLE_EASE,
+                    delay: i * STAGGER + 0.18,
                   }}
                 />
               ))}
+
+              {/* Hover halo — soft brand-primary blob behind the dot.
+                  Fades in only when this hotspot is hovered. */}
+              {hotspots.map((h, i) => (
+                <motion.ellipse
+                  key={`halo-${i}`}
+                  cx={h.x}
+                  cy={h.y}
+                  rx="2.6"
+                  ry="3.5"
+                  fill="#6EC6FF"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: hovered === i ? 0.4 : 0 }}
+                  transition={{ duration: 0.22, ease: SETTLE_EASE }}
+                />
+              ))}
+
+              {/* Dots — round on a 4:3 container thanks to rx ≈ ry × 3/4
+                  compensating for the non-uniform scale. Also nudged a
+                  touch larger when hovered. */}
+              {hotspots.map((h, i) => {
+                const isHover = hovered === i;
+                return (
+                  <motion.ellipse
+                    key={`dot-${i}`}
+                    cx={h.x}
+                    cy={h.y}
+                    fill="white"
+                    stroke="#6EC6FF"
+                    vectorEffect="non-scaling-stroke"
+                    filter="url(#hotspot-shadow)"
+                    initial={{
+                      rx: 0,
+                      ry: 0,
+                      opacity: 0,
+                      strokeWidth: 3.2,
+                    }}
+                    animate={
+                      inView
+                        ? {
+                            rx: isHover ? 1.35 : 1.05,
+                            ry: isHover ? 1.8 : 1.4,
+                            opacity: 1,
+                            strokeWidth: isHover ? 3.6 : 3.2,
+                          }
+                        : { rx: 0, ry: 0, opacity: 0, strokeWidth: 3.2 }
+                    }
+                    transition={
+                      entered
+                        ? {
+                            rx: { duration: 0.22, ease: SETTLE_EASE },
+                            ry: { duration: 0.22, ease: SETTLE_EASE },
+                            strokeWidth: { duration: 0.22, ease: SETTLE_EASE },
+                            opacity: { duration: 0.22, ease: SETTLE_EASE },
+                          }
+                        : {
+                            rx: {
+                              duration: 0.55,
+                              ease: SETTLE_EASE,
+                              delay: i * STAGGER,
+                            },
+                            ry: {
+                              duration: 0.55,
+                              ease: SETTLE_EASE,
+                              delay: i * STAGGER,
+                            },
+                            opacity: {
+                              duration: 0.55,
+                              ease: SETTLE_EASE,
+                              delay: i * STAGGER,
+                            },
+                            strokeWidth: { duration: 0.22, ease: SETTLE_EASE },
+                          }
+                    }
+                  />
+                );
+              })}
             </svg>
 
             {hotspots.map((h, i) => (
@@ -229,9 +310,11 @@ export default function Anatomy() {
                 number={h.number}
                 title={h.title}
                 text={h.text}
-                entryDelay={i * STAGGER + 0.65}
-                floatDelay={i * STAGGER + 1.1}
+                entryDelay={i * STAGGER + 0.55}
+                floatDelay={i * STAGGER + 0.95}
                 inView={inView}
+                isHovered={hovered === i}
+                onHover={(v) => setHovered(v ? i : null)}
               />
             ))}
           </div>
@@ -270,6 +353,8 @@ function Label({
   entryDelay,
   floatDelay,
   inView,
+  isHovered,
+  onHover,
 }: {
   x: number;
   y: number;
@@ -280,6 +365,8 @@ function Label({
   entryDelay: number;
   floatDelay: number;
   inView: boolean;
+  isHovered: boolean;
+  onHover: (hovered: boolean) => void;
 }) {
   return (
     <div
@@ -289,66 +376,82 @@ function Label({
         top: `${y}%`,
         transform: "translate(-50%, -50%)",
       }}
+      onMouseEnter={() => onHover(true)}
+      onMouseLeave={() => onHover(false)}
     >
+      {/* Outer wrapper handles hover (lift + scale) so it composites
+          cleanly with the inner element's float-keyframe transform. */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.94 }}
-        animate={
-          inView
-            ? {
-                opacity: 1,
-                scale: 1,
-                x: [
-                  0,
-                  FLOAT_AMPLITUDE_X_PX,
-                  -FLOAT_AMPLITUDE_X_PX,
-                  FLOAT_AMPLITUDE_X_PX,
-                  0,
-                ],
-                y: [
-                  0,
-                  -FLOAT_AMPLITUDE_Y_PX,
-                  FLOAT_AMPLITUDE_Y_PX,
-                  -FLOAT_AMPLITUDE_Y_PX,
-                  0,
-                ],
-              }
-            : { opacity: 0, scale: 0.94 }
-        }
-        transition={{
-          opacity: {
-            duration: 0.5,
-            ease: [0.22, 1, 0.36, 1],
-            delay: entryDelay,
-          },
-          scale: {
-            duration: 0.5,
-            ease: [0.22, 1, 0.36, 1],
-            delay: entryDelay,
-          },
-          x: {
-            duration: FLOAT_DURATION,
-            ease: "easeInOut",
-            repeat: Infinity,
-            delay: floatDelay,
-          },
-          y: {
-            duration: FLOAT_DURATION,
-            ease: "easeInOut",
-            repeat: Infinity,
-            delay: floatDelay,
-          },
+        animate={{
+          y: isHovered ? -3 : 0,
+          scale: isHovered ? 1.04 : 1,
         }}
-        className={`rounded-xl bg-white border border-brand-primary/40 shadow-[0_2px_6px_rgba(15,23,42,0.12),0_18px_36px_-12px_rgba(15,23,42,0.32)] px-4 py-3 w-[220px] ${
-          anchor === "left" ? "text-right" : "text-left"
-        }`}
+        transition={{ duration: 0.22, ease: SETTLE_EASE }}
       >
-        <div className="flex items-baseline gap-2 text-xs font-bold tracking-wider uppercase text-brand-primary-600">
-          <span className="shrink-0">{number}</span>
-          <span className="text-brand-secondary leading-tight">{title}</span>
-        </div>
-        <p className="text-xs text-brand-secondary/75 mt-1 leading-relaxed">
-          {text}
-        </p>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92 }}
+          animate={
+            inView
+              ? {
+                  opacity: 1,
+                  scale: 1,
+                  x: [
+                    0,
+                    FLOAT_AMPLITUDE_X_PX,
+                    -FLOAT_AMPLITUDE_X_PX,
+                    FLOAT_AMPLITUDE_X_PX,
+                    0,
+                  ],
+                  y: [
+                    0,
+                    -FLOAT_AMPLITUDE_Y_PX,
+                    FLOAT_AMPLITUDE_Y_PX,
+                    -FLOAT_AMPLITUDE_Y_PX,
+                    0,
+                  ],
+                }
+              : { opacity: 0, scale: 0.92 }
+          }
+          transition={{
+            opacity: {
+              duration: 0.55,
+              ease: SETTLE_EASE,
+              delay: entryDelay,
+            },
+            scale: {
+              duration: 0.55,
+              ease: SETTLE_EASE,
+              delay: entryDelay,
+            },
+            x: {
+              duration: FLOAT_DURATION,
+              ease: "easeInOut",
+              repeat: Infinity,
+              delay: floatDelay,
+            },
+            y: {
+              duration: FLOAT_DURATION,
+              ease: "easeInOut",
+              repeat: Infinity,
+              delay: floatDelay,
+            },
+          }}
+          className={`rounded-xl bg-white border border-brand-primary/40 px-4 py-3 w-[220px] cursor-default transition-shadow duration-200 ${
+            anchor === "left" ? "text-right" : "text-left"
+          } ${
+            isHovered
+              ? "shadow-[0_4px_12px_rgba(15,23,42,0.18),0_28px_60px_-14px_rgba(10,61,98,0.55)]"
+              : "shadow-[0_2px_6px_rgba(15,23,42,0.12),0_18px_36px_-12px_rgba(15,23,42,0.32)]"
+          }`}
+        >
+          <div className="flex items-baseline gap-2 text-xs font-bold tracking-wider uppercase text-brand-primary-600">
+            <span className="shrink-0">{number}</span>
+            <span className="text-brand-secondary leading-tight">{title}</span>
+          </div>
+          <p className="text-xs text-brand-secondary/75 mt-1 leading-relaxed">
+            {text}
+          </p>
+        </motion.div>
       </motion.div>
     </div>
   );

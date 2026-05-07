@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Gauge,
@@ -75,6 +75,17 @@ export default function Product() {
     text: page.features[i].text,
   }));
   const [active, setActive] = useState(0);
+
+  // Auto-advance the gallery every 5 s. The timeout is rebound on every
+  // `active` change so a manual thumbnail click effectively resets the
+  // 5-second window, giving the user a full beat on the photo they just
+  // chose before the slideshow continues.
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      setActive((prev) => (prev + 1) % gallery.length);
+    }, 5000);
+    return () => window.clearTimeout(id);
+  }, [active]);
 
   return (
     <section id="product" className="section relative">
