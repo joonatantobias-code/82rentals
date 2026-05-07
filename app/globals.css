@@ -77,10 +77,14 @@ body {
 
   /* Primary: deep brand blue, white text. Hover flips the surface to
    * a clean white card with the navy text — keeps the brand-primary
-   * glow halo so the hover state still reads "lit up". */
+   * glow halo and adds a 2 px brand-primary ring so the button still
+   * has a visible outline when the page background underneath is also
+   * white. The shimmer streak (defined further down) switches to a
+   * sky-blue tint on hover so it doesn't disappear into the white
+   * surface. */
   .btn-primary {
     @apply relative inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-secondary px-6 py-4 font-semibold text-white shadow-cta transition-all duration-200 min-h-[52px] overflow-hidden
-      hover:bg-white hover:text-brand-secondary hover:shadow-glow hover:-translate-y-0.5
+      hover:bg-white hover:text-brand-secondary hover:shadow-glow hover:ring-2 hover:ring-brand-primary hover:-translate-y-0.5
       active:scale-[0.97] active:translate-y-0
       focus-visible:outline-none focus-visible:shadow-ring;
   }
@@ -88,7 +92,7 @@ body {
   /* Light: bright brand blue with deep blue text */
   .btn-light {
     @apply relative inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-primary px-6 py-4 font-bold text-brand-secondary shadow-glow transition-all duration-200 min-h-[52px] overflow-hidden
-      hover:bg-white hover:shadow-[0_18px_44px_-10px_rgba(110,198,255,0.7)] hover:-translate-y-0.5
+      hover:bg-white hover:shadow-[0_18px_44px_-10px_rgba(110,198,255,0.7)] hover:ring-2 hover:ring-brand-primary hover:-translate-y-0.5
       active:scale-[0.97] active:translate-y-0
       focus-visible:outline-none focus-visible:shadow-ring;
   }
@@ -117,9 +121,23 @@ body {
       focus-visible:outline-none focus-visible:shadow-ring;
   }
 
-  /* Shimmer streak — sweeps across once on hover. Applied to every
-   * variant that has an opaque/visible surface so the family feels
-   * consistent. Ghost is intentionally bare. */
+  /* Shimmer streak — sweeps across once on hover. Tint is driven by
+   * --btn-shimmer so the streak stays visible against whichever
+   * surface the button is currently showing. Defaults to a
+   * translucent white (good contrast on the navy / sky resting
+   * surfaces); .btn-primary and .btn-light flip the variable to a
+   * sky-blue tint on hover so the streak still reads when their
+   * surface goes white. Ghost is intentionally bare. */
+  .btn-primary,
+  .btn-light,
+  .btn-outline,
+  .btn-secondary {
+    --btn-shimmer: rgba(255, 255, 255, 0.35);
+  }
+  .btn-primary:hover,
+  .btn-light:hover {
+    --btn-shimmer: rgba(110, 198, 255, 0.55);
+  }
   .btn-primary::before,
   .btn-light::before,
   .btn-outline::before,
@@ -130,7 +148,7 @@ body {
     background: linear-gradient(
       115deg,
       transparent 30%,
-      rgba(255, 255, 255, 0.35) 50%,
+      var(--btn-shimmer) 50%,
       transparent 70%
     );
     transform: translateX(-110%) skewX(-12deg);

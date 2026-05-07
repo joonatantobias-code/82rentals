@@ -121,8 +121,8 @@ export default function Pricing() {
                   href={`/varaa?duration=${tier.duration}`}
                   className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 h-12 text-sm font-semibold transition-all ${
                     tier.highlight
-                      ? "bg-brand-primary text-brand-secondary hover:bg-white"
-                      : "bg-brand-secondary text-white hover:bg-white hover:text-brand-secondary"
+                      ? "bg-brand-primary text-brand-secondary hover:bg-white hover:ring-2 hover:ring-brand-primary"
+                      : "bg-brand-secondary text-white hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary hover:shadow-glow"
                   }`}
                 >
                   {tier.cta}
