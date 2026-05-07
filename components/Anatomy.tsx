@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import { LOCAL_PHOTOS } from "@/lib/images";
 import { useT } from "@/components/LocaleProvider";
 
@@ -46,6 +47,13 @@ export default function Anatomy() {
     text: page.hotspots[i].text,
   }));
 
+  // The whole hotspot choreography (dot pop → line draw → label pop
+  // → infinite drift) is gated on this ref entering the viewport. Once
+  // it fires the animation runs through, and `once: true` keeps the
+  // float looping after entry instead of resetting on scroll-out.
+  const stageRef = useRef<HTMLDivElement>(null);
+  const inView = useInView(stageRef, { once: true, amount: 0.35 });
+
   return (
     <section className="section relative">
       <div className="blob-primary w-[280px] h-[280px] -top-10 -right-20" />
@@ -58,7 +66,10 @@ export default function Anatomy() {
         </p>
       </div>
 
-      <div className="relative rounded-2xl overflow-hidden bg-brand-primary-50 ring-1 ring-brand-primary/30 max-w-4xl mx-auto">
+      <div
+        ref={stageRef}
+        className="relative rounded-2xl overflow-hidden bg-brand-primary-50 ring-1 ring-brand-primary/30 max-w-4xl mx-auto"
+      >
         <div className="relative aspect-[4/3] w-full">
           <Image
             src={LOCAL_PHOTOS.ownSpark1}
@@ -117,23 +128,27 @@ export default function Anatomy() {
                     vectorEffect="non-scaling-stroke"
                     filter="url(#hotspot-shadow)"
                     initial={{ opacity: 0, x2: h.labelX, y2: h.labelY }}
-                    animate={{
-                      opacity: 1,
-                      x2: [
-                        h.labelX,
-                        h.labelX + FLOAT_AMPLITUDE_X_VB,
-                        h.labelX - FLOAT_AMPLITUDE_X_VB,
-                        h.labelX + FLOAT_AMPLITUDE_X_VB,
-                        h.labelX,
-                      ],
-                      y2: [
-                        h.labelY,
-                        h.labelY - FLOAT_AMPLITUDE_Y_VB,
-                        h.labelY + FLOAT_AMPLITUDE_Y_VB,
-                        h.labelY - FLOAT_AMPLITUDE_Y_VB,
-                        h.labelY,
-                      ],
-                    }}
+                    animate={
+                      inView
+                        ? {
+                            opacity: 1,
+                            x2: [
+                              h.labelX,
+                              h.labelX + FLOAT_AMPLITUDE_X_VB,
+                              h.labelX - FLOAT_AMPLITUDE_X_VB,
+                              h.labelX + FLOAT_AMPLITUDE_X_VB,
+                              h.labelX,
+                            ],
+                            y2: [
+                              h.labelY,
+                              h.labelY - FLOAT_AMPLITUDE_Y_VB,
+                              h.labelY + FLOAT_AMPLITUDE_Y_VB,
+                              h.labelY - FLOAT_AMPLITUDE_Y_VB,
+                              h.labelY,
+                            ],
+                          }
+                        : { opacity: 0, x2: h.labelX, y2: h.labelY }
+                    }
                     transition={{
                       opacity: {
                         duration: 0.6,
@@ -178,7 +193,11 @@ export default function Anatomy() {
                   vectorEffect="non-scaling-stroke"
                   filter="url(#hotspot-shadow)"
                   initial={{ rx: 0, ry: 0, opacity: 0 }}
-                  animate={{ rx: 1.05, ry: 1.4, opacity: 1 }}
+                  animate={
+                    inView
+                      ? { rx: 1.05, ry: 1.4, opacity: 1 }
+                      : { rx: 0, ry: 0, opacity: 0 }
+                  }
                   transition={{
                     duration: 0.55,
                     ease: [0.22, 1, 0.36, 1],
@@ -199,6 +218,7 @@ export default function Anatomy() {
                 text={h.text}
                 entryDelay={i * STAGGER + 0.65}
                 floatDelay={i * STAGGER + 1.1}
+                inView={inView}
               />
             ))}
           </div>
@@ -236,6 +256,7 @@ function Label({
   text,
   entryDelay,
   floatDelay,
+  inView,
 }: {
   x: number;
   y: number;
@@ -245,6 +266,7 @@ function Label({
   text: string;
   entryDelay: number;
   floatDelay: number;
+  inView: boolean;
 }) {
   return (
     <div
@@ -257,24 +279,28 @@ function Label({
     >
       <motion.div
         initial={{ opacity: 0, scale: 0.94 }}
-        animate={{
-          opacity: 1,
-          scale: 1,
-          x: [
-            0,
-            FLOAT_AMPLITUDE_X_PX,
-            -FLOAT_AMPLITUDE_X_PX,
-            FLOAT_AMPLITUDE_X_PX,
-            0,
-          ],
-          y: [
-            0,
-            -FLOAT_AMPLITUDE_Y_PX,
-            FLOAT_AMPLITUDE_Y_PX,
-            -FLOAT_AMPLITUDE_Y_PX,
-            0,
-          ],
-        }}
+        animate={
+          inView
+            ? {
+                opacity: 1,
+                scale: 1,
+                x: [
+                  0,
+                  FLOAT_AMPLITUDE_X_PX,
+                  -FLOAT_AMPLITUDE_X_PX,
+                  FLOAT_AMPLITUDE_X_PX,
+                  0,
+                ],
+                y: [
+                  0,
+                  -FLOAT_AMPLITUDE_Y_PX,
+                  FLOAT_AMPLITUDE_Y_PX,
+                  -FLOAT_AMPLITUDE_Y_PX,
+                  0,
+                ],
+              }
+            : { opacity: 0, scale: 0.94 }
+        }
         transition={{
           opacity: {
             duration: 0.5,
