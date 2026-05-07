@@ -43,27 +43,18 @@ export default function Lifestyle() {
   return (
     <section className="relative my-12 md:my-24">
       <div className="relative h-[70vh] min-h-[460px] w-full overflow-hidden">
-        {/* Blurred fill underneath: same photo scaled up + blurred so it
-            covers the wide hero. Works as a soft, on-brand letterbox
-            for the portrait original instead of cropping out the
-            person or the jet ski. */}
+        {/* Founders shot, framed for the wide hero (2880×1200, 12:5).
+            object-cover with object-position 70% keeps the rider +
+            handlebars near the right side fully in frame on every
+            common viewport ratio while letting the field on the left
+            crop first when screens get extra wide. */}
         <Image
           src={LOCAL_PHOTOS.founders}
           alt=""
           fill
           sizes="100vw"
-          className="object-cover scale-110 blur-2xl"
-          priority={false}
-          aria-hidden
-        />
-        {/* Sharp portrait image, contained so the full frame (jet ski
-            + person + sky) is visible regardless of aspect ratio. */}
-        <Image
-          src={LOCAL_PHOTOS.founders}
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-contain"
+          className="object-cover"
+          style={{ objectPosition: "70% center" }}
           priority={false}
         />
         <div className="absolute inset-0 bg-brand-secondary/70" />
