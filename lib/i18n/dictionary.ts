@@ -367,19 +367,19 @@ export const dictionary = {
         hotspots: [
           {
             title: "Säädettävä ohjaustanko",
-            text: "Riser tuo ajoasennon ylös ja helpottaa temppuilua.",
+            text: "Riser nostaa ajoasennon pystyyn ja helpottaa hallintaa.",
           },
           {
-            title: "Sininen Trixx istuin",
-            text: "Mukava 2up istuin, mahtuu kaveri tai kumppani.",
+            title: "2-up Trixx-istuin",
+            text: "Mukava istuin kahdelle, ota kaveri tai kumppani kyytiin.",
           },
           {
-            title: "90 hv Rotax",
-            text: "Sähköinen iBR jarru ja peruutus, kiihdytys tuntuu heti.",
+            title: "Rotax 90 hv + iBR",
+            text: "Sähköinen jarru ja peruutus tekevät vauhtiin pääsystä turvallista.",
           },
           {
             title: "Kevyt runko",
-            text: "Alle 200 kg kuivapaino tekee jetistä leikkisän.",
+            text: "Alle 200 kg kuivapaino tekee jetistä ketterän ja leikkisän.",
           },
         ],
         specsEyebrow: "Tekniset tiedot",
@@ -944,19 +944,19 @@ export const dictionary = {
         hotspots: [
           {
             title: "Adjustable handlebar",
-            text: "Riser lifts your stance and makes tricks easier.",
+            text: "The riser lifts your stance and makes the jet easier to control.",
           },
           {
-            title: "Blue Trixx seat",
-            text: "Comfy 2-up seat, fits a friend or partner.",
+            title: "2-up Trixx seat",
+            text: "Comfy seat for two — bring a friend or your partner.",
           },
           {
-            title: "90 hp Rotax",
-            text: "Electric iBR brake and reverse, the bite is instant.",
+            title: "Rotax 90 hp + iBR",
+            text: "Electric brake and reverse keep getting up to speed safe.",
           },
           {
             title: "Light hull",
-            text: "Under 200 kg dry weight makes it playful and quick.",
+            text: "Under 200 kg dry weight makes the jet nimble and playful.",
           },
         ],
         specsEyebrow: "Tech specs",

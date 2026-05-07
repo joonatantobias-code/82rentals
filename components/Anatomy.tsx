@@ -306,7 +306,6 @@ export default function Anatomy() {
                 key={`label-${i}`}
                 x={h.labelX}
                 y={h.labelY}
-                anchor={h.labelAnchor}
                 number={h.number}
                 title={h.title}
                 text={h.text}
@@ -346,7 +345,6 @@ export default function Anatomy() {
 function Label({
   x,
   y,
-  anchor,
   number,
   title,
   text,
@@ -358,7 +356,6 @@ function Label({
 }: {
   x: number;
   y: number;
-  anchor: "left" | "right";
   number: string;
   title: string;
   text: string;
@@ -436,9 +433,7 @@ function Label({
               delay: floatDelay,
             },
           }}
-          className={`rounded-xl bg-white border border-brand-primary/40 px-4 py-3 w-[220px] cursor-default transition-shadow duration-200 ${
-            anchor === "left" ? "text-right" : "text-left"
-          } ${
+          className={`rounded-xl bg-white border border-brand-primary/40 px-4 py-3 w-[220px] text-left cursor-default transition-shadow duration-200 ${
             isHovered
               ? "shadow-[0_4px_12px_rgba(15,23,42,0.18),0_28px_60px_-14px_rgba(10,61,98,0.55)]"
               : "shadow-[0_2px_6px_rgba(15,23,42,0.12),0_18px_36px_-12px_rgba(15,23,42,0.32)]"
