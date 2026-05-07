@@ -157,8 +157,18 @@ export default function Anatomy() {
                 );
               })}
 
+              {/* Dots are <ellipse> (not <circle>) so they render
+                  ROUND on a 4:3 container under preserveAspectRatio
+                  "none". 1 viewBox-X-unit ≈ 1 % of container width and
+                  1 viewBox-Y-unit ≈ 1 % of container height — the X
+                  axis is therefore stretched 4/3× more than Y. We
+                  compensate with rx ≈ ry × 3/4 so the rendered shape
+                  is a true circle of ≈ 18 px on a 4:3 container. The
+                  same h.x / h.y feeds the circle's centre and the
+                  matching line's (x1, y1), so the two are
+                  pixel-locked together. */}
               {hotspots.map((h, i) => (
-                <motion.circle
+                <motion.ellipse
                   key={`dot-${i}`}
                   cx={h.x}
                   cy={h.y}
@@ -167,13 +177,11 @@ export default function Anatomy() {
                   strokeWidth="3.2"
                   vectorEffect="non-scaling-stroke"
                   filter="url(#hotspot-shadow)"
-                  initial={{ r: 0, opacity: 0 }}
-                  animate={{ r: 1.4, opacity: 1 }}
+                  initial={{ rx: 0, ry: 0, opacity: 0 }}
+                  animate={{ rx: 1.05, ry: 1.4, opacity: 1 }}
                   transition={{
-                    type: "spring",
-                    stiffness: 240,
-                    damping: 22,
-                    mass: 0.9,
+                    duration: 0.55,
+                    ease: [0.22, 1, 0.36, 1],
                     delay: i * STAGGER,
                   }}
                 />
