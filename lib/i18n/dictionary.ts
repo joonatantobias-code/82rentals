@@ -341,7 +341,7 @@ export const dictionary = {
         productEyebrow: "Laitteisto",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doon leikkisin vesijetti. Nopea, ketterä ja järjettömän hauska.",
+          "Sea-Doon leikkisin malli. Suunniteltu kuskeille, jotka haluavat pitää hauskaa aalloilla turvallisesti.",
         productCta: "Varaa tämä vesijetti",
         features: [
           {
@@ -350,7 +350,7 @@ export const dictionary = {
           },
           {
             title: "Tehty tempuille",
-            text: "Säädettävät ohjaustanko ja jalkapohjat, kaarra, pomppi ja spinnaa kuin proffa.",
+            text: "Säädettävä ohjaustanko ja Trixx-jalkapohjat antavat ajaa pystyssä ja temppuilla helposti.",
           },
           {
             title: "2 hengen vesijetti",
@@ -918,7 +918,7 @@ export const dictionary = {
         productEyebrow: "The hardware",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doo's most playful jet ski. Fast, agile and ridiculously fun.",
+          "Sea-Doo's most playful model. Built for riders who want to have real fun on the waves, safely.",
         productCta: "Book this jet ski",
         features: [
           {
@@ -927,7 +927,7 @@ export const dictionary = {
           },
           {
             title: "Tuned for tricks",
-            text: "Adjustable bars and footwells, carve, hop and spin like a pro.",
+            text: "Adjustable handlebars and Trixx footwells let you ride standing up and pull off tricks easily.",
           },
           {
             title: "2-up jet ski",
