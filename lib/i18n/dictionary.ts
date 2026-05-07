@@ -341,12 +341,12 @@ export const dictionary = {
         productEyebrow: "Laitteisto",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doon leikkisin vesijetti. Suunniteltu ajajille, jotka haluavat oikeasti tuntea veden. Nopea, ketterä ja järjettömän hauska. 90 hevosvoiman Rotax tarjoaa enemmän tehoa kuin Volkswagen Polo, ja silti laitteisto on helppo ottaa haltuun. Yhden ajon jälkeen ymmärrät, miksi pää kääntyy joka laiturilla.",
+          "Sea-Doon leikkisin vesijetti. Nopea, ketterä ja järjettömän hauska. Yhden ajon jälkeen ymmärrät, miksi pää kääntyy joka laiturilla.",
         productCta: "Varaa tämä vesijetti",
         features: [
           {
             title: "Kevyt ja leikkisä",
-            text: "90 hv Rotax, alle 200 kg runko. Nopea, ketterä ja tehty heitettäväksi.",
+            text: "82 km/h huippunopeus, alle 200 kg paino. Enemmän hevosvoimia kuin Volkswagen Polossa.",
           },
           {
             title: "Tehty tempuille",
@@ -354,11 +354,11 @@ export const dictionary = {
           },
           {
             title: "2 hengen vesijetti",
-            text: "Ota mukaan kaveri, kumppani tai eeppisin Instagram tarinasi.",
+            text: "Mukava 2up istuin, kaveri tai kumppani mahtuu kyytiin.",
           },
           {
             title: "Täysin vakuutettu",
-            text: "Kattava vakuutus ja pelastusliivit sisältyvät jokaiseen vuokraan.",
+            text: "Vakuutus ja pelastusliivit sisältyvät vuokraan. Turvallinen myös vasta-alkajalle.",
           },
         ],
         anatomyEyebrow: "Tutustu jettiin",
@@ -918,24 +918,24 @@ export const dictionary = {
         productEyebrow: "The hardware",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doo's most playful jet ski. Built for riders who really want to feel the water. Fast, agile and ridiculously fun. The 90 hp Rotax packs more power than a Volkswagen Polo, yet it stays easy to handle. One ride and you'll see why heads turn at every dock.",
+          "Sea-Doo's most playful jet ski. Fast, agile and ridiculously fun. One ride and you'll see why heads turn at every dock.",
         productCta: "Book this jet ski",
         features: [
           {
             title: "Light & playful",
-            text: "90 hp Rotax under 200 kg. Quick, agile and built to be tossed around.",
+            text: "82 km/h top speed, under 200 kg. More horsepower than a Volkswagen Polo.",
           },
           {
             title: "Tuned for tricks",
-            text: "Adjustable bars and footwells, carve, bunny-hop and spin like a pro.",
+            text: "Adjustable bars and footwells, carve, hop and spin like a pro.",
           },
           {
             title: "2-up jet ski",
-            text: "Bring a friend, partner or your most epic Instagram story.",
+            text: "Comfy 2-up seat, bring a friend or partner along for the ride.",
           },
           {
             title: "Fully insured",
-            text: "Comprehensive insurance and life jackets included with every rental.",
+            text: "Insurance and life jackets included with every rental. Safe even for first-timers.",
           },
         ],
         anatomyEyebrow: "Get to know it",
