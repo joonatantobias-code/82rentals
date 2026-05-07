@@ -405,13 +405,13 @@ export const dictionary = {
         eyebrow: "Meistä",
         heroTitle: "Kolme tyyppiä. Yksi missio.",
         heroDesc:
-          "Perustimme 82Rentalsin koska markkinoilla ei ollut vuokraamoa, joka olisi hoitanut homman kunnolla. Nyt sellainen on.",
+          "Halusimme olla edelläkävijä vesijettivuokrauksessa. Helppo varata netistä, kuljetus minne tahansa, kalusto aina kunnossa.",
         storyEyebrow: "Tarina",
         storyTitle: "Miksi tämä syntyi.",
         storyBody1:
-          "Etsimme vuokraamoa, jolta varaus onnistuisi netistä, vesijetti tuotaisiin sovittuun paikkaan ja kalusto olisi aina kunnossa. Sellaista ei ollut. Niin teimme itse.",
+          "Halusimme olla edelläkävijä alalla ja nostaa rimaa. Vesijettivuokraus jossa varaus onnistuu netistä, kuljetus tuodaan sovittuun paikkaan ja kalusto on aina huipussa. Niinpä rakensimme sellaisen itse.",
         storyBody2:
-          "Emme yritä olla halvin, se on tietoinen valinta. Olemme sen sijaan ylivoimaisesti paras kokemus, kalusto on huollettu, kuljetus saumaton, opastus selkeä ja asiakaspalvelu tavoitettavissa. Kaikki yksityiskohdat hiottu loppuun asti.",
+          "Tavoitteemme ei ole olla halvin, vaan ylivoimaisesti paras kokemus. Kalusto huollettu, kuljetus saumaton, opastus selkeä ja asiakaspalvelu tavoitettavissa, jokainen yksityiskohta on hiottu loppuun asti.",
         valueIcons: ["Ammattimaisuus", "Asiakas ensin", "Joustavuus"],
         values: [
           {
@@ -978,13 +978,13 @@ export const dictionary = {
         eyebrow: "About us",
         heroTitle: "Three people. One mission.",
         heroDesc:
-          "We started 82Rentals because no rental on the market was actually doing this properly. Now one is.",
+          "We wanted to lead this industry. Easy online booking, delivery anywhere, kit always in shape.",
         storyEyebrow: "Story",
         storyTitle: "Why we built this.",
         storyBody1:
-          "We were looking for a rental we could book online, get delivered to the spot we wanted and trust to be in shape. Couldn't find one. So we built it ourselves.",
+          "We wanted to lead this industry and raise the bar. A jet ski rental where booking is online, delivery comes to the agreed spot and the kit is always in top shape. So we built one ourselves.",
         storyBody2:
-          "We're not trying to be the cheapest. That's a deliberate call. We're trying to be the clearly best experience: kit serviced, delivery seamless, briefing clear, support reachable. Every detail dialled in.",
+          "Our goal isn't to be the cheapest. Our goal is to be the clearly best experience: kit serviced, delivery seamless, briefing clear, support reachable. Every detail dialled in.",
         valueIcons: ["Professional", "Customer first", "Flexible"],
         values: [
           {
