@@ -32,10 +32,13 @@ type HotspotSpec = {
 // diagonally between dot and label so each card has its own free
 // quadrant.
 const HOTSPOTS: HotspotSpec[] = [
-  { x: 51, y: 45, labelX: 76, labelY: 16, labelAnchor: "right", number: "01" },
-  { x: 66, y: 54, labelX: 78, labelY: 84, labelAnchor: "right", number: "02" },
-  { x: 42, y: 60, labelX: 22, labelY: 16, labelAnchor: "left", number: "03" },
-  { x: 74, y: 58, labelX: 22, labelY: 84, labelAnchor: "left", number: "04" },
+  // Labels pulled fully inside the frame: x=72 / x=28 so the 220 px
+  // cards stop at ~83 % / 17 % of the container, well clear of the
+  // edge on every viewport.
+  { x: 51, y: 45, labelX: 72, labelY: 14, labelAnchor: "right", number: "01" },
+  { x: 66, y: 54, labelX: 72, labelY: 86, labelAnchor: "right", number: "02" },
+  { x: 42, y: 60, labelX: 28, labelY: 14, labelAnchor: "left", number: "03" },
+  { x: 74, y: 58, labelX: 28, labelY: 86, labelAnchor: "left", number: "04" },
 ];
 
 // 0.6 s stagger reads as a clear sequential wave 01 → 02 → 03 → 04
@@ -84,11 +87,18 @@ export default function Anatomy() {
               preserveAspectRatio="none"
               aria-hidden
             >
-              {/* Each connector is two lines: a wider dark halo
-                  underneath for contrast against bright sky / asphalt,
-                  a bright white line on top so the actual stroke is
-                  what catches the eye. Both layers animate the same
-                  pathLength so they grow as one. */}
+              {/* Each connector is two lines drawing in unison:
+                    - a wide dark "halo" underneath for contrast,
+                    - a slimmer solid white line on top.
+                  vector-effect: non-scaling-stroke so strokeWidth is
+                  read in device pixels — that's what makes the lines
+                  legible at any viewport width. The previous build
+                  used 0.7 px (a hairline that read as a dotted dash);
+                  these are 5 px / 2.5 px, properly solid.
+                  Endpoints are pinned to (h.x, h.y) on one end and
+                  (h.labelX, h.labelY) on the other, so moving the
+                  dot in HOTSPOTS automatically moves the line's
+                  origin with it. */}
               {hotspots.map((h, i) => (
                 <motion.line
                   key={`halo-${i}`}
@@ -97,15 +107,15 @@ export default function Anatomy() {
                   x2={h.labelX}
                   y2={h.labelY}
                   stroke="#0A3D62"
-                  strokeWidth="1.6"
-                  strokeOpacity="0.55"
+                  strokeWidth="5"
+                  strokeOpacity="0.5"
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
                   initial={{ pathLength: 0, opacity: 0 }}
-                  whileInView={{ pathLength: 1, opacity: 1 }}
+                  whileInView={{ pathLength: 1, opacity: 0.5 }}
                   viewport={{ once: true, amount: 0.4 }}
                   transition={{
-                    duration: 0.55,
+                    duration: 0.6,
                     ease: [0.22, 1, 0.36, 1],
                     delay: i * STAGGER + 0.3,
                   }}
@@ -119,14 +129,14 @@ export default function Anatomy() {
                   x2={h.labelX}
                   y2={h.labelY}
                   stroke="white"
-                  strokeWidth="0.7"
+                  strokeWidth="2.5"
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
                   initial={{ pathLength: 0, opacity: 0 }}
                   whileInView={{ pathLength: 1, opacity: 1 }}
                   viewport={{ once: true, amount: 0.4 }}
                   transition={{
-                    duration: 0.55,
+                    duration: 0.6,
                     ease: [0.22, 1, 0.36, 1],
                     delay: i * STAGGER + 0.3,
                   }}
@@ -196,8 +206,10 @@ function Dot({ x, y, delay }: { x: number; y: number; delay: number }) {
         transform: "translate(-50%, -50%)",
       }}
     >
-      <span className="absolute inline-flex h-7 w-7 rounded-full bg-white/30 animate-pulse-ring" />
-      <span className="relative inline-flex h-5 w-5 rounded-full bg-white border-[2.5px] border-brand-primary shadow-soft" />
+      {/* Solid white dot with a brand-primary ring. The line endpoint
+          sits at this dot's centre, so the line visually emerges from
+          inside the circle — no separate pulse halo to drown it out. */}
+      <span className="relative inline-flex h-[18px] w-[18px] rounded-full bg-white border-[3px] border-brand-primary shadow-[0_0_0_2px_rgba(10,61,98,0.25),0_2px_8px_rgba(0,0,0,0.25)]" />
     </motion.span>
   );
 }
