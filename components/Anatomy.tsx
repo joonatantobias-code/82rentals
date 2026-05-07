@@ -14,16 +14,20 @@ type Hotspot = {
   text: string;
 };
 
-// Hotspot positions calibrated for the side-profile shot of our own
-// jet ski (LOCAL_PHOTOS.ownSpark1 — Sea-Doo Spark Trixx on the
-// trailer). The image is rendered with object-cover, so coordinates
-// are roughly: jet-ski body lives in the middle band y≈40–62%,
-// handlebars sit centre-top, hull on the right.
+// Hotspot positions calibrated for the actual side-profile shot of
+// our own jet ski (LOCAL_PHOTOS.ownSpark1 — Spark Trixx on the
+// trailer in Seinäjoki). The image is exactly 4:3, so the
+// percentages here line up 1:1 with where the features actually sit
+// in the frame.
+//   01 Säädettävä ohjaustanko → handlebar riser, top of the unit
+//   02 Sininen Trixx istuin   → seat just behind the bars
+//   03 90 hv Rotax            → front bonnet over the engine
+//   04 Kevyt runko            → hull side, around the Sea-Doo wordmark
 const HOTSPOT_POSITIONS: Pick<Hotspot, "x" | "y" | "side" | "number">[] = [
-  { x: 56, y: 36, side: "right", number: "01" },
-  { x: 60, y: 48, side: "right", number: "02" },
-  { x: 42, y: 54, side: "left", number: "03" },
-  { x: 24, y: 62, side: "left", number: "04" },
+  { x: 50, y: 44, side: "right", number: "01" },
+  { x: 68, y: 50, side: "right", number: "02" },
+  { x: 25, y: 56, side: "left", number: "03" },
+  { x: 55, y: 66, side: "right", number: "04" },
 ];
 
 export default function Anatomy() {
