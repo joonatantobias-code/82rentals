@@ -180,9 +180,17 @@ body {
     @apply inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-primary text-brand-secondary text-xs font-bold uppercase tracking-wider shadow-soft;
   }
 
-  /* Logo shine — uses the PNG alpha as a CSS mask so the white streak
-   * only appears where the logo artwork is, never on the surrounding box. */
+  /* Logo shine — single gradient streak masked to the logo shape, swept
+   * across on parent .group hover. Replaces the older blur+solid-bar
+   * setup (which produced a fuzzy double-edge that read as two
+   * overlapping shimmers, and parked the streak mid-logo at the end
+   * of its hover transition). The new version mirrors how the brand
+   * buttons (.btn-primary::before) shimmer: clean diagonal gradient
+   * with transparent edges, no blur, single transform transition. */
   .logo-shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
     -webkit-mask-image: url("/logo.png");
     -webkit-mask-size: contain;
     -webkit-mask-position: left center;
@@ -191,6 +199,22 @@ body {
     mask-size: contain;
     mask-position: left center;
     mask-repeat: no-repeat;
+  }
+  .logo-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.55) 50%,
+      transparent 70%
+    );
+    transform: translateX(-110%) skewX(-12deg);
+    transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .group:hover .logo-shine::after {
+    transform: translateX(110%) skewX(-12deg);
   }
 
   /* Outlined "82" decoration — barely there, blends into the surrounding

@@ -71,12 +71,7 @@ export default function Navbar() {
               priority
               unoptimized
             />
-            <span
-              aria-hidden
-              className="logo-shine pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-            >
-              <span className="logo-shine__streak block absolute inset-y-0 -left-1/2 w-1/3 -skew-x-12 bg-white/55 blur-sm group-hover:translate-x-[260%] transition-transform duration-700 ease-out" />
-            </span>
+            <span aria-hidden className="logo-shine" />
           </span>
         </Link>
 

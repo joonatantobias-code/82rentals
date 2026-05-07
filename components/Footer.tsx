@@ -42,16 +42,21 @@ export default function Footer() {
 
       <div className="relative max-w-7xl mx-auto px-5 sm:px-8 py-14 md:py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-10">
         <div className="lg:col-span-2">
-          <Link href="/" className="inline-block" aria-label="82Rentals">
+          <Link
+            href="/"
+            className="group inline-block"
+            aria-label="82Rentals"
+          >
             <span className="relative block h-20 w-[220px]">
               <Image
                 src="/logo.png"
                 alt="82Rentals"
                 fill
                 sizes="220px"
-                className="object-contain object-left"
+                className="object-contain object-left transition-transform duration-300 group-hover:scale-[1.03]"
                 unoptimized
               />
+              <span aria-hidden className="logo-shine" />
             </span>
           </Link>
           <p className="mt-5 text-white/75 max-w-md leading-relaxed">

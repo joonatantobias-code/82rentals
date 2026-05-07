@@ -338,10 +338,10 @@ export const dictionary = {
         heroTitle: "Sea-Doo Spark Trixx 2up.",
         heroDesc:
           "Sea-Doon leikkisin malli. Suunniteltu ajajille, jotka haluavat oikeasti tuntea veden.",
-        productEyebrow: "Kone",
+        productEyebrow: "Laitteisto",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doon leikkisin vesijetti. Suunniteltu ajajille, jotka haluavat oikeasti tuntea veden, nopea, ketterä ja järjettömän hauska. Yhden ajon jälkeen ymmärrät, miksi pää kääntyy joka laiturilla.",
+          "Sea-Doon leikkisin vesijetti. Suunniteltu ajajille, jotka haluavat oikeasti tuntea veden. Nopea, ketterä ja järjettömän hauska. 90 hevosvoiman Rotax tarjoaa enemmän tehoa kuin Volkswagen Polo, ja silti laitteisto on helppo ottaa haltuun. Yhden ajon jälkeen ymmärrät, miksi pää kääntyy joka laiturilla.",
         productCta: "Varaa tämä vesijetti",
         features: [
           {
@@ -915,10 +915,10 @@ export const dictionary = {
         heroTitle: "Sea-Doo Spark Trixx 2up.",
         heroDesc:
           "Sea-Doo's playful flagship. Built for riders who actually want to feel the water.",
-        productEyebrow: "The machine",
+        productEyebrow: "The hardware",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doo's most playful jet ski. Built for riders who really want to feel the water — fast, agile and ridiculously fun. One ride and you'll see why heads turn at every dock.",
+          "Sea-Doo's most playful jet ski. Built for riders who really want to feel the water. Fast, agile and ridiculously fun. The 90 hp Rotax packs more power than a Volkswagen Polo, yet it stays easy to handle. One ride and you'll see why heads turn at every dock.",
         productCta: "Book this jet ski",
         features: [
           {
