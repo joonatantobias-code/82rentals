@@ -21,23 +21,27 @@ type HotspotSpec = {
   number: string;
 };
 
-// Calibrated against LOCAL_PHOTOS.ownSpark1 — Sea-Doo Spark Trixx
-// side-profile on the trailer in Seinäjoki. The image is 4:3 so the
-// percentages here line up with where the features actually sit.
-//
-// Dots:
-//   01 Säädettävä ohjaustanko → handlebar riser at the top of the unit
-//   02 Sininen Trixx istuin   → green/yellow seat behind the bars
+// Calibrated against the rendered seinajoki-1 image. All four
+// jet-ski features actually sit in a tight horizontal band y≈44–52 %
+// — handlebars at the very top, hull at the bottom, just above the
+// trailer rails. Dot positions:
+//   01 Säädettävä ohjaustanko → handlebar riser at the very top
+//   02 Sininen Trixx istuin   → green/yellow Trixx seat
 //   03 90 hv Rotax            → front bonnet over the engine
-//   04 Kevyt runko            → hull side at the "P154021" markings
+//   04 Kevyt runko            → hull side at the Sea-Doo wordmark
 //
-// Labels are pushed to the corners so the diagonal connectors give
-// each card breathing room — no two labels overlap.
-const HOTSPOTS: Omit<HotspotSpec, never>[] = [
-  { x: 54, y: 50, labelX: 80, labelY: 22, labelAnchor: "right", number: "01" },
-  { x: 70, y: 55, labelX: 88, labelY: 60, labelAnchor: "right", number: "02" },
-  { x: 30, y: 60, labelX: 12, labelY: 36, labelAnchor: "left", number: "03" },
-  { x: 45, y: 66, labelX: 16, labelY: 84, labelAnchor: "left", number: "04" },
+// Labels pushed to the four corners (tucked safely inside the
+// container so nothing clips), connectors diagonal from the corner
+// label to the centred dot. No two labels overlap.
+const HOTSPOTS: HotspotSpec[] = [
+  // top-right corner
+  { x: 53, y: 44, labelX: 78, labelY: 18, labelAnchor: "right", number: "01" },
+  // bottom-right corner
+  { x: 66, y: 46, labelX: 80, labelY: 80, labelAnchor: "right", number: "02" },
+  // top-left corner
+  { x: 33, y: 49, labelX: 20, labelY: 18, labelAnchor: "left", number: "03" },
+  // bottom-left corner
+  { x: 60, y: 52, labelX: 22, labelY: 80, labelAnchor: "left", number: "04" },
 ];
 
 // Per-hotspot stagger. Each hotspot's full sequence (dot → line →
@@ -207,7 +211,7 @@ function Label({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.4 }}
       transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay }}
-      className={`absolute rounded-xl bg-white shadow-soft border border-brand-primary/30 px-4 py-3 max-w-[220px] ${
+      className={`absolute rounded-xl bg-white shadow-soft border border-brand-primary/30 px-4 py-3 w-[220px] ${
         anchor === "left" ? "text-right" : "text-left"
       }`}
       style={{
@@ -216,9 +220,9 @@ function Label({
         transform: "translate(-50%, -50%)",
       }}
     >
-      <div className="flex items-center gap-2 text-xs font-bold tracking-wider uppercase text-brand-primary-600">
-        <span>{number}</span>
-        <span className="text-brand-secondary truncate">{title}</span>
+      <div className="flex items-baseline gap-2 text-xs font-bold tracking-wider uppercase text-brand-primary-600">
+        <span className="shrink-0">{number}</span>
+        <span className="text-brand-secondary leading-tight">{title}</span>
       </div>
       <p className="text-xs text-brand-secondary/75 mt-1 leading-relaxed">
         {text}
