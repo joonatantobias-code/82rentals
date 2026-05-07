@@ -24,9 +24,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Text-selection highlight. Uses brand-primary (sky blue) on
+ * brand-secondary (deep navy) text — high enough contrast that the
+ * selection stays visible on every surface the site uses, including
+ * the dark navy hero where the previous #0A3D62 highlight blended
+ * straight into the page background and gave the impression nothing
+ * was being selected. ::-moz-selection mirrored for Firefox. */
 ::selection {
-  background: #0A3D62;
-  color: white;
+  background: #6EC6FF;
+  color: #0A3D62;
+}
+::-moz-selection {
+  background: #6EC6FF;
+  color: #0A3D62;
 }
 
 /* Custom scrollbar */

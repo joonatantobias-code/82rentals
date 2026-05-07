@@ -385,7 +385,7 @@ export const dictionary = {
         specs: [
           { k: "Moottori", v: "Rotax 900 ACE" },
           { k: "Teho", v: "90 hv" },
-          { k: "Henkilömäärä", v: "2" },
+          { k: "Henkilömäärä", v: "max 2 tai 180 kg" },
           { k: "Paino", v: "n. 195 kg" },
         ],
         ctaTitle: "Aja sitä, älä vain katso kuvia.",
@@ -960,7 +960,7 @@ export const dictionary = {
         specs: [
           { k: "Engine", v: "Rotax 900 ACE" },
           { k: "Power", v: "90 hp" },
-          { k: "Capacity", v: "2 people" },
+          { k: "Capacity", v: "max 2 or 180 kg" },
           { k: "Weight", v: "≈ 195 kg" },
         ],
         ctaTitle: "Ride it. Don't just stare at the photos.",
