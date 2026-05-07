@@ -16,14 +16,13 @@ import { LOCAL_PHOTOS } from "@/lib/images";
 import { useT } from "@/components/LocaleProvider";
 
 // Four hand-picked photos of our own Sea-Doo Spark Trixx, each from
-// a different angle so no two thumbnails read as the "same shot":
-//   - ownSpark4 — front 3/4 at the gas station (hero)
-//   - ownSpark1 — full side profile on the trailer
-//   - ownSpark5 — rear 3/4 close on the seat + Sea-Doo wordmark
-//   - ownSpark6 — top-down on the handlebars and dash
+// a different angle so no two thumbnails read as the "same shot".
+// Side profile leads — it's the cleanest "this is what you're
+// renting" hero — followed by the front 3/4, rear 3/4 detail, and
+// top-down on the cockpit.
 const gallery = [
-  LOCAL_PHOTOS.ownSpark4,
   LOCAL_PHOTOS.ownSpark1,
+  LOCAL_PHOTOS.ownSpark4,
   LOCAL_PHOTOS.ownSpark5,
   LOCAL_PHOTOS.ownSpark6,
 ];
@@ -84,55 +83,36 @@ export default function Product() {
 
       <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
         <div>
-          <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-soft bg-brand-primary-50">
-            {/* Decorative dotted backdrop ring (SVG) */}
-            <div className="absolute -top-4 -right-4 w-28 h-28 z-10 pointer-events-none animate-spin-slow opacity-70">
-              <svg viewBox="0 0 100 100" className="w-full h-full">
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="48"
-                  stroke="#6EC6FF"
-                  strokeWidth="2"
-                  strokeDasharray="2 4"
-                  fill="none"
-                />
-              </svg>
-            </div>
-
+          {/* Cleaner edges: aspect bumped to 5:4 so the photos breathe,
+              ring border anchors the frame, and the photos themselves
+              use object-cover so there are no letterbox bars. The old
+              decorative spinning dotted ring + "Suosituin" sticker were
+              fighting the photography for attention; both are gone. */}
+          <div className="relative aspect-[5/4] w-full rounded-2xl overflow-hidden shadow-soft bg-brand-primary-50 ring-1 ring-black/5">
             {gallery.map((src, i) => (
               <motion.div
                 key={src}
                 initial={false}
                 animate={{ opacity: i === active ? 1 : 0 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.45 }}
                 className="absolute inset-0"
               >
-                {/* Blurred copy fills the frame edges */}
-                <Image
-                  src={src}
-                  alt=""
-                  fill
-                  sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover scale-125 blur-2xl opacity-70"
-                  aria-hidden
-                />
-                <div className="absolute inset-0 bg-brand-primary-50/30" />
-                {/* Sharp foreground product shot */}
                 <Image
                   src={src}
                   alt="Sea-Doo Spark Trixx vesijetti"
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="relative object-contain p-1 md:p-2"
+                  className="object-cover"
                   priority={i === 0}
                 />
               </motion.div>
             ))}
-            <span className="sticker absolute top-4 left-4">
-              <Sparkles size={12} />
-              Suosituin
-            </span>
+            {/* Soft inner border so the photo never bleeds visually
+                past the rounded corner. */}
+            <span
+              aria-hidden
+              className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10"
+            />
           </div>
 
           <div className="mt-4 grid grid-cols-4 gap-2 sm:gap-3">
