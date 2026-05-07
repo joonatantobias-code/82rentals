@@ -43,13 +43,13 @@ export const dictionary = {
       subhead:
         "Nauti lyhyestä kesästä aallonharjalla 82 km/h vauhdissa. Polttoaine, pelastusliivit ja opastus kuuluvat hintaan. Sinä hoidat vain hymyn, joka pysyy kasvoilla pitkään ajon jälkeenkin.",
       cta: "Varaa nyt",
-      bullet1: "Aloitus Herttoniemen Kipparilahden satamasta",
+      bullet1: "Aloitus Herttoniemen Kipparlahden satamasta",
       bullet2: "Ei ajokorttivaatimusta",
       bullet3: "Ensikertalaisystävällinen",
       offerEyebrow: "2h tarjous",
       offerProduct: "Sea-Doo Spark Trixx 2UP",
       offerPrice: "279 € / 2h",
-      offerTick1: "Aloitus Herttoniemen Kipparilahden satamasta",
+      offerTick1: "Aloitus Herttoniemen Kipparlahden satamasta",
       offerTick2: "1-2 hengelle, pelastusliivit ja polttoaine kuuluvat hintaan",
       offerTick3: "Lyhyt opastus ja eikun vain menoksi",
       offerCta: "Tarkista saatavuus",
@@ -59,7 +59,7 @@ export const dictionary = {
       fuel: "Polttoaine sisältyy hintaan",
       lifeJackets: "Pelastusliivit mukana",
       rating: "Google arvostelut 4,9 / 5",
-      departure: "Lähtö Herttoniemen Kipparilahden satamasta",
+      departure: "Lähtö Herttoniemen Kipparlahden satamasta",
     },
     howItWorks: {
       eyebrow: "Näin se toimii",
@@ -134,7 +134,7 @@ export const dictionary = {
       eyebrow: "Valmiina lähtemään",
       defaultTitle: "Valmiina vesille?",
       defaultSubtitle:
-        "Varaa Sea-Doo Spark Trixx 60 sekunnissa. Lähtö Herttoniemen satamasta.",
+        "Varaa Sea-Doo Spark Trixx 2up 60 sekunnissa. Lähtö Herttoniemen Kipparlahden venesatamasta.",
     },
     footer: {
       tagline:
@@ -235,7 +235,7 @@ export const dictionary = {
       contactCustomBody:
         "Räätälöimme polttariporukoille, tapahtumiin ja pidempiin ajoihin. Soita tai laita sähköpostia, vastaamme heti.",
       pickupTitle: "Mistä noudat vesijetin?",
-      pickupDefaultBody: "Tarkka paikka on Kipparilahden venekerho Herttoniemessä. Sisältyy hintaan, helppo löytää kartalta.",
+      pickupDefaultBody: "Tarkka paikka on Kipparlahden venekerho Herttoniemessä. Sisältyy hintaan, helppo löytää kartalta.",
       pickupOtherTitle: "Tarvitsetko toimituksen muualle?",
       pickupOtherBody: "Onnistuu lisämaksusta sopimuksen mukaan. Soita tai laita sähköpostia ennen varausta, niin sovitaan paikka ja hinta.",
       pickupOrChoose: "Tai valitse pikavalinnoista",
@@ -620,13 +620,13 @@ export const dictionary = {
       subhead:
         "Make the short summer count at 82 km/h on the wave crest. Fuel, life jackets and a quick briefing are on us. You just bring the smile, the kind that stays put long after the engine quiets down.",
       cta: "Book now",
-      bullet1: "Start from Herttoniemi Kipparilahti marina",
+      bullet1: "Start from Herttoniemi Kipparlahti marina",
       bullet2: "No license required",
       bullet3: "First-timer friendly",
       offerEyebrow: "2h deal",
       offerProduct: "Sea-Doo Spark Trixx 2UP",
       offerPrice: "€279 / 2h",
-      offerTick1: "Start from Herttoniemi Kipparilahti marina",
+      offerTick1: "Start from Herttoniemi Kipparlahti marina",
       offerTick2: "Fits 1-2 people, life jackets and fuel included",
       offerTick3: "Quick briefing and you're off",
       offerCta: "Check availability",
@@ -636,7 +636,7 @@ export const dictionary = {
       fuel: "Fuel included in price",
       lifeJackets: "Life jackets included",
       rating: "Google reviews 4.9 / 5",
-      departure: "Start at Herttoniemi Kipparilahti marina",
+      departure: "Start at Herttoniemi Kipparlahti marina",
     },
     howItWorks: {
       eyebrow: "How it works",
@@ -711,7 +711,7 @@ export const dictionary = {
       eyebrow: "Ready to roll",
       defaultTitle: "Ready to hit the water?",
       defaultSubtitle:
-        "Book the Sea-Doo Spark Trixx in 60 seconds, we deliver it anywhere in Helsinki.",
+        "Book the Sea-Doo Spark Trixx 2up in 60 seconds. Departure from the Kipparlahti marina in Herttoniemi.",
     },
     footer: {
       tagline:
@@ -812,7 +812,7 @@ export const dictionary = {
       contactCustomBody:
         "We tailor for bachelor parties, events and longer rides. Call or email, we reply right away.",
       pickupTitle: "Where do you pick up the jet ski?",
-      pickupDefaultBody: "Exact spot: Kipparilahden venekerho in Herttoniemi. Included in the price, easy to find on the map.",
+      pickupDefaultBody: "Exact spot: Kipparlahden venekerho in Herttoniemi. Included in the price, easy to find on the map.",
       pickupOtherTitle: "Need delivery elsewhere?",
       pickupOtherBody: "Possible with an extra fee, by arrangement. Call or email us before booking and we'll agree on the location and the price.",
       pickupOrChoose: "Or pick a popular spot",

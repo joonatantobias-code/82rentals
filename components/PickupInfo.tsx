@@ -15,7 +15,7 @@ type Props = {
 };
 
 const DEFAULT_DESC =
-  "Lähtöpaikka on Kipparilahden venekerho Kipparlahdessa, Helsingissä. Toimitus sisältyy hintaan. Avaa reittiohjeet alta — Google ja Apple Maps ohjaavat suoraan paikalle.";
+  "Lähtöpaikka on Kipparlahden venekerho Kipparlahdessa, Helsingissä. Toimitus sisältyy hintaan. Avaa reittiohjeet alta — Google ja Apple Maps ohjaavat suoraan paikalle.";
 
 export default function PickupInfo({
   withMap = true,
