@@ -48,11 +48,24 @@ export default function Anatomy() {
   }));
 
   // The whole hotspot choreography (dot pop → line draw → label pop
-  // → infinite drift) is gated on this ref entering the viewport. Once
-  // it fires the animation runs through, and `once: true` keeps the
-  // float looping after entry instead of resetting on scroll-out.
+  // → infinite drift) is gated on this ref entering the viewport.
+  //
+  // The negative top/bottom margins collapse the IntersectionObserver
+  // root rect to a thin horizontal band right around the centre of the
+  // viewport, so the trigger doesn't fire as soon as the bottom of the
+  // photo peeks in — it fires when the photo is actually being looked
+  // at (its top has reached roughly viewport-centre). Without this,
+  // amount-based triggers were firing while the user was still scrolling
+  // toward the section, which made the entry animation play out before
+  // they arrived.
+  //
+  // `once: true` keeps the float looping after entry instead of
+  // resetting on scroll-out.
   const stageRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(stageRef, { once: true, amount: 0.35 });
+  const inView = useInView(stageRef, {
+    once: true,
+    margin: "-35% 0px -35% 0px",
+  });
 
   return (
     <section className="section relative">
