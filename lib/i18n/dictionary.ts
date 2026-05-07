@@ -395,7 +395,7 @@ export const dictionary = {
         eyebrow: "Hinnasto",
         heroTitle: "Aja Helsingissä ilman yllätyksiä.",
         heroDesc:
-          "Polttoaine, pelastusliivit ja vakuutus aina hintaan. Nouto Herttoniemestä. Tiedät aina etukäteen mitä maksat.",
+          "Polttoaine, pelastusliivit ja muut turvavarusteet aina hintaan. Lyhyt opastus sisältyy. Nouto Herttoniemestä, lisämaksulla kuljetus onnistuu minne vain. Tiedät aina etukäteen mitä maksat.",
         ctaTitle: "Lukitse hintasi nyt.",
         ctaSubtitle:
           "Hinnat ovat kiinteät, varaa heti, niin saat parhaat ajat itsellesi.",
@@ -968,7 +968,7 @@ export const dictionary = {
         eyebrow: "Pricing",
         heroTitle: "Ride in Helsinki, no surprises.",
         heroDesc:
-          "Fuel, life jackets and insurance always included. Pickup at Herttoniemi. You always know exactly what you'll pay.",
+          "Fuel, life jackets and other safety gear always included. Short orientation included too. Pickup from Herttoniemi, delivery anywhere for an extra fee. You always know exactly what you'll pay.",
         ctaTitle: "Lock in your price now.",
         ctaSubtitle:
           "Prices are fixed, book today and grab the slots that suit you best.",
