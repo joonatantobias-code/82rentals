@@ -3,13 +3,16 @@
 import PageHero from "@/components/PageHero";
 import Founders from "@/components/Founders";
 import CTABanner from "@/components/CTABanner";
-import { Compass, Heart, Wrench } from "lucide-react";
+import { ShieldCheck, Heart, Sparkles } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
 
+// Icons match the new "Ammattimaisuus / Asiakas ensin / Joustavuus"
+// values: shield = professional rigour, heart = customer first,
+// sparkles = flexibility / making it feel easy.
 const VALUE_ICONS = [
-  { icon: Compass, bg: "bg-brand-primary" },
+  { icon: ShieldCheck, bg: "bg-brand-primary" },
   { icon: Heart, bg: "bg-brand-turquoise" },
-  { icon: Wrench, bg: "bg-brand-primary" },
+  { icon: Sparkles, bg: "bg-brand-primary" },
 ];
 
 export default function MeistaContent() {

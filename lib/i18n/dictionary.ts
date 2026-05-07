@@ -403,54 +403,54 @@ export const dictionary = {
       meista: {
         title: "Meistä",
         eyebrow: "Meistä",
-        heroTitle: "Helsinkiläinen kaveriporukka, joka rakastaa vesillä oloa.",
+        heroTitle: "Kolme tyyppiä. Yksi missio.",
         heroDesc:
-          "Aloitimme 82Rentalsin koska halusimme tehdä Helsingin saaristosta lähemmäksi. Lähtöpaikka on Herttoniemen satama, loppupäivä on sinun.",
+          "Perustimme 82Rentalsin koska markkinoilla ei ollut vuokraamoa, joka olisi hoitanut homman kunnolla. Nyt sellainen on.",
         storyEyebrow: "Tarina",
         storyTitle: "Miksi tämä syntyi.",
         storyBody1:
-          "82Rentals lähti liikkeelle yksinkertaisesta turhautumisesta. Helsinki on saariston ympäröimä, mutta vesille pääseminen on aina vaatinut perävaunua, parkkihuolia ja jonotusta vuokraamossa.",
+          "Etsimme vuokraamoa, jolta varaus onnistuisi netistä, vesijetti tuotaisiin sovittuun paikkaan ja kalusto olisi aina kunnossa. Sellaista ei ollut. Niin teimme itse.",
         storyBody2:
-          "Halusimme rakentaa palvelun, jossa varaus tehdään minuutissa ja vesijetti on paikan päällä silloin kun sinä haluat. Se onnistui niin hyvin, että nyt me vain tuomme vesijetin sinulle ja sinä keskityt kesän parhaaseen päivään.",
-        valueIcons: ["Helppoutta", "Asiakas ensin", "Kalusto kunnossa"],
+          "Emme yritä olla halvin, se on tietoinen valinta. Olemme sen sijaan ylivoimaisesti paras kokemus, kalusto on huollettu, kuljetus saumaton, opastus selkeä ja asiakaspalvelu tavoitettavissa. Kaikki yksityiskohdat hiottu loppuun asti.",
+        valueIcons: ["Ammattimaisuus", "Asiakas ensin", "Joustavuus"],
         values: [
           {
-            title: "Helppoutta",
-            text: "Varaus, toimitus ja palautus suoraviivaisesti. Sinun ei pidä miettiä logistiikkaa.",
+            title: "Ammattimaisuus",
+            text: "Kalusto huolletaan jokaisen ajon jälkeen ja yhteydenottoihin vastataan tunneissa, ei päivissä. Ei oikoteitä.",
           },
           {
             title: "Asiakas ensin",
-            text: "Olemme tavoitettavissa koko ajon ajan. Jokainen palaute päätyy oikeasti meidän pöydälle.",
+            text: "Olemme tavoitettavissa koko ajon ajan. Joustamme aikatauluissa, autamme reittien suunnittelussa ja kuuntelemme palautetta oikeasti.",
           },
           {
-            title: "Kalusto kunnossa",
-            text: "Vesijetit huolletaan jokaisen ajon välissä. Vakuutus ja liivit aina mukana.",
+            title: "Joustavuus",
+            text: "Varaus netistä, kuljetus minne tahansa Helsingin alueella, palautus sovittuun paikkaan. Sinä päätät missä ja milloin.",
           },
         ],
         foundersEyebrow: "Tiimi",
-        foundersTitle: "Kolme tyyppiä, yksi vesijetti.",
+        foundersTitle: "Kolme tyyppiä, kolme vastuualuetta.",
         foundersBody:
-          "Helsinkiläinen kolmikko, joka uskoo että parhaat kesäpäivät syntyvät vesillä. Perustimme 82Rentalsin tehdäksemme vesijetillä ajamisesta yhtä helppoa kuin pizzan tilaaminen.",
+          "Pidämme tonttirajat selvinä, jokainen meistä vastaa omasta osa-alueestaan. Kun otat yhteyttä, joku oikeasti vastaa.",
         founders: [
           {
+            name: "Joonatan Lindholm",
+            role: "Tekniikka & strategia",
+            bio: "Verkkosivut, digimarkkinointi ja strategia ovat Joonatanin pöydällä. Pitää huolen siitä, että varaus sujuu kymmenessä sekunnissa ja että jokainen klikkaus tuntuu siltä miltä pitää.",
+          },
+          {
             name: "Patrik Blomvall",
-            role: "Perustaja",
-            bio: "Helsinkiläinen vesi ja moottoriurheilun harrastaja, joka pyörittää 82Rentalsin operatiivista puolta. Vastaa kalustosta, toimituksista ja siitä, että jokainen ajo lähtee kunnolla käyntiin.",
+            role: "Operatiivinen johto",
+            bio: "Patrik vastaa kalustosta, huolloista, kuljetuksista ja asiakaspalvelusta. Hän on se kasvo, jonka näet kun vesijetti saapuu paikan päälle.",
           },
           {
             name: "Ville Hautamäki",
-            role: "Perustaja",
-            bio: "Asiakaskokemus ja kasvun suunta ovat Villen vastuulla. Pitää huolen, että varaus sujuu mutkattomasti ja että asiakkaiden palaute kuuluu jokaisessa palvelun yksityiskohdassa.",
-          },
-          {
-            name: "Joonatan Lindholm",
-            role: "Perustaja",
-            bio: "Brändin ja digitaalisen kokonaisuuden takana. Verkkokokemus, sisältö ja ulkoasu ovat Joonatanin tontilla, jotta sivu näyttää yhtä terävältä kuin itse Spark Trixx vesillä.",
+            role: "Talous & tiimi",
+            bio: "Ville hoitaa talouden, kirjanpidon ja oikeudelliset asiat, sekä pyörittää somemarkkinointia ja tiimin arkea. Pitää koneiston pyörimässä kulissien takana.",
           },
         ],
         ctaTitle: "Tule mukaan vesille.",
         ctaSubtitle:
-          "Varaa Sea-Doo Spark Trixx ja koe Helsingin saaristo uudella tavalla.",
+          "Varaa Sea-Doo Spark Trixx ja koe miksi panostamme jokaiseen yksityiskohtaan.",
       },
       "miten-toimii": {
         title: "Näin se toimii",
@@ -976,54 +976,54 @@ export const dictionary = {
       meista: {
         title: "About us",
         eyebrow: "About us",
-        heroTitle: "A Helsinki crew that loves being on the water.",
+        heroTitle: "Three people. One mission.",
         heroDesc:
-          "We started 82Rentals to bring the Helsinki archipelago closer to everyone. Pickup is at Herttoniemi marina, the rest of the day is yours.",
+          "We started 82Rentals because no rental on the market was actually doing this properly. Now one is.",
         storyEyebrow: "Story",
         storyTitle: "Why we built this.",
         storyBody1:
-          "82Rentals started from a simple frustration. Helsinki sits inside the archipelago, but getting on the water always meant trailers, parking puzzles and queues at the rental shop.",
+          "We were looking for a rental we could book online, get delivered to the spot we wanted and trust to be in shape. Couldn't find one. So we built it ourselves.",
         storyBody2:
-          "We wanted a service where booking takes a minute and the jet ski is right there when you want it. It worked so well that now we just deliver, you focus on the best day of your summer.",
-        valueIcons: ["Effortless", "Customer first", "Kit dialled in"],
+          "We're not trying to be the cheapest. That's a deliberate call. We're trying to be the clearly best experience: kit serviced, delivery seamless, briefing clear, support reachable. Every detail dialled in.",
+        valueIcons: ["Professional", "Customer first", "Flexible"],
         values: [
           {
-            title: "Effortless",
-            text: "Book, get it delivered, hand it back. You don't worry about logistics.",
+            title: "Professional",
+            text: "The kit gets serviced after every ride and messages get answered in hours, not days. No shortcuts.",
           },
           {
             title: "Customer first",
-            text: "We're reachable throughout your ride. Every piece of feedback lands on our table.",
+            text: "We're reachable through your whole ride. We flex on timing, help with the route and actually listen to feedback.",
           },
           {
-            title: "Kit dialled in",
-            text: "Jet skis are serviced between every ride. Insurance and life jackets always included.",
+            title: "Flexible",
+            text: "Online booking, delivery anywhere in the Helsinki area, return at the agreed spot. You pick the where and when.",
           },
         ],
         foundersEyebrow: "Team",
-        foundersTitle: "Three people, one jet ski.",
+        foundersTitle: "Three of us. Three responsibilities.",
         foundersBody:
-          "Three Helsinki friends who believe the best summer days happen on water. We started 82Rentals to make jet skiing as easy as ordering pizza.",
+          "We keep the lanes clear, each of us owns a specific part of the operation. When you reach out, someone actually answers.",
         founders: [
           {
+            name: "Joonatan Lindholm",
+            role: "Tech & strategy",
+            bio: "Web, digital marketing and strategy sit with Joonatan. Keeps the booking flow tight and makes sure every click feels the way it should.",
+          },
+          {
             name: "Patrik Blomvall",
-            role: "Co-founder",
-            bio: "Lifelong watersports and motors guy who runs 82Rentals' operations. Owns the kit, the deliveries and making sure every ride starts smoothly.",
+            role: "Operations",
+            bio: "Patrik runs the kit, the maintenance, deliveries and customer service. He's the face you'll meet when the jet ski arrives.",
           },
           {
             name: "Ville Hautamäki",
-            role: "Co-founder",
-            bio: "Customer experience and growth direction sit on Ville's plate. Keeps the booking flow tight and ensures customer feedback shapes every detail of the service.",
-          },
-          {
-            name: "Joonatan Lindholm",
-            role: "Co-founder",
-            bio: "Behind the brand and digital experience. Web, content and design live with Joonatan so the site looks as sharp as a Spark Trixx on the water.",
+            role: "Finance & team",
+            bio: "Ville handles finance, bookkeeping and the legal side, plus social and the team's day-to-day. Keeps the gears turning behind the scenes.",
           },
         ],
         ctaTitle: "Come hit the water.",
         ctaSubtitle:
-          "Book the Sea-Doo Spark Trixx and experience the Helsinki archipelago in a new way.",
+          "Book the Sea-Doo Spark Trixx and see why we obsess over every detail.",
       },
       "miten-toimii": {
         title: "How it works",

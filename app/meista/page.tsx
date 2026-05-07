@@ -6,7 +6,7 @@ import { buildPageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Meistä",
   description:
-    "82Rentals on kolmen helsinkiläisen kaverin perustama vesijettivuokraus. Tutustu tiimiin ja tarinaan.",
+    "82Rentals Oy on kolmen helsinkiläisen perustama vesijettivuokraamo. Tutustu tiimiin ja siihen miksi rakensimme tämän.",
   path: "/meista",
   ogTitle: "Meistä · 82Rentals",
 });
