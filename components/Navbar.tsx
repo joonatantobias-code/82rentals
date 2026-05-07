@@ -37,7 +37,7 @@ export default function Navbar() {
   }, [open]);
 
   const links = [
-    { href: "/vesijetti", label: t.nav.vesijetti },
+    { href: "/vesijettimme", label: t.nav.vesijetti },
     { href: "/hinnasto", label: t.nav.hinnasto },
     { href: "/meista", label: t.nav.meista },
     { href: "/ukk", label: t.nav.ukk },

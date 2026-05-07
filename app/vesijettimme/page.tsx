@@ -7,14 +7,14 @@ export const metadata: Metadata = buildPageMetadata({
   title: "Sea-Doo Spark Trixx 2up",
   description:
     "Sea-Doo Spark Trixx 2up on leikkisä, kahdelle ajajalle suunniteltu vesijetti. 90 hv Rotax, säädettävä ohjaustanko ja kevyt runko. Vuokraa Helsingissä alkaen 179 € / tunti, polttoaine sisältyy.",
-  path: "/vesijetti",
+  path: "/vesijettimme",
   ogTitle: "Sea-Doo Spark Trixx 2up · vesijetin vuokraus Helsingissä",
 });
 
 const productJsonLd = {
   "@context": "https://schema.org",
   "@type": "Product",
-  "@id": `${SITE_URL}/vesijetti#product`,
+  "@id": `${SITE_URL}/vesijettimme#product`,
   name: "Sea-Doo Spark Trixx 2up",
   category: "Personal watercraft rental",
   brand: { "@type": "Brand", name: "Sea-Doo" },
@@ -41,7 +41,7 @@ const productJsonLd = {
 
 const breadcrumbs = breadcrumbJsonLd([
   { name: "Etusivu", path: "/" },
-  { name: "Vesijetti", path: "/vesijetti" },
+  { name: "Vesijetti", path: "/vesijettimme" },
 ]);
 
 export default function VesijettiPage() {

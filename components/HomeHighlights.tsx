@@ -11,7 +11,7 @@ import { useT } from "@/components/LocaleProvider";
 export default function HomeHighlights() {
   const t = useT();
   const cardConfig = [
-    { href: "/vesijetti", photo: LOCAL_PHOTOS.coupleAction },
+    { href: "/vesijettimme", photo: LOCAL_PHOTOS.coupleAction },
     { href: "/hinnasto", photo: LOCAL_PHOTOS.yellowRider },
     { href: "/meista", photo: unsplashUrl("helsinki1", { w: 1400 }) },
   ];

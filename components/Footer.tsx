@@ -102,7 +102,7 @@ export default function Footer() {
           <h4 className="font-display font-bold text-white mb-4">{t.footer.pages}</h4>
           <ul className="space-y-2.5 text-sm text-white/75">
             <li>
-              <Link href="/vesijetti" className="hover:text-brand-primary transition-colors">
+              <Link href="/vesijettimme" className="hover:text-brand-primary transition-colors">
                 {t.nav.vesijetti}
               </Link>
             </li>

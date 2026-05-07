@@ -8,7 +8,7 @@ const routes: {
 }[] = [
   { path: "/", priority: 1.0, changeFrequency: "weekly" },
   { path: "/varaa", priority: 0.95, changeFrequency: "weekly" },
-  { path: "/vesijetti", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/vesijettimme", priority: 0.9, changeFrequency: "monthly" },
   { path: "/hinnasto", priority: 0.9, changeFrequency: "monthly" },
   { path: "/miten-toimii", priority: 0.7, changeFrequency: "monthly" },
   { path: "/meista", priority: 0.7, changeFrequency: "monthly" },

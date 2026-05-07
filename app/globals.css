@@ -55,10 +55,17 @@ body {
 }
 
 @layer components {
-  /* === BUTTONS in brand colors (no visible color blends) === */
+  /* === BUTTONS in brand colors (no visible color blends) ===
+   * All buttons share a common hover behaviour:
+   *   - 200 ms transition, lift -2 px
+   *   - 0.97 active scale (the press)
+   *   - Diagonal shimmer streak swept on hover (every variant except
+   *     the bare ghost)
+   *   - Focus-visible ring
+   * Per-variant differences are limited to colour, weight and border
+   * so they read as a family. */
 
-  /* Primary: deep brand blue, white text. The shimmer streak only fires on
-   * hover and is a quick UI affordance, not a visual color palette. */
+  /* Primary: deep brand blue, white text. */
   .btn-primary {
     @apply relative inline-flex items-center justify-center gap-2 rounded-2xl bg-brand-secondary px-6 py-4 font-semibold text-white shadow-cta transition-all duration-200 min-h-[52px] overflow-hidden
       hover:bg-brand-primary hover:text-brand-secondary hover:shadow-glow hover:-translate-y-0.5
@@ -74,9 +81,37 @@ body {
       focus-visible:outline-none focus-visible:shadow-ring;
   }
 
-  /* Shimmer streak shared across both — sweeps across once on hover */
+  /* Outline (works on light backgrounds) */
+  .btn-outline {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-secondary bg-transparent px-6 py-4 font-semibold text-brand-secondary transition-all duration-200 min-h-[52px] overflow-hidden
+      hover:bg-brand-secondary hover:text-white hover:shadow-cta hover:-translate-y-0.5
+      active:scale-[0.97] active:translate-y-0
+      focus-visible:outline-none focus-visible:shadow-ring;
+  }
+
+  /* On-dark secondary (used in hero and dark sections) */
+  .btn-secondary {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-primary bg-white/5 px-6 py-4 font-semibold text-white backdrop-blur-md transition-all duration-200 min-h-[52px] overflow-hidden
+      hover:bg-brand-primary hover:text-brand-secondary hover:shadow-glow hover:-translate-y-0.5
+      active:scale-[0.97] active:translate-y-0
+      focus-visible:outline-none focus-visible:shadow-ring;
+  }
+
+  /* Ghost: minimal, used inline. Same lift + press, no shimmer. */
+  .btn-ghost {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 font-semibold text-brand-secondary transition-all duration-200 min-h-[44px]
+      hover:bg-brand-primary/15 hover:-translate-y-0.5
+      active:scale-[0.97] active:translate-y-0
+      focus-visible:outline-none focus-visible:shadow-ring;
+  }
+
+  /* Shimmer streak — sweeps across once on hover. Applied to every
+   * variant that has an opaque/visible surface so the family feels
+   * consistent. Ghost is intentionally bare. */
   .btn-primary::before,
-  .btn-light::before {
+  .btn-light::before,
+  .btn-outline::before,
+  .btn-secondary::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -91,33 +126,18 @@ body {
     pointer-events: none;
   }
   .btn-primary:hover::before,
-  .btn-light:hover::before {
+  .btn-light:hover::before,
+  .btn-outline:hover::before,
+  .btn-secondary:hover::before {
     transform: translateX(110%) skewX(-12deg);
   }
-  /* Lift child content above the streak */
+  /* Lift child content above the streak. */
   .btn-primary > *,
-  .btn-light > * {
+  .btn-light > *,
+  .btn-outline > *,
+  .btn-secondary > * {
     position: relative;
     z-index: 1;
-  }
-
-  /* Outline (works on light backgrounds) */
-  .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-secondary bg-transparent px-6 py-4 font-semibold text-brand-secondary transition-all min-h-[52px]
-      hover:bg-brand-secondary hover:text-white
-      active:scale-[0.97];
-  }
-
-  /* On-dark secondary (used in hero and dark sections) */
-  .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-brand-primary bg-white/5 px-6 py-4 font-semibold text-white backdrop-blur-md transition-all min-h-[52px]
-      hover:bg-brand-primary hover:text-brand-secondary
-      active:scale-[0.97];
-  }
-
-  .btn-ghost {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 font-semibold text-brand-secondary transition-all min-h-[44px]
-      hover:bg-brand-primary/15;
   }
 
   /* === LAYOUT === */
@@ -260,11 +280,14 @@ body {
     100% { background-position: -200% 0; }
   }
 
-  /* Feature card with custom hover treatments. Each card sets its own
-   * --feat-color and --feat-rotate via inline style so animations feel
-   * unique per card without duplicating CSS. */
+  /* Feature card. Each card sets its own --feat-color via inline style.
+   * Hover treatment is intentionally minimal: a uniform 2 px inset
+   * ring in the card's accent colour, a lift, and a deeper shadow.
+   * Earlier versions stacked an asymmetric top-right corner accent
+   * and a diagonal sweep on top of the ring, which read as a
+   * "thicker edge here, thinner there" inconsistency. */
   .feature-card {
-    @apply relative overflow-hidden rounded-2xl bg-white border border-black/5 p-5 sm:p-6 shadow-soft transition-all duration-300;
+    @apply relative rounded-2xl bg-white border border-black/5 p-5 sm:p-6 shadow-soft transition-all duration-300;
     transition-property: transform, box-shadow, border-color;
   }
   .feature-card::before {
@@ -273,7 +296,7 @@ body {
     inset: 0;
     border-radius: inherit;
     box-shadow: inset 0 0 0 0 var(--feat-color, #6EC6FF);
-    transition: box-shadow 0.4s ease;
+    transition: box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     pointer-events: none;
   }
   .feature-card:hover {
@@ -284,42 +307,11 @@ body {
   .feature-card:hover::before {
     box-shadow: inset 0 0 0 2px var(--feat-color, #6EC6FF);
   }
-  /* Sweeping diagonal accent line on hover */
-  .feature-card::after {
-    content: "";
-    position: absolute;
-    top: -40%;
-    left: -40%;
-    width: 30%;
-    height: 200%;
-    background: var(--feat-color, #6EC6FF);
-    opacity: 0;
-    transform: rotate(20deg);
-    transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
-    pointer-events: none;
-    mix-blend-mode: multiply;
-  }
-  .feature-card:hover::after {
-    transform: translateX(420%) rotate(20deg);
-    opacity: 0.06;
-  }
   .feature-card .feat-icon {
     transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .feature-card:hover .feat-icon {
     transform: rotate(var(--feat-rotate, 8deg)) scale(1.08);
-  }
-  .feature-card .feat-corner {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 0;
-    height: 3px;
-    background: var(--feat-color, #6EC6FF);
-    transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .feature-card:hover .feat-corner {
-    width: 100%;
   }
 }
 

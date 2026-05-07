@@ -130,7 +130,7 @@ export default function SocialFeed() {
           eliminates it. The inactive layer's videos are paused via refs
           so we don't pay double the decoder cost. */}
       <div
-        className="relative w-full mx-auto select-none"
+        className="relative w-full mx-auto"
         style={{ height: "clamp(380px, 62vw, 500px)" }}
       >
         <CarouselLayer

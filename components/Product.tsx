@@ -93,7 +93,12 @@ export default function Product() {
       <div className="blob-turquoise w-[280px] h-[280px] bottom-10 -right-32" />
 
       <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: -36 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        >
           {/* Cleaner edges: aspect bumped to 5:4 so the photos breathe,
               ring border anchors the frame, and the photos themselves
               use object-cover so there are no letterbox bars. The old
@@ -148,9 +153,14 @@ export default function Product() {
               </button>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div>
+        <motion.div
+          initial={{ opacity: 0, x: 36 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        >
           <span className="section-eyebrow">{page.productEyebrow}</span>
           <h2 className="section-title">{page.productTitle}</h2>
           <p className="mt-5 text-base sm:text-lg text-brand-secondary/75 leading-relaxed">
@@ -173,9 +183,6 @@ export default function Product() {
                   } as React.CSSProperties
                 }
               >
-                {/* Top corner accent bar — slides in on hover */}
-                <span className="feat-corner" aria-hidden />
-
                 <div
                   className={`feat-icon h-11 w-11 rounded-xl ${f.color} ${f.textColor} grid place-items-center`}
                 >
@@ -194,7 +201,7 @@ export default function Product() {
           <Link href="/varaa" className="btn-primary mt-8">
             {page.productCta} <ArrowRight size={18} />
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
