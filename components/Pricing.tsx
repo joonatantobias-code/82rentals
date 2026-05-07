@@ -122,7 +122,7 @@ export default function Pricing() {
                   className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 h-12 text-sm font-semibold transition-all ${
                     tier.highlight
                       ? "bg-brand-primary text-brand-secondary hover:bg-white"
-                      : "bg-brand-secondary text-white hover:bg-brand-primary hover:text-brand-secondary"
+                      : "bg-brand-secondary text-white hover:bg-white hover:text-brand-secondary"
                   }`}
                 >
                   {tier.cta}
@@ -134,16 +134,7 @@ export default function Pricing() {
         })}
       </div>
 
-      <div className="relative mt-10 rounded-2xl bg-brand-primary-50 border-2 border-brand-primary/30 p-5 md:p-6 text-center">
-        <h4 className="font-display font-bold text-brand-secondary text-lg">
-          {t.pricing.allInclusiveTitle}
-        </h4>
-        <p className="text-sm md:text-base text-brand-secondary/75 mt-1.5 max-w-2xl mx-auto leading-relaxed">
-          {t.pricing.allInclusiveBody}
-        </p>
-      </div>
-
-      <div className="relative mt-6 grid md:grid-cols-2 gap-4">
+      <div className="relative mt-10 grid md:grid-cols-2 gap-4">
         <div className="rounded-2xl bg-brand-primary-50 border-2 border-brand-primary/40 p-6 flex items-start gap-4">
           <span className="h-12 w-12 rounded-xl bg-brand-primary text-brand-secondary grid place-items-center shrink-0">
             <Users size={22} />
