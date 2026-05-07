@@ -137,8 +137,7 @@ export const dictionary = {
         "Varaa Sea-Doo Spark Trixx 2up 60 sekunnissa. Lähtö Herttoniemen Kipparlahden venesatamasta.",
     },
     footer: {
-      tagline:
-        "Helsinkiläinen vesijettivuokraus. Tuomme Sea-Doo Spark Trixxin laiturillesi.",
+      tagline: "Paikallisten perustama vesijettivuokraamo Helsingistä.",
       pages: "Sivut",
       contact: "Yhteystiedot",
       faqLink: "Usein kysytyt",
@@ -340,8 +339,7 @@ export const dictionary = {
           "Sea-Doon leikkisin malli. Suunniteltu ajajille, jotka haluavat oikeasti tuntea veden.",
         productEyebrow: "Laitteisto",
         productTitle: "Sea-Doo Spark Trixx 2up.",
-        productBody:
-          "Sea-Doon leikkisin malli. Suunniteltu kuskeille, jotka haluavat pitää hauskaa aalloilla turvallisesti.",
+        productBody: "Ensikertalaisystävällinen ja turvallinen vesijetti.",
         productCta: "Varaa tämä vesijetti",
         features: [
           {
@@ -714,8 +712,7 @@ export const dictionary = {
         "Book the Sea-Doo Spark Trixx 2up in 60 seconds. Departure from the Kipparlahti marina in Herttoniemi.",
     },
     footer: {
-      tagline:
-        "Helsinki-based jet ski rental. Pickup from Herttoniemi marina.",
+      tagline: "Locally founded jet ski rental from Helsinki.",
       pages: "Pages",
       contact: "Contact",
       faqLink: "FAQ",
@@ -917,8 +914,7 @@ export const dictionary = {
           "Sea-Doo's playful flagship. Built for riders who actually want to feel the water.",
         productEyebrow: "The hardware",
         productTitle: "Sea-Doo Spark Trixx 2up.",
-        productBody:
-          "Sea-Doo's most playful model. Built for riders who want to have real fun on the waves, safely.",
+        productBody: "Beginner-friendly and safe to ride.",
         productCta: "Book this jet ski",
         features: [
           {
