@@ -6,45 +6,40 @@ import { LOCAL_PHOTOS } from "@/lib/images";
 import { useT } from "@/components/LocaleProvider";
 
 type HotspotSpec = {
-  // Dot position, % of container.
   x: number;
   y: number;
-  // Label centre position, % of container.
   labelX: number;
   labelY: number;
   labelAnchor: "right" | "left";
   number: string;
 };
 
-// Dot positions calibrated against the actual seinajoki-1 image
-// content. Read each title and pin it on the matching feature:
+// Dot positions calibrated against the actual seinajoki-1 image:
+//   01 Säädettävä ohjaustanko → handlebar T-bar at the top of the unit
+//   02 Sininen Trixx istuin   → green/yellow Trixx seat
+//   03 90 hv Rotax            → front bonnet over the engine
+//   04 Kevyt runko            → hull side at the Sea-Doo wordmark
 //
-//   01 Säädettävä ohjaustanko → black T-bar at the very top of the
-//      jet ski (x≈51, y≈45 — the handlebars)
-//   02 Sininen Trixx istuin   → highest point of the green/yellow
-//      seat (x≈66, y≈54)
-//   03 90 hv Rotax            → middle of the front bonnet, where
-//      the engine lives under the cover (x≈42, y≈60)
-//   04 Kevyt runko            → side of the hull at the Sea-Doo
-//      wordmark (x≈74, y≈58)
-//
-// Labels pinned to the four corners of the image, connectors run
-// diagonally between dot and label so each card has its own free
-// quadrant.
+// Labels pinned to the four corners well inside the frame so the
+// 220 px-wide cards stay safely on-canvas at any viewport. Connectors
+// run diagonally between dot and label.
 const HOTSPOTS: HotspotSpec[] = [
-  // Labels pulled fully inside the frame: x=72 / x=28 so the 220 px
-  // cards stop at ~83 % / 17 % of the container, well clear of the
-  // edge on every viewport.
   { x: 51, y: 45, labelX: 72, labelY: 14, labelAnchor: "right", number: "01" },
   { x: 66, y: 54, labelX: 72, labelY: 86, labelAnchor: "right", number: "02" },
   { x: 42, y: 60, labelX: 28, labelY: 14, labelAnchor: "left", number: "03" },
   { x: 74, y: 58, labelX: 28, labelY: 86, labelAnchor: "left", number: "04" },
 ];
 
-// 0.6 s stagger reads as a clear sequential wave 01 → 02 → 03 → 04
-// while still feeling fluid (each new hotspot starts as the previous
-// one's label is settling).
 const STAGGER = 0.6;
+const FLOAT_AMPLITUDE_PX = 4;
+// 1 viewBox unit (Y) ≈ 1 % of the container's height. The image
+// container is 4:3 with max-w-4xl (~672 px tall on desktop), so
+// 1 viewBox unit ≈ 6.72 px. 0.6 viewBox units ≈ 4 px → matches the
+// label's ±4 px float. The two motion sources stay in lockstep
+// even though they're animated separately, because they share the
+// same duration, easing, and start delay.
+const FLOAT_AMPLITUDE_VB = 0.6;
+const FLOAT_DURATION = 7;
 
 export default function Anatomy() {
   const t = useT();
@@ -78,8 +73,7 @@ export default function Anatomy() {
           />
           <div className="absolute inset-0 bg-brand-secondary/15" />
 
-          {/* Desktop hotspots layered as: connector lines → dots → labels.
-              Mobile gets a plain stacked list below. */}
+          {/* Desktop hotspots (mobile gets a list below) */}
           <div className="hidden md:block absolute inset-0">
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none"
@@ -87,61 +81,61 @@ export default function Anatomy() {
               preserveAspectRatio="none"
               aria-hidden
             >
-              {/* Each connector is two lines drawing in unison:
-                    - a wide dark "halo" underneath for contrast,
-                    - a slimmer solid white line on top.
-                  vector-effect: non-scaling-stroke so strokeWidth is
-                  read in device pixels — that's what makes the lines
-                  legible at any viewport width. The previous build
-                  used 0.7 px (a hairline that read as a dotted dash);
-                  these are 5 px / 2.5 px, properly solid.
-                  Endpoints are pinned to (h.x, h.y) on one end and
-                  (h.labelX, h.labelY) on the other, so moving the
-                  dot in HOTSPOTS automatically moves the line's
-                  origin with it. */}
-              {hotspots.map((h, i) => (
-                <motion.line
-                  key={`halo-${i}`}
-                  x1={h.x}
-                  y1={h.y}
-                  x2={h.labelX}
-                  y2={h.labelY}
-                  stroke="#0A3D62"
-                  strokeWidth="5"
-                  strokeOpacity="0.5"
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  whileInView={{ pathLength: 1, opacity: 0.5 }}
-                  viewport={{ once: true, amount: 0.4 }}
-                  transition={{
-                    duration: 0.6,
-                    ease: [0.22, 1, 0.36, 1],
-                    delay: i * STAGGER + 0.3,
-                  }}
-                />
-              ))}
-              {hotspots.map((h, i) => (
-                <motion.line
-                  key={`line-${i}`}
-                  x1={h.x}
-                  y1={h.y}
-                  x2={h.labelX}
-                  y2={h.labelY}
-                  stroke="white"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  vectorEffect="non-scaling-stroke"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  whileInView={{ pathLength: 1, opacity: 1 }}
-                  viewport={{ once: true, amount: 0.4 }}
-                  transition={{
-                    duration: 0.6,
-                    ease: [0.22, 1, 0.36, 1],
-                    delay: i * STAGGER + 0.3,
-                  }}
-                />
-              ))}
+              {/* Single solid white line per hotspot. CSS drop-shadow on
+                  the line itself gives a soft dark contrast halo without
+                  the "double stroke" look of a second SVG line.
+                  Endpoints (x1,y1) live on the dot's centre and never
+                  move; (x2,y2) tracks the floating label, so the line
+                  visibly stretches/contracts in lockstep with the card. */}
+              {hotspots.map((h, i) => {
+                const startDelay = i * STAGGER + 0.3;
+                const floatDelay = i * STAGGER + 1.1;
+                return (
+                  <motion.line
+                    key={`line-${i}`}
+                    x1={h.x}
+                    y1={h.y}
+                    x2={h.labelX}
+                    stroke="white"
+                    strokeWidth="2.6"
+                    strokeLinecap="round"
+                    vectorEffect="non-scaling-stroke"
+                    style={{
+                      filter:
+                        "drop-shadow(0 1px 2px rgba(10, 61, 98, 0.55)) drop-shadow(0 0 1px rgba(10, 61, 98, 0.45))",
+                    }}
+                    initial={{ pathLength: 0, opacity: 0, y2: h.labelY }}
+                    animate={{
+                      pathLength: 1,
+                      opacity: 1,
+                      y2: [
+                        h.labelY,
+                        h.labelY - FLOAT_AMPLITUDE_VB,
+                        h.labelY + FLOAT_AMPLITUDE_VB,
+                        h.labelY - FLOAT_AMPLITUDE_VB,
+                        h.labelY,
+                      ],
+                    }}
+                    transition={{
+                      pathLength: {
+                        duration: 0.6,
+                        ease: [0.22, 1, 0.36, 1],
+                        delay: startDelay,
+                      },
+                      opacity: {
+                        duration: 0.6,
+                        delay: startDelay,
+                      },
+                      y2: {
+                        duration: FLOAT_DURATION,
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                        delay: floatDelay,
+                      },
+                    }}
+                  />
+                );
+              })}
             </svg>
 
             {hotspots.map((h, i) => (
@@ -157,7 +151,8 @@ export default function Anatomy() {
                 number={h.number}
                 title={h.title}
                 text={h.text}
-                delay={i * STAGGER + 0.65}
+                entryDelay={i * STAGGER + 0.65}
+                floatDelay={i * STAGGER + 1.1}
               />
             ))}
           </div>
@@ -187,6 +182,9 @@ export default function Anatomy() {
 }
 
 function Dot({ x, y, delay }: { x: number; y: number; delay: number }) {
+  // Dot stays *anchored* — no float, no transform tweaks. The line's
+  // (x1,y1) shares this exact (x, y) so wherever the dot lands, the
+  // line begins. Visually the line emerges from inside the circle.
   return (
     <motion.span
       initial={{ scale: 0, opacity: 0 }}
@@ -199,17 +197,14 @@ function Dot({ x, y, delay }: { x: number; y: number; delay: number }) {
         mass: 0.9,
         delay,
       }}
-      className="absolute grid place-items-center"
+      className="absolute"
       style={{
         left: `${x}%`,
         top: `${y}%`,
         transform: "translate(-50%, -50%)",
       }}
     >
-      {/* Solid white dot with a brand-primary ring. The line endpoint
-          sits at this dot's centre, so the line visually emerges from
-          inside the circle — no separate pulse halo to drown it out. */}
-      <span className="relative inline-flex h-[18px] w-[18px] rounded-full bg-white border-[3px] border-brand-primary shadow-[0_0_0_2px_rgba(10,61,98,0.25),0_2px_8px_rgba(0,0,0,0.25)]" />
+      <span className="block h-[18px] w-[18px] rounded-full bg-white border-[3px] border-brand-primary shadow-[0_0_0_2px_rgba(10,61,98,0.25),0_2px_8px_rgba(0,0,0,0.25)]" />
     </motion.span>
   );
 }
@@ -221,7 +216,8 @@ function Label({
   number,
   title,
   text,
-  delay,
+  entryDelay,
+  floatDelay,
 }: {
   x: number;
   y: number;
@@ -229,30 +225,64 @@ function Label({
   number: string;
   title: string;
   text: string;
-  delay: number;
+  entryDelay: number;
+  floatDelay: number;
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10, scale: 0.94 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay }}
-      className={`absolute rounded-xl bg-white border border-brand-primary/40 shadow-[0_2px_6px_rgba(15,23,42,0.12),0_18px_36px_-12px_rgba(15,23,42,0.32)] px-4 py-3 w-[220px] ${
-        anchor === "left" ? "text-right" : "text-left"
-      }`}
+    <div
+      className="absolute"
       style={{
         left: `${x}%`,
         top: `${y}%`,
         transform: "translate(-50%, -50%)",
       }}
     >
-      <div className="flex items-baseline gap-2 text-xs font-bold tracking-wider uppercase text-brand-primary-600">
-        <span className="shrink-0">{number}</span>
-        <span className="text-brand-secondary leading-tight">{title}</span>
-      </div>
-      <p className="text-xs text-brand-secondary/75 mt-1 leading-relaxed">
-        {text}
-      </p>
-    </motion.div>
+      {/* Inner motion.div carries both the entry animation and the
+          perpetual float. The float keyframes start and end at 0 so
+          the loop seam is invisible. */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          y: [
+            0,
+            -FLOAT_AMPLITUDE_PX,
+            FLOAT_AMPLITUDE_PX,
+            -FLOAT_AMPLITUDE_PX,
+            0,
+          ],
+        }}
+        transition={{
+          opacity: {
+            duration: 0.5,
+            ease: [0.22, 1, 0.36, 1],
+            delay: entryDelay,
+          },
+          scale: {
+            duration: 0.5,
+            ease: [0.22, 1, 0.36, 1],
+            delay: entryDelay,
+          },
+          y: {
+            duration: FLOAT_DURATION,
+            ease: "easeInOut",
+            repeat: Infinity,
+            delay: floatDelay,
+          },
+        }}
+        className={`rounded-xl bg-white border border-brand-primary/40 shadow-[0_2px_6px_rgba(15,23,42,0.12),0_18px_36px_-12px_rgba(15,23,42,0.32)] px-4 py-3 w-[220px] ${
+          anchor === "left" ? "text-right" : "text-left"
+        }`}
+      >
+        <div className="flex items-baseline gap-2 text-xs font-bold tracking-wider uppercase text-brand-primary-600">
+          <span className="shrink-0">{number}</span>
+          <span className="text-brand-secondary leading-tight">{title}</span>
+        </div>
+        <p className="text-xs text-brand-secondary/75 mt-1 leading-relaxed">
+          {text}
+        </p>
+      </motion.div>
+    </div>
   );
 }
