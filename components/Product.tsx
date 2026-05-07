@@ -88,15 +88,25 @@ export default function Product() {
   }, [active]);
 
   return (
-    <section id="product" className="section relative">
+    <section
+      id="product"
+      className="relative px-5 sm:px-8 pt-6 md:pt-10 lg:pt-14 pb-16 md:pb-24 lg:pb-28 max-w-7xl mx-auto"
+    >
       <div className="blob-primary w-[360px] h-[360px] -top-10 -left-32" />
       <div className="blob-turquoise w-[280px] h-[280px] bottom-10 -right-32" />
 
+      {/* The Product section sits directly under PageHero, so on most
+          screens it's already in view at first paint. Driving these
+          two columns straight from `animate` (instead of whileInView)
+          makes the image and text fade/slide into place on mount —
+          without that, the user would land on the page, see the text
+          column already visible (intersection had it firing during
+          hydration), and the photo wouldn't animate until they
+          scrolled. */}
       <div className="relative grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
         <motion.div
           initial={{ opacity: 0, x: -36 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
         >
           {/* Cleaner edges: aspect bumped to 5:4 so the photos breathe,
@@ -157,8 +167,7 @@ export default function Product() {
 
         <motion.div
           initial={{ opacity: 0, x: 36 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
+          animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
         >
           <span className="section-eyebrow">{page.productEyebrow}</span>
