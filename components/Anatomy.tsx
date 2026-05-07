@@ -14,20 +14,19 @@ type Hotspot = {
   text: string;
 };
 
-// Hotspot positions calibrated for the actual side-profile shot of
-// our own jet ski (LOCAL_PHOTOS.ownSpark1 — Spark Trixx on the
-// trailer in Seinäjoki). The image is exactly 4:3, so the
-// percentages here line up 1:1 with where the features actually sit
-// in the frame.
-//   01 Säädettävä ohjaustanko → handlebar riser, top of the unit
-//   02 Sininen Trixx istuin   → seat just behind the bars
+// Hotspot positions calibrated against the side-profile shot of our
+// own jet ski (LOCAL_PHOTOS.ownSpark1 — Spark Trixx on the trailer
+// in Seinäjoki). The image is 4:3, so percentages here line up 1:1
+// with where the features actually sit in the frame.
+//   01 Säädettävä ohjaustanko → handlebar riser at the top of the unit
+//   02 Sininen Trixx istuin   → green/yellow Trixx seat behind the bars
 //   03 90 hv Rotax            → front bonnet over the engine
 //   04 Kevyt runko            → hull side, around the Sea-Doo wordmark
 const HOTSPOT_POSITIONS: Pick<Hotspot, "x" | "y" | "side" | "number">[] = [
-  { x: 50, y: 44, side: "right", number: "01" },
-  { x: 68, y: 50, side: "right", number: "02" },
-  { x: 25, y: 56, side: "left", number: "03" },
-  { x: 55, y: 66, side: "right", number: "04" },
+  { x: 53, y: 51, side: "right", number: "01" },
+  { x: 64, y: 56, side: "right", number: "02" },
+  { x: 28, y: 62, side: "left", number: "03" },
+  { x: 50, y: 70, side: "right", number: "04" },
 ];
 
 export default function Anatomy() {
@@ -68,7 +67,7 @@ export default function Anatomy() {
           {/* Hotspots (desktop only — mobile gets a list below) */}
           <div className="hidden md:block absolute inset-0">
             {hotspots.map((h, i) => (
-              <Hotspot key={i} hotspot={h} delay={i * 0.12} />
+              <Hotspot key={i} hotspot={h} delay={i * 0.18} />
             ))}
           </div>
         </div>
@@ -100,22 +99,39 @@ function Hotspot({ hotspot, delay }: { hotspot: Hotspot; delay: number }) {
   const { x, y, side, number, title, text } = hotspot;
   const isLeft = side === "left";
 
+  // Three-beat entry, sequenced off the per-hotspot delay:
+  //   1) the dot lands with a small spring (stiff, slightly damped)
+  //   2) ~200 ms later the connector line draws out to the side
+  //   3) ~250 ms after that the label fades + slides into place
+  // Total per hotspot ≈ 0.7 s, with each card staggered 0.18 s after
+  // the previous so the four points read as a wave instead of a pop.
+  const dotDelay = delay;
+  const lineDelay = delay + 0.2;
+  const labelDelay = delay + 0.45;
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true, amount: 0.5 }}
-      transition={{ duration: 0.4, delay }}
+    <div
       className="absolute"
       style={{ left: `${x}%`, top: `${y}%`, transform: "translate(-50%, -50%)" }}
     >
       {/* Pulsing dot */}
-      <span className="relative grid place-items-center">
+      <motion.span
+        initial={{ scale: 0, opacity: 0 }}
+        whileInView={{ scale: 1, opacity: 1 }}
+        viewport={{ once: true, amount: 0.5 }}
+        transition={{
+          type: "spring",
+          stiffness: 320,
+          damping: 18,
+          delay: dotDelay,
+        }}
+        className="relative grid place-items-center"
+      >
         <span className="absolute inline-flex h-6 w-6 rounded-full bg-brand-primary animate-pulse-ring" />
         <span className="relative inline-flex h-5 w-5 rounded-full bg-brand-primary border-2 border-white shadow-soft" />
-      </span>
+      </motion.span>
 
-      {/* Connector line + label */}
+      {/* Connector line + label group */}
       <div
         className={`absolute top-1/2 ${
           isLeft ? "right-full mr-2" : "left-full ml-2"
@@ -123,11 +139,20 @@ function Hotspot({ hotspot, delay }: { hotspot: Hotspot; delay: number }) {
           isLeft ? "flex-row-reverse" : ""
         }`}
       >
-        <span
-          className={`h-px w-12 bg-brand-primary`}
+        <motion.span
           aria-hidden
+          initial={{ scaleX: 0 }}
+          whileInView={{ scaleX: 1 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1], delay: lineDelay }}
+          style={{ originX: isLeft ? 1 : 0 }}
+          className="h-px w-12 bg-brand-primary"
         />
-        <div
+        <motion.div
+          initial={{ opacity: 0, x: isLeft ? 8 : -8 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: labelDelay }}
           className={`rounded-xl bg-white shadow-soft border border-brand-primary/30 px-4 py-3 max-w-[220px] ${
             isLeft ? "text-right" : ""
           }`}
@@ -139,8 +164,8 @@ function Hotspot({ hotspot, delay }: { hotspot: Hotspot; delay: number }) {
           <p className="text-xs text-brand-secondary/75 mt-1 leading-relaxed">
             {text}
           </p>
-        </div>
+        </motion.div>
       </div>
-    </motion.div>
+    </div>
   );
 }
