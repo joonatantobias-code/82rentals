@@ -14,15 +14,9 @@ type HotspotSpec = {
   number: string;
 };
 
-// Dot positions calibrated against the actual seinajoki-1 image:
-//   01 Säädettävä ohjaustanko → handlebar T-bar at the top of the unit
-//   02 Sininen Trixx istuin   → green/yellow Trixx seat
-//   03 90 hv Rotax            → front bonnet over the engine
-//   04 Kevyt runko            → hull side at the Sea-Doo wordmark
-//
-// Labels pinned to the four corners well inside the frame so the
-// 220 px-wide cards stay safely on-canvas at any viewport. Connectors
-// run diagonally between dot and label.
+// Dot positions (% of container). The same x/y values are used to
+// render the line's start point AND the dot's centre — both inside
+// one SVG with the same viewBox — so the two can never disagree.
 const HOTSPOTS: HotspotSpec[] = [
   { x: 51, y: 45, labelX: 72, labelY: 14, labelAnchor: "right", number: "01" },
   { x: 66, y: 54, labelX: 72, labelY: 86, labelAnchor: "right", number: "02" },
@@ -31,15 +25,14 @@ const HOTSPOTS: HotspotSpec[] = [
 ];
 
 const STAGGER = 0.6;
-// Slow, breathy ±5 px / ±2 px drift. Both axes use the same timing
-// (duration / ease / delay) on label and line, so the card and the
-// line endpoint stay locked together. Line origin (x1, y1) and the
-// dot stay completely static — only the endpoint dances with the
-// label.
+// Slow ambient drift on the label and the line endpoint. Both axes
+// use the same timing, easing and start delay so the card and the
+// line dance in lockstep. Line origin and dot stay fully static.
 const FLOAT_AMPLITUDE_Y_PX = 5;
 const FLOAT_AMPLITUDE_X_PX = 2;
-// Viewbox amplitudes ≈ pixels / container size in that axis at the
-// reference 896x672 size (max-w-4xl, aspect 4:3).
+// SVG viewBox is 100x100 with preserveAspectRatio="none", so 1 unit
+// in either axis ≈ 1 % of the container. Convert px → vb at the
+// reference 896×672 size.
 const FLOAT_AMPLITUDE_Y_VB = 0.75; // ≈ 5 px on a 672 px-tall container
 const FLOAT_AMPLITUDE_X_VB = 0.25; // ≈ 2 px on a 896 px-wide container
 const FLOAT_DURATION = 12;
@@ -76,7 +69,12 @@ export default function Anatomy() {
           />
           <div className="absolute inset-0 bg-brand-secondary/15" />
 
-          {/* Desktop hotspots (mobile gets a list below) */}
+          {/* Single SVG owns BOTH the connector lines and the dots.
+              Same viewBox + same coordinate values means line origin
+              and dot centre are pixel-identical. Move a hotspot's
+              x/y in HOTSPOTS and both move together. Labels stay as
+              HTML divs (positioned by percentage) so they remain
+              accessible text content. */}
           <div className="hidden md:block absolute inset-0">
             <svg
               className="absolute inset-0 w-full h-full pointer-events-none"
@@ -84,20 +82,29 @@ export default function Anatomy() {
               preserveAspectRatio="none"
               aria-hidden
             >
-              {/* Single solid white line per hotspot. CSS drop-shadow on
-                  the line itself gives a soft dark contrast halo without
-                  the "double stroke" look of a second SVG line.
-                  Endpoints (x1,y1) live on the dot's centre and never
-                  move; (x2,y2) tracks the floating label, so the line
-                  visibly stretches/contracts in lockstep with the card. */}
-              {/* Each connector is a single solid white line. The
-                  pathLength draw-on animation was producing visible
-                  segmentation on some renders ("dashed" look the user
-                  reported); replaced with a plain opacity fade. The
-                  line is solid from frame 1 of its visibility, just
-                  invisible until the entry delay. */}
+              <defs>
+                {/* Soft drop shadow under both lines and dots so they
+                    pop off bright sky / pale asphalt without needing
+                    a second SVG element. */}
+                <filter
+                  id="hotspot-shadow"
+                  x="-50%"
+                  y="-50%"
+                  width="200%"
+                  height="200%"
+                >
+                  <feDropShadow
+                    dx="0"
+                    dy="0.4"
+                    stdDeviation="0.4"
+                    floodColor="#0A3D62"
+                    floodOpacity="0.6"
+                  />
+                </filter>
+              </defs>
+
               {hotspots.map((h, i) => {
-                const startDelay = i * STAGGER + 0.4;
+                const lineDelay = i * STAGGER + 0.4;
                 const floatDelay = i * STAGGER + 1.1;
                 return (
                   <motion.line
@@ -108,15 +115,8 @@ export default function Anatomy() {
                     strokeWidth="3"
                     strokeLinecap="round"
                     vectorEffect="non-scaling-stroke"
-                    style={{
-                      filter:
-                        "drop-shadow(0 1.5px 3px rgba(10, 61, 98, 0.6))",
-                    }}
-                    initial={{
-                      opacity: 0,
-                      x2: h.labelX,
-                      y2: h.labelY,
-                    }}
+                    filter="url(#hotspot-shadow)"
+                    initial={{ opacity: 0, x2: h.labelX, y2: h.labelY }}
                     animate={{
                       opacity: 1,
                       x2: [
@@ -138,7 +138,7 @@ export default function Anatomy() {
                       opacity: {
                         duration: 0.6,
                         ease: [0.22, 1, 0.36, 1],
-                        delay: startDelay,
+                        delay: lineDelay,
                       },
                       x2: {
                         duration: FLOAT_DURATION,
@@ -156,11 +156,29 @@ export default function Anatomy() {
                   />
                 );
               })}
-            </svg>
 
-            {hotspots.map((h, i) => (
-              <Dot key={`dot-${i}`} x={h.x} y={h.y} delay={i * STAGGER} />
-            ))}
+              {hotspots.map((h, i) => (
+                <motion.circle
+                  key={`dot-${i}`}
+                  cx={h.x}
+                  cy={h.y}
+                  fill="white"
+                  stroke="#6EC6FF"
+                  strokeWidth="3.2"
+                  vectorEffect="non-scaling-stroke"
+                  filter="url(#hotspot-shadow)"
+                  initial={{ r: 0, opacity: 0 }}
+                  animate={{ r: 1.4, opacity: 1 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 240,
+                    damping: 22,
+                    mass: 0.9,
+                    delay: i * STAGGER,
+                  }}
+                />
+              ))}
+            </svg>
 
             {hotspots.map((h, i) => (
               <Label
@@ -201,34 +219,6 @@ export default function Anatomy() {
   );
 }
 
-function Dot({ x, y, delay }: { x: number; y: number; delay: number }) {
-  // Dot stays *anchored* — no float, no transform tweaks. The line's
-  // (x1,y1) shares this exact (x, y) so wherever the dot lands, the
-  // line begins. Visually the line emerges from inside the circle.
-  return (
-    <motion.span
-      initial={{ scale: 0, opacity: 0 }}
-      whileInView={{ scale: 1, opacity: 1 }}
-      viewport={{ once: true, amount: 0.4 }}
-      transition={{
-        type: "spring",
-        stiffness: 240,
-        damping: 22,
-        mass: 0.9,
-        delay,
-      }}
-      className="absolute"
-      style={{
-        left: `${x}%`,
-        top: `${y}%`,
-        transform: "translate(-50%, -50%)",
-      }}
-    >
-      <span className="block h-[18px] w-[18px] rounded-full bg-white border-[3px] border-brand-primary shadow-[0_0_0_2px_rgba(10,61,98,0.25),0_2px_8px_rgba(0,0,0,0.25)]" />
-    </motion.span>
-  );
-}
-
 function Label({
   x,
   y,
@@ -257,9 +247,6 @@ function Label({
         transform: "translate(-50%, -50%)",
       }}
     >
-      {/* Inner motion.div carries both the entry animation and the
-          perpetual float. The float keyframes start and end at 0 so
-          the loop seam is invisible. */}
       <motion.div
         initial={{ opacity: 0, scale: 0.94 }}
         animate={{
