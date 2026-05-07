@@ -15,18 +15,17 @@ import {
 import { LOCAL_PHOTOS } from "@/lib/images";
 import { useT } from "@/components/LocaleProvider";
 
-// Real photos of our own Sea-Doo Spark Trixx — shot in Seinäjoki —
-// followed by a couple of action stock shots so the gallery still has
-// some variety. The main hero (active=0) is one of our own.
+// Four hand-picked photos of our own Sea-Doo Spark Trixx, each from
+// a different angle so no two thumbnails read as the "same shot":
+//   - ownSpark4 — front 3/4 at the gas station (hero)
+//   - ownSpark1 — full side profile on the trailer
+//   - ownSpark5 — rear 3/4 close on the seat + Sea-Doo wordmark
+//   - ownSpark6 — top-down on the handlebars and dash
 const gallery = [
   LOCAL_PHOTOS.ownSpark4,
   LOCAL_PHOTOS.ownSpark1,
-  LOCAL_PHOTOS.ownSpark2,
-  LOCAL_PHOTOS.ownSpark3,
   LOCAL_PHOTOS.ownSpark5,
   LOCAL_PHOTOS.ownSpark6,
-  LOCAL_PHOTOS.ownSpark7,
-  LOCAL_PHOTOS.coupleAction,
 ];
 
 type FeatureVisual = {
