@@ -43,7 +43,7 @@ function BrandAvatar({
 }) {
   return (
     <span
-      className={`grid place-items-center rounded-full bg-brand-secondary overflow-hidden shrink-0 ${
+      className={`grid place-items-center rounded-full bg-white overflow-hidden shrink-0 ${
         ring === "white" ? "ring-2 ring-white" : ""
       }`}
       style={{ height: size, width: size }}
