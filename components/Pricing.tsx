@@ -21,7 +21,6 @@ export default function Pricing() {
     price: BASE_PRICES[d],
     tag: TIER_TAG[d],
     highlight: d === "2h",
-    bestValue: d === "halfday",
     name: t.pricing.tiers[i].name,
     durationLabel: t.pricing.tiers[i].duration,
     description: t.pricing.tiers[i].description,
@@ -38,7 +37,6 @@ export default function Pricing() {
       <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-7 md:pt-6 items-stretch">
         {tiers.map((tier, i) => {
           const Icon = TAG_ICON[tier.tag];
-          const showBadge = tier.highlight || tier.bestValue;
           return (
             <motion.div
               key={tier.duration}
@@ -49,20 +47,12 @@ export default function Pricing() {
               className={`relative flex flex-col h-full rounded-2xl p-6 md:p-7 transition-all ${
                 tier.highlight
                   ? "bg-brand-secondary text-white shadow-soft ring-2 ring-brand-primary md:-translate-y-4 md:scale-[1.04] z-10"
-                  : tier.bestValue
-                    ? "bg-white text-brand-secondary border-2 border-brand-turquoise shadow-soft hover:-translate-y-1"
-                    : "bg-white text-brand-secondary border border-black/5 shadow-soft hover:-translate-y-1"
+                  : "bg-white text-brand-secondary border border-black/5 shadow-soft hover:-translate-y-1"
               }`}
             >
-              {showBadge && (
-                <span
-                  className={`absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 rounded-full px-4 py-1 text-[11px] font-extrabold uppercase tracking-[0.18em] shadow-soft whitespace-nowrap ${
-                    tier.highlight
-                      ? "bg-brand-primary text-brand-secondary"
-                      : "bg-brand-turquoise text-brand-secondary"
-                  }`}
-                >
-                  {tier.highlight ? t.pricing.mostPopular : tier.tagLabel}
+              {tier.highlight && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 rounded-full px-4 py-1 text-[11px] font-extrabold uppercase tracking-[0.18em] shadow-soft whitespace-nowrap bg-brand-primary text-brand-secondary">
+                  {t.pricing.mostPopular}
                 </span>
               )}
 
@@ -132,9 +122,7 @@ export default function Pricing() {
                   className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 h-12 text-sm font-semibold transition-all ${
                     tier.highlight
                       ? "bg-brand-primary text-brand-secondary hover:bg-white"
-                      : tier.bestValue
-                        ? "bg-brand-turquoise text-brand-secondary hover:brightness-95"
-                        : "bg-brand-secondary text-white hover:bg-brand-primary hover:text-brand-secondary"
+                      : "bg-brand-secondary text-white hover:bg-brand-primary hover:text-brand-secondary"
                   }`}
                 >
                   {tier.cta}
