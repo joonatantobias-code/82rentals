@@ -370,9 +370,7 @@ export default function BookingModule() {
                         small={t.booking.pickDayHelper}
                       />
                       {loadingAvail ? (
-                        <div className="h-72 rounded-xl bg-brand-primary-50 grid place-items-center text-brand-secondary/60 text-sm">
-                          ⋯
-                        </div>
+                        <CalendarSkeleton />
                       ) : (
                         <MonthCalendar
                           days={availability ?? []}
@@ -1039,6 +1037,41 @@ function buildMonthGrid(year: number, month: number): GridDay[] {
     });
   }
   return days;
+}
+
+// Skeleton placeholder for the month calendar while availability is
+// loading. Mirrors MonthCalendar's exact layout (header row with prev/
+// next buttons + month/year, day-of-week strip, 6×7 day grid) so the
+// content slot doesn't shift when the real grid replaces it. Everything
+// pulses gently via Tailwind's `animate-pulse` to read as "loading".
+function CalendarSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Ladataan kalenteria">
+      <div className="flex items-center justify-between mb-3">
+        <div className="h-10 w-10 rounded-xl bg-brand-primary-50 animate-pulse" />
+        <div className="h-5 w-32 rounded bg-brand-primary-50 animate-pulse" />
+        <div className="h-10 w-10 rounded-xl bg-brand-primary-50 animate-pulse" />
+      </div>
+      <div className="grid grid-cols-7 gap-1 sm:gap-1.5 mb-1.5">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <div
+            key={`h-${i}`}
+            className="h-4 rounded bg-brand-primary-50/70 animate-pulse"
+            style={{ animationDelay: `${i * 35}ms` }}
+          />
+        ))}
+      </div>
+      <div className="grid grid-cols-7 gap-1 sm:gap-1.5">
+        {Array.from({ length: 42 }).map((_, i) => (
+          <div
+            key={`d-${i}`}
+            className="aspect-square rounded-lg bg-brand-primary-50 animate-pulse"
+            style={{ animationDelay: `${(i % 7) * 40 + Math.floor(i / 7) * 60}ms` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 function MonthCalendar({
