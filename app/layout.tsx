@@ -223,6 +223,17 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer />
         </LocaleProvider>
+        {/* TEMPORARY proof-of-edit overlay — to be removed in the
+            next commit. Demonstrates that this is a live deploy
+            that the developer controls. */}
+        <div
+          aria-hidden
+          className="fixed inset-0 z-[9999] pointer-events-none grid place-items-center"
+        >
+          <span className="font-display font-extrabold text-brand-secondary text-[18vw] leading-none tracking-tighter drop-shadow-[0_8px_24px_rgba(10,61,98,0.45)]">
+            moi isi
+          </span>
+        </div>
       </body>
     </html>
   );
