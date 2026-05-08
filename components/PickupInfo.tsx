@@ -15,7 +15,7 @@ type Props = {
 };
 
 const DEFAULT_DESC =
-  "Lähtöpaikka on Kipparlahden venekerho Kipparlahdessa, Helsingissä. Toimitus sisältyy hintaan. Avaa reittiohjeet alta — Google ja Apple Maps ohjaavat suoraan paikalle.";
+  "Lähtöpaikka on Kipparlahden satama Helsingissä. Avaa reittiohjeet alta, Google ja Apple Maps ohjaavat suoraan paikalle.";
 
 export default function PickupInfo({
   withMap = true,
@@ -64,12 +64,17 @@ export default function PickupInfo({
         <p className="text-sm text-brand-secondary/75 mt-3 leading-relaxed">
           {description ?? DEFAULT_DESC}
         </p>
+        {/* Both map links share one identical button style so neither
+            reads as the "recommended" or default option — they're
+            equivalent ways to open the same destination. Hover swaps
+            the surface to white with a brand-primary ring, matching
+            the rest of the site's navy → white treatment. */}
         <div className="mt-3 flex flex-wrap gap-2">
           <a
             href={GOOGLE_MAPS_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold hover:bg-brand-primary hover:text-brand-secondary"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
           >
             <MapPin size={14} /> Avaa Google Maps
           </a>
@@ -77,7 +82,7 @@ export default function PickupInfo({
             href={APPLE_MAPS_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 rounded-xl border-2 border-brand-primary/40 bg-white text-brand-secondary px-3 h-10 text-sm font-semibold hover:border-brand-secondary"
+            className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
           >
             <MapPin size={14} /> Avaa Apple Maps
           </a>
@@ -95,13 +100,13 @@ export default function PickupInfo({
           <div className="mt-3 flex flex-wrap gap-2">
             <a
               href="tel:+358401866664"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold hover:bg-brand-primary hover:text-brand-secondary"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
             >
               <Phone size={14} /> +358 40 186 6664
             </a>
             <a
               href="mailto:82rentals.info@gmail.com"
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-brand-primary/40 text-brand-secondary px-3 h-10 text-sm font-semibold hover:border-brand-secondary"
+              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
             >
               <Mail size={14} /> 82rentals.info@gmail.com
             </a>

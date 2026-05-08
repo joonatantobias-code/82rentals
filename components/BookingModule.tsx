@@ -473,13 +473,13 @@ export default function BookingModule() {
                           <div className="mt-3 flex flex-wrap gap-2">
                             <a
                               href="tel:+358401866664"
-                              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold hover:bg-brand-primary hover:text-brand-secondary"
+                              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
                             >
                               <Phone size={14} /> +358 40 186 6664
                             </a>
                             <a
                               href="mailto:82rentals.info@gmail.com"
-                              className="inline-flex items-center gap-2 rounded-xl border-2 border-brand-primary/40 text-brand-secondary px-3 h-10 text-sm font-semibold hover:border-brand-secondary"
+                              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
                             >
                               <Mail size={14} /> 82rentals.info@gmail.com
                             </a>
@@ -972,14 +972,14 @@ function ContactNote({
           <div className="flex flex-col sm:flex-row gap-2 mt-3">
             <a
               href="tel:+358401866664"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-secondary text-white text-sm font-semibold px-4 py-2.5 hover:bg-brand-primary hover:text-brand-secondary transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-secondary text-white text-sm font-semibold px-4 py-2.5 transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
             >
               <Phone size={14} />
               +358 40 186 6664
             </a>
             <a
               href="mailto:82rentals.info@gmail.com"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-white border-2 border-brand-primary/30 text-brand-secondary text-sm font-semibold px-4 py-2.5 hover:border-brand-primary transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-secondary text-white text-sm font-semibold px-4 py-2.5 transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
             >
               <Mail size={14} />
               82rentals.info@gmail.com
