@@ -1,13 +1,15 @@
 export const PICKUP = {
   name: "Kipparlahden satama",
-  area: "Kipparlahti, Helsinki",
-  // Approximate coords for the Kipparlahti bay area in Roihuvuori/Herttoniemi.
-  lat: 60.1862,
-  lng: 25.0510,
+  area: "Kipparlahdenkuja 3, 00810 Helsinki",
+  // Coords for Kipparlahdenkuja 3 — eastern shore of Kipparlahti bay
+  // in Herttoniemi. Used by the embedded OpenStreetMap iframe and the
+  // Apple Maps `ll=` fallback.
+  lat: 60.1908,
+  lng: 25.0574,
 };
 
 const PICKUP_QUERY = encodeURIComponent(
-  `Kipparlahden satama, Kipparlahti, Helsinki`
+  `Kipparlahdenkuja 3, 00810 Helsinki`
 );
 export const GOOGLE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${PICKUP_QUERY}`;
 export const APPLE_MAPS_URL = `https://maps.apple.com/?q=${PICKUP_QUERY}&ll=${PICKUP.lat},${PICKUP.lng}`;
