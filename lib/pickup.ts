@@ -7,8 +7,8 @@ export const PICKUP = {
   // the marker east of the bay near Tammisalo; this one is pulled
   // all the way west to the actual Kipparvuori promontory where the
   // dock sits.
-  lat: 60.1884,
-  lng: 25.0474,
+  lat: 60.1909,
+  lng: 25.0224,
 };
 
 const PICKUP_QUERY = encodeURIComponent(
