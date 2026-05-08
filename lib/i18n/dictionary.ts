@@ -409,9 +409,9 @@ export const dictionary = {
         storyEyebrow: "Tarina",
         storyTitle: "Miksi tämä syntyi.",
         storyBody1:
-          "Halusimme olla edelläkävijä alalla ja nostaa rimaa. Vesijettivuokraus jossa varaus onnistuu netistä, kuljetus tuodaan sovittuun paikkaan ja kalusto on aina huipussa. Niinpä rakensimme sellaisen itse.",
+          "Halusimme olla edelläkävijä alalla ja nostaa rimaa. Rakensimme vesijettivuokraamon, jossa varaus onnistuu netistä, kuljetus tuodaan sovittuun paikkaan ja kalusto on aina huippukunnossa.",
         storyBody2:
-          "Tavoitteemme ei ole olla halvin, vaan ylivoimaisesti paras kokemus. Kalusto huollettu, kuljetus saumaton, opastus selkeä ja asiakaspalvelu tavoitettavissa, jokainen yksityiskohta on hiottu loppuun asti.",
+          "Tavoitteemme ei ole olla halvin, vaan ylivoimaisesti paras kokemus. Kalusto on huollettu, kuljetus saumaton, opastus selkeä ja asiakaspalvelu tavoitettavissa. Jokainen yksityiskohta on hiottu loppuun asti.",
         valueIcons: ["Ammattimaisuus", "Asiakas ensin", "Joustavuus"],
         values: [
           {
@@ -982,9 +982,9 @@ export const dictionary = {
         storyEyebrow: "Story",
         storyTitle: "Why we built this.",
         storyBody1:
-          "We wanted to lead this industry and raise the bar. A jet ski rental where booking is online, delivery comes to the agreed spot and the kit is always in top shape. So we built one ourselves.",
+          "We wanted to lead this industry and raise the bar. So we built a jet ski rental where booking is online, delivery comes to the agreed spot and the kit is always in top shape.",
         storyBody2:
-          "Our goal isn't to be the cheapest. Our goal is to be the clearly best experience: kit serviced, delivery seamless, briefing clear, support reachable. Every detail dialled in.",
+          "Our goal isn't to be the cheapest, it's to be the clearly best experience. Kit serviced, delivery seamless, briefing clear, support reachable. Every detail dialled in.",
         valueIcons: ["Professional", "Customer first", "Flexible"],
         values: [
           {
