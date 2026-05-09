@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { PICKUP, GOOGLE_MAPS_URL, APPLE_MAPS_URL } from "@/lib/pickup";
+import { PICKUP } from "@/lib/pickup";
+import PickupInfo from "./PickupInfo";
 import TermsView from "./TermsView";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -42,6 +43,27 @@ const OPEN_HOUR = 9;
 const CLOSE_HOUR = 22;
 
 const DEFAULT_PICKUP = PICKUP.name;
+
+// Public boat ramps and marinas across the Helsinki capital region
+// (Helsinki + Espoo) the user can pick when choosing delivery instead
+// of picking the jet ski up at Kipparlahti. Place names stay Finnish
+// in both locales — they don't translate.
+const DELIVERY_RAMPS: string[] = [
+  "Lauttasaaren venesatama, Helsinki",
+  "Hernesaaren venesatama, Helsinki",
+  "Hietalahden venesatama, Helsinki",
+  "Pohjoisrannan ramppi, Helsinki",
+  "Marjaniemen ranta, Helsinki",
+  "Vuosaaren venesatama, Helsinki",
+  "Tammisalon ramppi, Helsinki",
+  "Otaniemen venesatama, Espoo",
+  "Suomenojan venesatama, Espoo",
+  "Haukilahden venesatama, Espoo",
+  "Espoonlahden venesatama, Espoo",
+  "Soukan venesatama, Espoo",
+  "Kivenlahden venesatama, Espoo",
+  "Muu paikka pääkaupunkiseudulla",
+];
 
 type DayAvailability = {
   date: string;
@@ -95,7 +117,22 @@ export default function BookingModule() {
   const [date, setDate] = useState<string | null>(null);
   const [slot, setSlot] = useState<Slot | null>(null);
   const [quantity, setQuantity] = useState(1);
-  const [pickup, setPickup] = useState(DEFAULT_PICKUP);
+  // Pickup is now driven by a mode toggle: "default" (drop the jet
+  // off at Kipparlahti for the customer) or "delivery" (we deliver to
+  // a chosen ramp elsewhere in the capital region). The legacy
+  // `pickup` string is computed from these so the rest of the
+  // booking flow (review row, summary, submission payload) stays
+  // unchanged.
+  const [pickupMode, setPickupMode] = useState<"default" | "delivery">("default");
+  const [pickupRamp, setPickupRamp] = useState("");
+  const [pickupRampNotes, setPickupRampNotes] = useState("");
+  const pickup = useMemo(() => {
+    if (pickupMode === "default") return DEFAULT_PICKUP;
+    if (!pickupRamp) return "Toimitus muualle";
+    return `Toimitus: ${pickupRamp}${
+      pickupRampNotes.trim() ? " — " + pickupRampNotes.trim() : ""
+    }`;
+  }, [pickupMode, pickupRamp, pickupRampNotes]);
   const [notes, setNotes] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -179,7 +216,12 @@ export default function BookingModule() {
     return Boolean(date && slot && (slotCapacity ?? 0) > 0);
   }
   function canGoStep4() {
-    return Boolean(name.trim() && phone.trim() && email.trim() && pickup.trim());
+    if (!name.trim() || !phone.trim() || !email.trim()) return false;
+    if (pickupMode === "delivery") {
+      if (!pickupRamp.trim()) return false;
+      if (!pickupRampNotes.trim()) return false;
+    }
+    return true;
   }
 
   async function handleSubmit() {
@@ -251,7 +293,9 @@ export default function BookingModule() {
                   setName("");
                   setPhone("");
                   setEmail("");
-                  setPickup("");
+                  setPickupMode("default");
+                  setPickupRamp("");
+                  setPickupRampNotes("");
                   setNotes("");
                 }}
                 date={date!}
@@ -431,58 +475,120 @@ export default function BookingModule() {
                         icon={<MapPin size={16} />}
                         label={t.booking.pickupTitle}
                       >
-                        <div className="rounded-2xl border-2 border-brand-primary/40 bg-brand-primary-50 p-4">
-                          <div className="font-display font-extrabold text-brand-secondary text-lg">
-                            {PICKUP.name}
-                          </div>
-                          <div className="text-sm text-brand-secondary/85 mt-0.5">
-                            {PICKUP.area}
-                          </div>
-                          <p className="text-sm text-brand-secondary/75 mt-2 leading-relaxed">
-                            {t.booking.pickupDefaultBody}
-                          </p>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            <a
-                              href={GOOGLE_MAPS_URL}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold hover:bg-brand-primary hover:text-brand-secondary"
-                            >
-                              <MapPin size={14} /> Google Maps
-                            </a>
-                            <a
-                              href={APPLE_MAPS_URL}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 rounded-xl border-2 border-brand-primary/40 bg-white text-brand-secondary px-3 h-10 text-sm font-semibold hover:border-brand-secondary"
-                            >
-                              <MapPin size={14} /> Apple Maps
-                            </a>
-                          </div>
+                        {/* Pickup-vs-delivery toggle. Same active /
+                            inactive treatment as the quantity and
+                            duration buttons in step 1, so the booking
+                            flow's choice tiles all read as one family. */}
+                        <div className="grid grid-cols-2 gap-3 mb-4">
+                          {(
+                            [
+                              {
+                                mode: "default" as const,
+                                label: t.booking.pickupModeDefault,
+                                hint: t.booking.pickupModeDefaultHint,
+                              },
+                              {
+                                mode: "delivery" as const,
+                                label: t.booking.pickupModeDelivery,
+                                hint: t.booking.pickupModeDeliveryHint,
+                              },
+                            ]
+                          ).map((opt) => {
+                            const active = pickupMode === opt.mode;
+                            return (
+                              <button
+                                type="button"
+                                key={opt.mode}
+                                onClick={() => setPickupMode(opt.mode)}
+                                className={`relative text-left p-4 rounded-2xl border-2 transition-all ${
+                                  active
+                                    ? "border-brand-secondary bg-brand-secondary text-white"
+                                    : "border-brand-primary/30 bg-white text-brand-secondary hover:border-brand-primary"
+                                }`}
+                              >
+                                {active && (
+                                  <span className="absolute top-3 right-3">
+                                    <CheckCircle2
+                                      size={18}
+                                      className="text-brand-primary"
+                                    />
+                                  </span>
+                                )}
+                                <div className="font-display font-extrabold text-base sm:text-lg leading-tight pr-6">
+                                  {opt.label}
+                                </div>
+                                <div
+                                  className={`text-xs mt-1 ${
+                                    active
+                                      ? "text-white/70"
+                                      : "text-brand-secondary/60"
+                                  }`}
+                                >
+                                  {opt.hint}
+                                </div>
+                              </button>
+                            );
+                          })}
                         </div>
 
-                        <div className="mt-3 rounded-2xl border-2 border-brand-primary/30 p-4 bg-white">
-                          <div className="font-display font-bold text-brand-secondary">
-                            {t.booking.pickupOtherTitle}
+                        {pickupMode === "default" ? (
+                          <PickupInfo
+                            withContact={false}
+                            description={t.booking.pickupDefaultBody}
+                          />
+                        ) : (
+                          <div className="rounded-2xl border-2 border-brand-primary/30 bg-white p-4 sm:p-5 space-y-4">
+                            <label className="block">
+                              <span className="text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
+                                {t.booking.deliveryRampLabel}
+                              </span>
+                              <select
+                                value={pickupRamp}
+                                onChange={(e) =>
+                                  setPickupRamp(e.target.value)
+                                }
+                                className="booking-input mt-2"
+                              >
+                                <option value="">
+                                  {t.booking.deliveryRampPlaceholder}
+                                </option>
+                                {DELIVERY_RAMPS.map((r) => (
+                                  <option key={r} value={r}>
+                                    {r}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+
+                            <label className="block">
+                              <span className="text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
+                                {t.booking.deliveryNotesLabel}
+                                <span className="text-brand-primary-600 ml-1">
+                                  *
+                                </span>
+                              </span>
+                              <textarea
+                                value={pickupRampNotes}
+                                onChange={(e) =>
+                                  setPickupRampNotes(e.target.value)
+                                }
+                                rows={4}
+                                placeholder={
+                                  t.booking.deliveryNotesPlaceholder
+                                }
+                                className="booking-input booking-textarea mt-2"
+                                required
+                              />
+                              <p className="mt-2 inline-flex items-start gap-1.5 text-xs text-brand-secondary/70">
+                                <Info
+                                  size={12}
+                                  className="text-brand-primary-600 mt-0.5 shrink-0"
+                                />
+                                <span>{t.booking.deliveryNotesHint}</span>
+                              </p>
+                            </label>
                           </div>
-                          <p className="text-sm text-brand-secondary/70 mt-1 leading-relaxed">
-                            {t.booking.pickupOtherBody}
-                          </p>
-                          <div className="mt-3 flex flex-wrap gap-2">
-                            <a
-                              href="tel:+358401866664"
-                              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
-                            >
-                              <Phone size={14} /> +358 40 186 6664
-                            </a>
-                            <a
-                              href="mailto:82rentals.info@gmail.com"
-                              className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
-                            >
-                              <Mail size={14} /> 82rentals.info@gmail.com
-                            </a>
-                          </div>
-                        </div>
+                        )}
                       </Field>
 
                       <Field icon={<UserIcon size={16} />} label={t.booking.fullName}>
