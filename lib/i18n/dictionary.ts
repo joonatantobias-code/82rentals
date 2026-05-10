@@ -203,7 +203,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Varaa vesijetti 60 sekunnissa.",
       sectionSubtitle:
-        "Valitse päivä ja kesto. Polttoaine, liivit ja vakuutus aina hintaan. Lähtö Kipparlahden satamasta.",
+        "Valitse päivä ja kesto. Polttoaine, liivit ja lyhyt perehdytys aina hintaan. Lähtö Kipparlahden satamasta tai vapaavalintaisesta satamasta sinun lähistöllä.",
       stepLabels: [
         "Vesijetit ja kesto",
         "Päivä ja aloitusaika",
@@ -521,7 +521,7 @@ export const dictionary = {
         eyebrow: "Varaus",
         heroTitle: "Varaa vesijetti 60 sekunnissa.",
         heroDesc:
-          "Valitse päivä ja kesto. Polttoaine, liivit ja vakuutus aina hintaan. Lähtö Kipparlahden satamasta.",
+          "Valitse päivä ja kesto. Polttoaine, liivit ja lyhyt perehdytys aina hintaan. Lähtö Kipparlahden satamasta tai vapaavalintaisesta satamasta sinun lähistöllä.",
         reassurances: [
           {
             title: "Maksuton peruutus",
@@ -790,7 +790,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Book a jet ski in 60 seconds.",
       sectionSubtitle:
-        "Pick the date and duration. Fuel, life jackets and insurance always included. Departure from Kipparlahden satama.",
+        "Pick the date and duration. Fuel, life jackets and a short briefing always included. Departure from Kipparlahden satama or any nearby marina you choose.",
       stepLabels: [
         "Jet skis & duration",
         "Date & start time",
@@ -1108,7 +1108,7 @@ export const dictionary = {
         eyebrow: "Booking",
         heroTitle: "Book a jet ski in 60 seconds.",
         heroDesc:
-          "Pick a date and duration. Fuel, life jackets and insurance always included. Departure from Kipparlahden satama.",
+          "Pick a date and duration. Fuel, life jackets and a short briefing always included. Departure from Kipparlahden satama or any nearby marina you choose.",
         reassurances: [
           {
             title: "Free cancellation",
