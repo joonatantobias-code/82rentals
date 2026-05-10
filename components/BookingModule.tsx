@@ -263,7 +263,14 @@ export default function BookingModule() {
   }
   function canGoStep4() {
     if (!name.trim() || !phone.trim() || !email.trim()) return false;
-    if (pickupMode === "delivery" && !pickupRamp.trim()) return false;
+    if (pickupMode === "delivery") {
+      if (!pickupRamp.trim()) return false;
+      // "Muu paikka pääkaupunkiseudulla" has no fixed address — that
+      // option is reserved for phone/email co-ordination, not the
+      // self-serve form. Block step 4 to push the user to call us.
+      const ramp = DELIVERY_RAMPS.find((r) => r.name === pickupRamp);
+      if (!ramp || !ramp.address) return false;
+    }
     return true;
   }
 
@@ -659,9 +666,36 @@ export default function BookingModule() {
                                   </div>
                                 );
                               }
+                              // "Muu paikka" path — no fixed address, so the
+                              // self-serve form can't take this. Surface
+                              // phone + email so the user contacts us
+                              // directly. canGoStep4() also blocks the next
+                              // button while this card is visible.
                               return (
-                                <div className="rounded-xl bg-brand-primary-50 border-2 border-brand-primary/30 p-4 text-sm text-brand-secondary/85 leading-relaxed">
-                                  {t.booking.deliveryAddressOther}
+                                <div className="rounded-xl bg-brand-secondary text-white p-4 sm:p-5 relative overflow-hidden">
+                                  <div className="absolute inset-0 pattern-grid opacity-25 pointer-events-none" />
+                                  <div className="relative">
+                                    <div className="font-display font-extrabold text-lg">
+                                      {t.booking.deliveryOtherTitle}
+                                    </div>
+                                    <p className="text-sm text-white/85 mt-1.5 leading-relaxed">
+                                      {t.booking.deliveryOtherBody}
+                                    </p>
+                                    <div className="mt-3 flex flex-wrap gap-2">
+                                      <a
+                                        href="tel:+358401866664"
+                                        className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
+                                      >
+                                        <Phone size={14} /> +358 40 186 6664
+                                      </a>
+                                      <a
+                                        href="mailto:82rentals.info@gmail.com"
+                                        className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
+                                      >
+                                        <Mail size={14} /> 82rentals.info@gmail.com
+                                      </a>
+                                    </div>
+                                  </div>
                                 </div>
                               );
                             })()}
@@ -751,9 +785,6 @@ export default function BookingModule() {
                           placeholder={t.booking.additionalPlaceholder}
                           className="booking-input booking-textarea"
                         />
-                        <p className="mt-2 text-xs text-brand-secondary/70">
-                          {t.booking.additionalHint}
-                        </p>
                       </Field>
 
                       <NextRow
@@ -898,6 +929,11 @@ export default function BookingModule() {
                 />
                 <SumRow
                   label={t.booking.summaryDelivery}
+                  value={t.booking.summaryDeliveryValue}
+                  muted
+                />
+                <SumRow
+                  label={t.booking.summaryBriefing}
                   value={t.booking.summaryDeliveryValue}
                   muted
                 />
