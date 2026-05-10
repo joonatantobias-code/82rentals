@@ -11,7 +11,7 @@ export const DURATIONS: {
 ];
 
 /** All-inclusive price per jet ski. Fuel, life jackets and insurance included.
- * Pickup is at Herttoniemen satama; delivery elsewhere is by separate agreement. */
+ * Default departure is Kipparlahden satama; delivery elsewhere is by separate agreement. */
 export const BASE_PRICES: Record<Duration, number> = {
   "1h": 179,
   "2h": 279,

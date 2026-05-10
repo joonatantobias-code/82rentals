@@ -41,17 +41,17 @@ export const dictionary = {
       titleHighlight: "paras päivä",
       title2: "vesillä.",
       subhead:
-        "Nauti lyhyestä kesästä aallonharjalla 82 km/h vauhdissa. Polttoaine, pelastusliivit ja opastus kuuluvat hintaan. Sinä hoidat vain hymyn, joka pysyy kasvoilla pitkään ajon jälkeenkin.",
+        "Nauti lyhyestä kesästä aallonharjalla 82 km/h vauhdissa. Polttoaine, pelastusliivit ja perehdytys kuuluvat hintaan. Sinä hoidat vain hymyn, joka pysyy kasvoilla pitkään ajon jälkeenkin.",
       cta: "Varaa nyt",
-      bullet1: "Aloitus Herttoniemen Kipparlahden satamasta",
+      bullet1: "Lähtö Kipparlahden satamasta",
       bullet2: "Ei ajokorttivaatimusta",
       bullet3: "Ensikertalaisystävällinen",
       offerEyebrow: "2h tarjous",
       offerProduct: "Sea-Doo Spark Trixx 2UP",
       offerPrice: "279 € / 2h",
-      offerTick1: "Aloitus Herttoniemen Kipparlahden satamasta",
+      offerTick1: "Lähtö Kipparlahden satamasta",
       offerTick2: "1-2 hengelle, pelastusliivit ja polttoaine kuuluvat hintaan",
-      offerTick3: "Lyhyt opastus ja eikun vain menoksi",
+      offerTick3: "Lyhyt perehdytys ja eikun vain menoksi",
       offerCta: "Tarkista saatavuus",
     },
     trust: {
@@ -59,7 +59,7 @@ export const dictionary = {
       fuel: "Polttoaine sisältyy hintaan",
       lifeJackets: "Pelastusliivit mukana",
       rating: "Google arvostelut 4,9 / 5",
-      departure: "Lähtö Herttoniemen Kipparlahden satamasta",
+      departure: "Lähtö Kipparlahden satamasta",
     },
     howItWorks: {
       eyebrow: "Näin se toimii",
@@ -68,12 +68,12 @@ export const dictionary = {
       step1Title: "Valitse aika",
       step1Text:
         "Päivä, kesto ja vesijettien määrä. Maksat verkossa, valmista 60 sekunnissa.",
-      step2Title: "Saavu Herttoniemeen",
+      step2Title: "Saavu Kipparlahden satamaan",
       step2Text:
-        "Lähtöpaikka on Herttoniemen satama. Tarvittaessa voimme sopia toimituksen muualle lisämaksusta.",
+        "Lähtöpaikka on Kipparlahden satama. Tarvittaessa voimme sopia toimituksen muualle lisämaksusta.",
       step3Title: "Aja minne tahansa",
       step3Text:
-        "Lyhyt opastus, tankki täynnä, pelastusliivit valmiina. Saaristo on sinun.",
+        "Lyhyt perehdytys, tankki täynnä, pelastusliivit valmiina. Saaristo on sinun.",
       step4Title: "Helppo palautus",
       step4Text:
         "Me haemme vesijetin pois. Ei perävaunuja, ei parkkihuolia, vain muistoja.",
@@ -114,7 +114,7 @@ export const dictionary = {
           author: "Joonas R.",
           initials: "JR",
           date: "Kesäkuu 2025",
-          text: "Spark Trixx on hauska peli. Lyhyt opastus riitti täysin, hommat sujui muuten ihan itsestään. Vakuutus ja liivit oli ok kunnossa.",
+          text: "Spark Trixx on hauska peli. Lyhyt perehdytys riitti täysin, hommat sujui muuten ihan itsestään. Vakuutus ja liivit oli ok kunnossa.",
         },
       ],
     },
@@ -134,7 +134,7 @@ export const dictionary = {
       eyebrow: "Valmiina lähtemään",
       defaultTitle: "Valmiina vesille?",
       defaultSubtitle:
-        "Varaa Sea-Doo Spark Trixx 2up 60 sekunnissa. Lähtö Herttoniemen Kipparlahden venesatamasta.",
+        "Varaa Sea-Doo Spark Trixx 2up 60 sekunnissa. Lähtö Kipparlahden satamasta.",
     },
     footer: {
       tagline: "Paikallisten perustama vesijettivuokraamo Helsingistä.",
@@ -155,7 +155,7 @@ export const dictionary = {
           features: [
             "Pelastusliivit ja muut turvavarusteet",
             "Polttoaine",
-            "Lyhyt opastus",
+            "Lyhyt perehdytys",
             "Kuljetus lisämaksulla",
           ],
           tag: "Nopea kokemus",
@@ -168,7 +168,7 @@ export const dictionary = {
           features: [
             "Pelastusliivit ja muut turvavarusteet",
             "Polttoaine",
-            "Lyhyt opastus",
+            "Lyhyt perehdytys",
             "Kuljetus lisämaksulla",
           ],
           tag: "Suosituin valinta",
@@ -181,7 +181,7 @@ export const dictionary = {
           features: [
             "Pelastusliivit ja muut turvavarusteet",
             "Polttoaine",
-            "Lyhyt opastus",
+            "Lyhyt perehdytys",
             "Kuljetus lisämaksulla",
           ],
           tag: "Paras arvo",
@@ -203,7 +203,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Varaa vesijetti 60 sekunnissa.",
       sectionSubtitle:
-        "Valitse päivä ja kesto. Polttoaine, liivit ja vakuutus aina hintaan. Nouto Herttoniemen satamasta.",
+        "Valitse päivä ja kesto. Polttoaine, liivit ja vakuutus aina hintaan. Lähtö Kipparlahden satamasta.",
       stepLabels: [
         "Vesijetit ja kesto",
         "Päivä ja aloitusaika",
@@ -237,7 +237,7 @@ export const dictionary = {
       pickupOtherBody: "Onnistuu lisämaksusta sopimuksen mukaan. Soita tai laita sähköpostia ennen varausta, niin sovitaan paikka ja hinta.",
       pickupOrChoose: "Tai valitse pikavalinnoista",
       pickupConfirm: "Toimituspaikka:",
-      pickupModeDefault: "Nouto Kipparlahden satamasta",
+      pickupModeDefault: "Lähtö Kipparlahden satamasta",
       pickupModeDefaultHint: "Sisältyy hintaan",
       pickupModeDelivery: "Toimitus muualle",
       pickupModeDeliveryHint: "Sisältyy hintaan",
@@ -290,7 +290,7 @@ export const dictionary = {
       summaryPickup: "Toimitus",
       summaryRent: "Vuokra",
       summaryFuelIncluded: "Polttoaine sisältyy",
-      summaryDelivery: "Nouto Herttoniemestä",
+      summaryDelivery: "Lähtö Kipparlahden satamasta",
       summaryDeliveryValue: "Sisältyy",
       summaryBriefing: "Lyhyt perehdytys",
       summaryTotal: "Yhteensä",
@@ -409,7 +409,7 @@ export const dictionary = {
         eyebrow: "Hinnasto",
         heroTitle: "Aja Helsingissä ilman yllätyksiä.",
         heroDesc:
-          "Polttoaine, pelastusliivit ja muut turvavarusteet aina hintaan. Lyhyt opastus sisältyy. Nouto Herttoniemestä, lisämaksulla kuljetus onnistuu minne vain. Tiedät aina etukäteen mitä maksat.",
+          "Polttoaine, pelastusliivit ja muut turvavarusteet aina hintaan. Lyhyt perehdytys sisältyy. Lähtö Kipparlahden satamasta, lisämaksulla kuljetus onnistuu minne vain. Tiedät aina etukäteen mitä maksat.",
         ctaTitle: "Lukitse hintasi nyt.",
         ctaSubtitle:
           "Hinnat ovat kiinteät, varaa heti, niin saat parhaat ajat itsellesi.",
@@ -425,7 +425,7 @@ export const dictionary = {
         storyBody1:
           "Halusimme olla edelläkävijä alalla ja nostaa rimaa. Rakensimme vesijettivuokraamon, jossa varaus onnistuu netistä, kuljetus tuodaan sovittuun paikkaan ja kalusto on aina huippukunnossa.",
         storyBody2:
-          "Tavoitteemme ei ole olla halvin, vaan ylivoimaisesti paras kokemus. Kalusto on huollettu, kuljetus saumaton, opastus selkeä ja asiakaspalvelu tavoitettavissa. Jokainen yksityiskohta on hiottu loppuun asti.",
+          "Tavoitteemme ei ole olla halvin, vaan ylivoimaisesti paras kokemus. Kalusto on huollettu, kuljetus saumaton, perehdytys selkeä ja asiakaspalvelu tavoitettavissa. Jokainen yksityiskohta on hiottu loppuun asti.",
         valueIcons: ["Ammattimaisuus", "Asiakas ensin", "Joustavuus"],
         values: [
           {
@@ -508,7 +508,7 @@ export const dictionary = {
           },
           {
             q: "Mistä noudan vesijetin?",
-            a: "Lähtöpaikka on Herttoniemen satama, ja se sisältyy aina hintaan. Jos haluat että tuomme vesijetin muualle Helsingin alueelle, onnistuu se lisämaksusta sopimuksen mukaan. Soita +358 40 186 6664 tai laita sähköpostia, niin järjestetään.",
+            a: "Lähtöpaikka on Kipparlahden satama, ja se sisältyy aina hintaan. Jos haluat että tuomme vesijetin muualle Helsingin alueelle, onnistuu se lisämaksusta sopimuksen mukaan. Soita +358 40 186 6664 tai laita sähköpostia, niin järjestetään.",
           },
           {
             q: "Voiko kaksi henkilöä ajaa yhdessä?",
@@ -521,14 +521,14 @@ export const dictionary = {
         eyebrow: "Varaus",
         heroTitle: "Varaa vesijetti 60 sekunnissa.",
         heroDesc:
-          "Valitse päivä ja kesto. Polttoaine, liivit ja vakuutus aina hintaan. Nouto Herttoniemen satamasta.",
+          "Valitse päivä ja kesto. Polttoaine, liivit ja vakuutus aina hintaan. Lähtö Kipparlahden satamasta.",
         reassurances: [
           {
             title: "Maksuton peruutus",
             text: "24 h ennen varauksen alkua kuluitta.",
           },
           {
-            title: "Nouto Herttoniemestä",
+            title: "Lähtö Kipparlahden satamasta",
             text: "Yksi vakiopaikka, helppo löytää. Muusta paikasta sovitaan erikseen.",
           },
           {
@@ -630,13 +630,13 @@ export const dictionary = {
       subhead:
         "Make the short summer count at 82 km/h on the wave crest. Fuel, life jackets and a quick briefing are on us. You just bring the smile, the kind that stays put long after the engine quiets down.",
       cta: "Book now",
-      bullet1: "Start from Herttoniemi Kipparlahti marina",
+      bullet1: "Departure from Kipparlahden satama",
       bullet2: "No license required",
       bullet3: "First-timer friendly",
       offerEyebrow: "2h deal",
       offerProduct: "Sea-Doo Spark Trixx 2UP",
       offerPrice: "€279 / 2h",
-      offerTick1: "Start from Herttoniemi Kipparlahti marina",
+      offerTick1: "Departure from Kipparlahden satama",
       offerTick2: "Fits 1-2 people, life jackets and fuel included",
       offerTick3: "Quick briefing and you're off",
       offerCta: "Check availability",
@@ -646,7 +646,7 @@ export const dictionary = {
       fuel: "Fuel included in price",
       lifeJackets: "Life jackets included",
       rating: "Google reviews 4.9 / 5",
-      departure: "Start at Herttoniemi Kipparlahti marina",
+      departure: "Departure from Kipparlahden satama",
     },
     howItWorks: {
       eyebrow: "How it works",
@@ -655,9 +655,9 @@ export const dictionary = {
       step1Title: "Pick a time",
       step1Text:
         "Choose date, duration and number of jet skis. Pay online, done in 60 seconds.",
-      step2Title: "Come to Herttoniemi",
+      step2Title: "Come to Kipparlahden satama",
       step2Text:
-        "Pickup is at Herttoniemi marina. Delivery elsewhere is possible by separate arrangement for an extra fee.",
+        "Departure is from Kipparlahden satama. Delivery elsewhere is possible by separate arrangement for an extra fee.",
       step3Title: "Ride anywhere",
       step3Text:
         "Quick briefing, full tank, life jackets ready. The archipelago is yours.",
@@ -721,7 +721,7 @@ export const dictionary = {
       eyebrow: "Ready to roll",
       defaultTitle: "Ready to hit the water?",
       defaultSubtitle:
-        "Book the Sea-Doo Spark Trixx 2up in 60 seconds. Departure from the Kipparlahti marina in Herttoniemi.",
+        "Book the Sea-Doo Spark Trixx 2up in 60 seconds. Departure from Kipparlahden satama.",
     },
     footer: {
       tagline: "Locally founded jet ski rental from Helsinki.",
@@ -742,7 +742,7 @@ export const dictionary = {
           features: [
             "Life jackets and safety gear",
             "Fuel",
-            "Short orientation",
+            "Short briefing",
             "Delivery for extra fee",
           ],
           tag: "Quick ride",
@@ -755,7 +755,7 @@ export const dictionary = {
           features: [
             "Life jackets and safety gear",
             "Fuel",
-            "Short orientation",
+            "Short briefing",
             "Delivery for extra fee",
           ],
           tag: "Most popular",
@@ -768,7 +768,7 @@ export const dictionary = {
           features: [
             "Life jackets and safety gear",
             "Fuel",
-            "Short orientation",
+            "Short briefing",
             "Delivery for extra fee",
           ],
           tag: "Best value",
@@ -790,7 +790,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Book a jet ski in 60 seconds.",
       sectionSubtitle:
-        "Pick the date and duration. Fuel, life jackets and insurance always included. Pickup at Herttoniemi marina.",
+        "Pick the date and duration. Fuel, life jackets and insurance always included. Departure from Kipparlahden satama.",
       stepLabels: [
         "Jet skis & duration",
         "Date & start time",
@@ -824,7 +824,7 @@ export const dictionary = {
       pickupOtherBody: "Possible with an extra fee, by arrangement. Call or email us before booking and we'll agree on the location and the price.",
       pickupOrChoose: "Or pick a popular spot",
       pickupConfirm: "Delivery to:",
-      pickupModeDefault: "Pickup at Kipparlahden satama",
+      pickupModeDefault: "Departure from Kipparlahden satama",
       pickupModeDefaultHint: "Included in the price",
       pickupModeDelivery: "Delivery elsewhere",
       pickupModeDeliveryHint: "Included in the price",
@@ -877,7 +877,7 @@ export const dictionary = {
       summaryPickup: "Delivery",
       summaryRent: "Rental",
       summaryFuelIncluded: "Fuel included",
-      summaryDelivery: "Pickup at Herttoniemi",
+      summaryDelivery: "Departure from Kipparlahden satama",
       summaryDeliveryValue: "Included",
       summaryBriefing: "Short briefing",
       summaryTotal: "Total",
@@ -996,7 +996,7 @@ export const dictionary = {
         eyebrow: "Pricing",
         heroTitle: "Ride in Helsinki, no surprises.",
         heroDesc:
-          "Fuel, life jackets and other safety gear always included. Short orientation included too. Pickup from Herttoniemi, delivery anywhere for an extra fee. You always know exactly what you'll pay.",
+          "Fuel, life jackets and other safety gear always included. Short briefing included too. Departure from Kipparlahden satama, delivery anywhere for an extra fee. You always know exactly what you'll pay.",
         ctaTitle: "Lock in your price now.",
         ctaSubtitle:
           "Prices are fixed, book today and grab the slots that suit you best.",
@@ -1012,7 +1012,7 @@ export const dictionary = {
         storyBody1:
           "We wanted to lead this industry and raise the bar. So we built a jet ski rental where booking is online, delivery comes to the agreed spot and the kit is always in top shape.",
         storyBody2:
-          "Our goal isn't to be the cheapest, it's to be the clearly best experience. Kit serviced, delivery seamless, briefing clear, support reachable. Every detail dialled in.",
+          "Our goal isn't to be the cheapest, it's to be the clearly best experience. Kit serviced, delivery seamless, briefing crisp, support reachable. Every detail dialled in.",
         valueIcons: ["Professional", "Customer first", "Flexible"],
         values: [
           {
@@ -1095,7 +1095,7 @@ export const dictionary = {
           },
           {
             q: "Where do I pick up the jet ski?",
-            a: "Pickup is at Herttoniemi marina, included in the price. If you'd rather have us deliver elsewhere in Helsinki, we can arrange it for an additional fee. Call +358 40 186 6664 or email us and we'll set it up.",
+            a: "Departure is from Kipparlahden satama, included in the price. If you'd rather have us deliver elsewhere in Helsinki, we can arrange it for an additional fee. Call +358 40 186 6664 or email us and we'll set it up.",
           },
           {
             q: "Can two people ride together?",
@@ -1108,14 +1108,14 @@ export const dictionary = {
         eyebrow: "Booking",
         heroTitle: "Book a jet ski in 60 seconds.",
         heroDesc:
-          "Pick a date and duration. Fuel, life jackets and insurance always included. Pickup at Herttoniemi marina.",
+          "Pick a date and duration. Fuel, life jackets and insurance always included. Departure from Kipparlahden satama.",
         reassurances: [
           {
             title: "Free cancellation",
             text: "Cancel up to 24 hours before for free.",
           },
           {
-            title: "Pickup at Herttoniemi",
+            title: "Departure from Kipparlahden satama",
             text: "One fixed spot, easy to find. Other locations by separate arrangement.",
           },
           {

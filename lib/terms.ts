@@ -30,7 +30,7 @@ export const terms: Record<TermsLocale, { title: string; sections: { heading: st
       {
         heading: "4. Lähtöpaikka",
         body:
-          "Vakiolähtöpaikka on Kipparlahden venekerho, Kipparlahti, Helsinki. Toimitus muualle on mahdollinen lisämaksusta erikseen sopimalla. Asiakas vastaa siitä, että hän on paikalla sovittuun aikaan.",
+          "Vakiolähtöpaikka on Kipparlahden satama, Kipparlahdenkuja 3, 00810 Helsinki. Toimitus muualle on mahdollinen lisämaksusta erikseen sopimalla. Asiakas vastaa siitä, että hän on paikalla sovittuun aikaan.",
       },
       {
         heading: "5. Ajaja ja ikäraja",
@@ -80,7 +80,7 @@ export const terms: Record<TermsLocale, { title: string; sections: { heading: st
       {
         heading: "4. Pickup location",
         body:
-          "Default pickup is Kipparlahden venekerho, Kipparlahti, Helsinki. Delivery elsewhere is available for an additional fee by separate agreement. The customer is responsible for being on-site at the agreed time.",
+          "Default departure is from Kipparlahden satama, Kipparlahdenkuja 3, 00810 Helsinki. Delivery elsewhere is available for an additional fee by separate agreement. The customer is responsible for being on-site at the agreed time.",
       },
       {
         heading: "5. Driver and age limit",

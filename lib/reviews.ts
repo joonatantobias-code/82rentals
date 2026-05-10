@@ -81,7 +81,7 @@ const REVIEWS: Review[] = [
     initials: "JR",
     date: "kuukausi sitten",
     rating: 5,
-    text: "Spark Trixx on hauska peli. Lyhyt opastus riitti täysin, hommat sujui muuten ihan itsestään. Vakuutus ja liivit oli ok kunnossa.",
+    text: "Spark Trixx on hauska peli. Lyhyt perehdytys riitti täysin, hommat sujui muuten ihan itsestään. Vakuutus ja liivit oli ok kunnossa.",
     reviewCount: 14,
   },
   {
