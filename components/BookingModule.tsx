@@ -45,24 +45,70 @@ const CLOSE_HOUR = 22;
 const DEFAULT_PICKUP = PICKUP.name;
 
 // Public boat ramps and marinas across the Helsinki capital region
-// (Helsinki + Espoo) the user can pick when choosing delivery instead
-// of picking the jet ski up at Kipparlahti. Place names stay Finnish
-// in both locales — they don't translate.
-const DELIVERY_RAMPS: string[] = [
-  "Lauttasaaren venesatama, Helsinki",
-  "Hernesaaren venesatama, Helsinki",
-  "Hietalahden venesatama, Helsinki",
-  "Pohjoisrannan ramppi, Helsinki",
-  "Marjaniemen ranta, Helsinki",
-  "Vuosaaren venesatama, Helsinki",
-  "Tammisalon ramppi, Helsinki",
-  "Otaniemen venesatama, Espoo",
-  "Suomenojan venesatama, Espoo",
-  "Haukilahden venesatama, Espoo",
-  "Espoonlahden venesatama, Espoo",
-  "Soukan venesatama, Espoo",
-  "Kivenlahden venesatama, Espoo",
-  "Muu paikka pääkaupunkiseudulla",
+// the user can pick when choosing delivery instead of picking the jet
+// ski up at Kipparlahti. Each entry carries a postal address so we
+// can show it under the dropdown after a selection (and link to
+// Google/Apple Maps from there). Place names stay Finnish in both
+// locales — they don't translate.
+type DeliveryRamp = { name: string; address: string | null };
+
+const DELIVERY_RAMPS: DeliveryRamp[] = [
+  {
+    name: "Lauttasaaren venesatama, Helsinki",
+    address: "Vattuniemenkatu 18, 00210 Helsinki",
+  },
+  {
+    name: "Hernesaaren venesatama, Helsinki",
+    address: "Hernesaarenranta 1, 00150 Helsinki",
+  },
+  {
+    name: "Hietalahden venesatama, Helsinki",
+    address: "Hietalahdenranta 5, 00180 Helsinki",
+  },
+  {
+    name: "Pohjoisrannan ramppi, Helsinki",
+    address: "Pohjoisranta 4, 00170 Helsinki",
+  },
+  {
+    name: "Marjaniemen ranta, Helsinki",
+    address: "Marjaniementie 35, 00930 Helsinki",
+  },
+  {
+    name: "Vuosaaren venesatama, Helsinki",
+    address: "Vuosaaren satamakatu 5, 00980 Helsinki",
+  },
+  {
+    name: "Tammisalon ramppi, Helsinki",
+    address: "Sahaajankatu 1, 00880 Helsinki",
+  },
+  {
+    name: "Otaniemen venesatama, Espoo",
+    address: "Otarannantie 1, 02150 Espoo",
+  },
+  {
+    name: "Suomenojan venesatama, Espoo",
+    address: "Suomenojanranta 5, 02270 Espoo",
+  },
+  {
+    name: "Haukilahden venesatama, Espoo",
+    address: "Hauenkalliontie 1, 02170 Espoo",
+  },
+  {
+    name: "Espoonlahden venesatama, Espoo",
+    address: "Soukanlahdentie 5, 02360 Espoo",
+  },
+  {
+    name: "Soukan venesatama, Espoo",
+    address: "Soukantie 8, 02360 Espoo",
+  },
+  {
+    name: "Kivenlahden venesatama, Espoo",
+    address: "Kivenlahdenkatu 5, 02320 Espoo",
+  },
+  {
+    name: "Muu paikka pääkaupunkiseudulla",
+    address: null,
+  },
 ];
 
 type DayAvailability = {
@@ -539,7 +585,7 @@ export default function BookingModule() {
                           />
                         ) : (
                           <div className="rounded-2xl border-2 border-brand-primary/30 bg-white p-4 sm:p-5 space-y-4">
-                            <label className="block">
+                            <div>
                               <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
                                 <span>{t.booking.deliveryRampLabel}</span>
                                 <span
@@ -560,14 +606,67 @@ export default function BookingModule() {
                                   {t.booking.deliveryRampPlaceholder}
                                 </option>
                                 {DELIVERY_RAMPS.map((r) => (
-                                  <option key={r} value={r}>
-                                    {r}
+                                  <option key={r.name} value={r.name}>
+                                    {r.name}
                                   </option>
                                 ))}
                               </select>
-                            </label>
+                            </div>
 
-                            <label className="block">
+                            {(() => {
+                              const ramp = DELIVERY_RAMPS.find(
+                                (r) => r.name === pickupRamp,
+                              );
+                              if (!ramp) return null;
+                              if (ramp.address) {
+                                const mapsQuery = encodeURIComponent(
+                                  ramp.address,
+                                );
+                                return (
+                                  <div className="rounded-xl bg-brand-primary-50 border-2 border-brand-primary/40 p-4">
+                                    <div className="flex items-start gap-2.5">
+                                      <MapPin
+                                        size={18}
+                                        className="text-brand-primary-600 mt-0.5 shrink-0"
+                                      />
+                                      <div className="min-w-0">
+                                        <div className="text-[11px] font-bold uppercase tracking-wider text-brand-secondary/70">
+                                          {t.booking.deliveryAddressLabel}
+                                        </div>
+                                        <div className="font-display font-extrabold text-brand-secondary mt-0.5">
+                                          {ramp.address}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div className="mt-3 flex flex-wrap gap-2">
+                                      <a
+                                        href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
+                                      >
+                                        <MapPin size={14} /> Avaa Google Maps
+                                      </a>
+                                      <a
+                                        href={`https://maps.apple.com/?q=${mapsQuery}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
+                                      >
+                                        <MapPin size={14} /> Avaa Apple Maps
+                                      </a>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              return (
+                                <div className="rounded-xl bg-brand-primary-50 border-2 border-brand-primary/30 p-4 text-sm text-brand-secondary/85 leading-relaxed">
+                                  {t.booking.deliveryAddressOther}
+                                </div>
+                              );
+                            })()}
+
+                            <div>
                               <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
                                 <span>{t.booking.deliveryNotesLabel}</span>
                                 <span className="text-brand-secondary/45 normal-case tracking-normal font-medium">
@@ -592,7 +691,7 @@ export default function BookingModule() {
                                 />
                                 <span>{t.booking.deliveryNotesHint}</span>
                               </p>
-                            </label>
+                            </div>
                           </div>
                         )}
                       </Field>
@@ -1433,8 +1532,16 @@ function Field({
   required?: boolean;
   optional?: boolean;
 }) {
+  // Outer wrapper is a <div>, NOT a <label>, on purpose. When this
+  // component held a <label>, nesting another <label> inside (the
+  // delivery panel renders inner <label>s for its select / textarea)
+  // produced invalid HTML and the browser's "click anywhere on the
+  // label activates the first labelable child" heuristic was
+  // bouncing the focus to the first <button> in the outer Field
+  // (the pickup mode toggle), which silently flipped pickupMode
+  // back to "default" whenever the user clicked into the textarea.
   return (
-    <label className="block">
+    <div className="block">
       <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-secondary/70 mb-2">
         {icon && <span className="text-brand-primary-600">{icon}</span>}
         <span>{label}</span>
@@ -1453,7 +1560,7 @@ function Field({
         )}
       </span>
       {children}
-    </label>
+    </div>
   );
 }
 
