@@ -217,10 +217,7 @@ export default function BookingModule() {
   }
   function canGoStep4() {
     if (!name.trim() || !phone.trim() || !email.trim()) return false;
-    if (pickupMode === "delivery") {
-      if (!pickupRamp.trim()) return false;
-      if (!pickupRampNotes.trim()) return false;
-    }
+    if (pickupMode === "delivery" && !pickupRamp.trim()) return false;
     return true;
   }
 
@@ -353,7 +350,11 @@ export default function BookingModule() {
                         </p>
                       </Field>
 
-                      <Field icon={<Hourglass size={16} />} label={t.booking.durationTitle}>
+                      <Field
+                        icon={<Hourglass size={16} />}
+                        label={t.booking.durationTitle}
+                        required
+                      >
                         <div className="grid grid-cols-2 gap-3">
                           {DURATIONS.map((d) => {
                             const active = duration === d.value;
@@ -539,8 +540,14 @@ export default function BookingModule() {
                         ) : (
                           <div className="rounded-2xl border-2 border-brand-primary/30 bg-white p-4 sm:p-5 space-y-4">
                             <label className="block">
-                              <span className="text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
-                                {t.booking.deliveryRampLabel}
+                              <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
+                                <span>{t.booking.deliveryRampLabel}</span>
+                                <span
+                                  className="text-brand-primary-600 normal-case tracking-normal"
+                                  aria-hidden
+                                >
+                                  *
+                                </span>
                               </span>
                               <select
                                 value={pickupRamp}
@@ -561,10 +568,10 @@ export default function BookingModule() {
                             </label>
 
                             <label className="block">
-                              <span className="text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
-                                {t.booking.deliveryNotesLabel}
-                                <span className="text-brand-primary-600 ml-1">
-                                  *
+                              <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
+                                <span>{t.booking.deliveryNotesLabel}</span>
+                                <span className="text-brand-secondary/45 normal-case tracking-normal font-medium">
+                                  (valinnainen)
                                 </span>
                               </span>
                               <textarea
@@ -577,7 +584,6 @@ export default function BookingModule() {
                                   t.booking.deliveryNotesPlaceholder
                                 }
                                 className="booking-input booking-textarea mt-2"
-                                required
                               />
                               <p className="mt-2 inline-flex items-start gap-1.5 text-xs text-brand-secondary/70">
                                 <Info
@@ -591,7 +597,11 @@ export default function BookingModule() {
                         )}
                       </Field>
 
-                      <Field icon={<UserIcon size={16} />} label={t.booking.fullName}>
+                      <Field
+                        icon={<UserIcon size={16} />}
+                        label={t.booking.fullName}
+                        required
+                      >
                         <input
                           type="text"
                           value={name}
@@ -602,7 +612,11 @@ export default function BookingModule() {
                         />
                       </Field>
                       <div className="grid sm:grid-cols-2 gap-4">
-                        <Field icon={<Phone size={16} />} label={t.common.phone}>
+                        <Field
+                          icon={<Phone size={16} />}
+                          label={t.common.phone}
+                          required
+                        >
                           <input
                             type="tel"
                             value={phone}
@@ -613,7 +627,11 @@ export default function BookingModule() {
                             inputMode="tel"
                           />
                         </Field>
-                        <Field icon={<Mail size={16} />} label={t.common.email}>
+                        <Field
+                          icon={<Mail size={16} />}
+                          label={t.common.email}
+                          required
+                        >
                           <input
                             type="email"
                             value={email}
@@ -626,7 +644,7 @@ export default function BookingModule() {
                         </Field>
                       </div>
 
-                      <Field label={t.booking.additionalInfo}>
+                      <Field label={t.booking.additionalInfo} optional>
                         <textarea
                           value={notes}
                           onChange={(e) => setNotes(e.target.value)}
@@ -1406,16 +1424,33 @@ function Field({
   icon,
   label,
   children,
+  required,
+  optional,
 }: {
   icon?: React.ReactNode;
   label: string;
   children: React.ReactNode;
+  required?: boolean;
+  optional?: boolean;
 }) {
   return (
     <label className="block">
       <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-secondary/70 mb-2">
         {icon && <span className="text-brand-primary-600">{icon}</span>}
-        {label}
+        <span>{label}</span>
+        {required && (
+          <span
+            className="text-brand-primary-600 normal-case tracking-normal"
+            aria-hidden
+          >
+            *
+          </span>
+        )}
+        {optional && (
+          <span className="text-brand-secondary/45 normal-case tracking-normal font-medium">
+            (valinnainen)
+          </span>
+        )}
       </span>
       {children}
     </label>
