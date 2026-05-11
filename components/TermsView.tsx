@@ -1,47 +1,76 @@
 "use client";
 
-import { Printer } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Printer } from "lucide-react";
 import { useLocale } from "@/components/LocaleProvider";
-import { terms, TERMS_VERSION, TERMS_UPDATED, COMPANY } from "@/lib/terms";
+import { terms, COMPANY } from "@/lib/terms";
 
 /**
- * Renders the full booking terms document.
+ * /sopimusehdot page renderer.
  *
- * Two parallel layouts come out of this component:
+ * Web view: paginated like a PDF. The full document is split into
+ * a cover + one page per top-level section + one page per appendix.
+ * The customer flips through with prev/next arrows (or arrow keys).
+ * Each "page" is rendered inside a portrait A-paper container with
+ * the same chrome the print stylesheet will produce: a thin
+ * navy-and-white header band carrying the black 82Rentals logo on
+ * the left and the "82Rentals Oy" wordmark on the right, plus a
+ * page counter at the bottom.
  *
- *   Web view (default) — colourful brand chrome from globals.css,
- *   shown on /sopimusehdot for casual reading.
- *
- *   Print/PDF view — keyed off `.terms-print` plus the @media print
- *   rules in globals.css. The print stylesheet keeps the brand
- *   typography (Inter + Poppins, navy / sky-blue accents) but
- *   simplifies the surrounding chrome: a navy header band runs
- *   across the top with the 82Rentals logo and document title, the
- *   numbered section markers sit in a left column tinted in
- *   brand-secondary, and a footer line carries the version + page
- *   counter. On a black-and-white printer all of this prints as
- *   clean grayscale; on a colour printer it prints in brand.
+ * Print view: hides the page navigator and prints every page in
+ * order, letting the @page rules in globals.css handle real
+ * pagination (margins, page-numbering footer, brand chrome). The
+ * customer sees the same layout in their browser preview that they
+ * get in the saved PDF.
  */
+type Section = { id: string; heading: string; body: string };
+type Page = { kind: "cover" } | { kind: "section"; section: Section };
+
 export default function TermsView() {
   const { locale } = useLocale();
   const t = terms[locale === "en" ? "en" : "fi"];
   const isEn = locale === "en";
-  const versionLabel = isEn ? "Version" : "Versio";
-  const updatedLabel = isEn ? "updated" : "päivitetty";
-  const printLabel = isEn ? "Save as PDF / Print" : "Lataa PDF / tulosta";
-  const tocLabel = isEn ? "Contents" : "Sisältö";
+  const printLabel = isEn ? "Lataa PDF / tulosta" : "Lataa PDF / tulosta";
   const pageLabel = isEn ? "Page" : "Sivu";
+  const prevLabel = isEn ? "Previous" : "Edellinen";
+  const nextLabel = isEn ? "Next" : "Seuraava";
+
+  const pages: Page[] = [
+    { kind: "cover" },
+    ...t.sections.map((s) => ({ kind: "section" as const, section: s })),
+    ...t.appendices.map((a) => ({ kind: "section" as const, section: a })),
+  ];
+  const [pageIdx, setPageIdx] = useState(0);
+
+  // Keyboard nav: left/right arrows step pages (skipping when an
+  // input/textarea has focus so /sopimusehdot doesn't fight other
+  // pages that share the layout).
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const target = e.target as HTMLElement | null;
+      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      if (e.key === "ArrowLeft") {
+        setPageIdx((p) => Math.max(0, p - 1));
+      } else if (e.key === "ArrowRight") {
+        setPageIdx((p) => Math.min(pages.length - 1, p + 1));
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [pages.length]);
+
+  const current = pages[pageIdx];
+  const totalPages = pages.length;
 
   return (
     <div className="terms-print">
       {/* ============================================================
-       *  TOP TOOLBAR — visible on screen only. The print button
-       *  triggers the browser's native print dialog, from which the
-       *  user can "Save as PDF" with the brand chrome below baked in.
+       *  Top toolbar — print button + heading lockup. Hidden in
+       *  print so it doesn't end up on the PDF.
        *  ============================================================ */}
       <div className="not-print flex flex-wrap items-center justify-between gap-3 mb-6">
-        <div className="text-xs text-brand-secondary/60">
-          {versionLabel} {TERMS_VERSION} · {updatedLabel} {TERMS_UPDATED}
+        <div className="text-xs font-bold uppercase tracking-[0.18em] text-brand-secondary/70">
+          {isEn ? "Rental agreement" : "Vuokrasopimus"}
         </div>
         <button
           type="button"
@@ -53,161 +82,201 @@ export default function TermsView() {
       </div>
 
       {/* ============================================================
-       *  PRINT-ONLY HERO — the cover band that runs across the top
-       *  of the first printed page. Logo + document title + version
-       *  on a navy surface. CSS in globals.css gives this a fixed
-       *  header treatment so it also repeats on subsequent pages on
-       *  browsers that honour position:fixed during print.
-       *  ============================================================ */}
-      <div className="print-only terms-pdf-header">
-        <div className="terms-pdf-header-inner">
-          <div className="terms-pdf-brand">
-            <span className="terms-pdf-brand-mark">82</span>
-            <span className="terms-pdf-brand-name">Rentals</span>
-          </div>
-          <div className="terms-pdf-header-meta">
-            <div className="terms-pdf-header-title">{t.title}</div>
-            <div className="terms-pdf-header-sub">
-              {versionLabel} {TERMS_VERSION} · {updatedLabel} {TERMS_UPDATED}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Print-only cover block: gives the first page a proper
-       *  document title + a one-paragraph intro before the
-       *  numbered sections start. */}
-      <header className="print-only terms-pdf-cover">
-        <div className="terms-pdf-cover-eyebrow">
-          {isEn ? "Rental agreement" : "Vuokrasopimus"}
-        </div>
-        <h1 className="terms-pdf-cover-title">{t.title}</h1>
-        <p className="terms-pdf-cover-intro">{t.intro}</p>
-      </header>
-
-      {/* ============================================================
-       *  WEB-ONLY DOCUMENT META + INTRO — replaced by the cover
-       *  block above when printing.
+       *  WEB-ONLY paginated viewer. Shows one page at a time inside
+       *  the paper-like frame.
        *  ============================================================ */}
       <div className="not-print">
-        <div className="text-xs font-bold uppercase tracking-[0.2em] text-brand-primary-600 mb-2">
-          {isEn ? "Rental agreement" : "Vuokrasopimus"}
-        </div>
-        <h1 className="font-display text-3xl sm:text-4xl font-extrabold text-brand-secondary leading-tight">
-          {t.title}
-        </h1>
-        <p className="mt-4 text-brand-secondary/75 leading-relaxed text-base">
-          {t.intro}
-        </p>
-
-        {/* On-screen table of contents — quick jump to any section.
-         *  Hidden in print to keep the printed contract clean. */}
-        <nav
-          aria-label={tocLabel}
-          className="mt-8 rounded-2xl border border-brand-primary/30 bg-brand-primary-50/60 p-5"
+        <PageFrame
+          isCover={current.kind === "cover"}
+          pageNumber={pageIdx + 1}
+          totalPages={totalPages}
         >
-          <div className="text-xs font-bold uppercase tracking-[0.18em] text-brand-secondary/70 mb-3">
-            {tocLabel}
+          {current.kind === "cover" ? (
+            <CoverContent t={t} isEn={isEn} />
+          ) : (
+            <SectionContent section={current.section} />
+          )}
+        </PageFrame>
+
+        {/* Page navigator */}
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <button
+            type="button"
+            onClick={() => setPageIdx((p) => Math.max(0, p - 1))}
+            disabled={pageIdx === 0}
+            aria-label={prevLabel}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-secondary text-white shadow-soft transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-brand-secondary disabled:hover:text-white disabled:hover:ring-0"
+          >
+            <ChevronLeft size={20} />
+          </button>
+
+          <div className="text-sm font-bold tracking-wider text-brand-secondary/80">
+            {pageLabel} {pageIdx + 1} / {totalPages}
           </div>
-          <ol className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm">
-            {t.sections.map((s) => (
-              <li key={s.id}>
-                <a
-                  href={`#section-${s.id}`}
-                  className="text-brand-secondary/80 hover:text-brand-primary-700 underline decoration-brand-primary/40 underline-offset-2"
-                >
-                  {s.heading}
-                </a>
-              </li>
-            ))}
-            {t.appendices.map((a) => (
-              <li key={a.id}>
-                <a
-                  href={`#section-${a.id}`}
-                  className="text-brand-secondary/80 hover:text-brand-primary-700 underline decoration-brand-primary/40 underline-offset-2"
-                >
-                  {a.heading}
-                </a>
-              </li>
-            ))}
-          </ol>
-        </nav>
+
+          <button
+            type="button"
+            onClick={() =>
+              setPageIdx((p) => Math.min(totalPages - 1, p + 1))
+            }
+            disabled={pageIdx === totalPages - 1}
+            aria-label={nextLabel}
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-secondary text-white shadow-soft transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-brand-secondary disabled:hover:text-white disabled:hover:ring-0"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
       </div>
 
       {/* ============================================================
-       *  MAIN BODY — numbered sections rendered with brand
-       *  typography. Each section uses .terms-section for
-       *  page-break-inside: avoid in print.
+       *  PRINT-ONLY: every page rendered in order, let @page handle
+       *  pagination. The fixed brand header from globals.css repeats
+       *  at the top of every printed page.
        *  ============================================================ */}
-      <div className="terms-body mt-10">
+      <div className="print-only terms-pdf-pages">
+        {/* Cover page (page 1) */}
+        <div className="terms-pdf-page">
+          <PrintHeader />
+          <div className="terms-pdf-page-body">
+            <CoverContent t={t} isEn={isEn} forPrint />
+          </div>
+        </div>
+
+        {/* Section pages */}
         {t.sections.map((s) => (
-          <section
-            key={s.id}
-            id={`section-${s.id}`}
-            className="terms-section"
-          >
-            <h3 className="terms-heading">{s.heading}</h3>
-            <Paragraphs body={s.body} />
-          </section>
+          <div key={s.id} className="terms-pdf-page">
+            <PrintHeader />
+            <div className="terms-pdf-page-body">
+              <SectionContent section={s} />
+            </div>
+          </div>
+        ))}
+
+        {/* Appendix pages */}
+        {t.appendices.map((a) => (
+          <div key={a.id} className="terms-pdf-page terms-pdf-appendix">
+            <PrintHeader />
+            <div className="terms-pdf-page-body">
+              <SectionContent section={a} />
+            </div>
+          </div>
         ))}
       </div>
+    </div>
+  );
+}
 
-      {t.appendices.length > 0 && (
-        <div className="terms-body terms-appendix-block mt-12 pt-8 border-t border-brand-primary/30">
-          {t.appendices.map((a) => (
-            <section
-              key={a.id}
-              id={`section-${a.id}`}
-              className="terms-section"
-            >
-              <h3 className="terms-heading">{a.heading}</h3>
-              <Paragraphs body={a.body} />
-            </section>
-          ))}
+/* ============================================================================
+ *  Page frame — the paper-like container shown on the web. Replicates
+ *  the print layout (logo top-left, "82Rentals Oy" top-right,
+ *  Sivu X / Y at the bottom) so what the customer sees in the
+ *  browser is what they get in the saved PDF.
+ * ============================================================================ */
+function PageFrame({
+  children,
+  isCover,
+  pageNumber,
+  totalPages,
+}: {
+  children: React.ReactNode;
+  isCover: boolean;
+  pageNumber: number;
+  totalPages: number;
+}) {
+  return (
+    <div className="terms-page-frame">
+      <div className="terms-page-head">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo.png"
+          alt="82Rentals"
+          className="terms-page-logo"
+        />
+        <div className="terms-page-company">82Rentals Oy</div>
+      </div>
+
+      <div
+        className={`terms-page-body ${isCover ? "terms-page-body-cover" : ""}`}
+      >
+        {children}
+      </div>
+
+      <div className="terms-page-foot">
+        Sivu {pageNumber} / {totalPages}
+      </div>
+    </div>
+  );
+}
+
+/** Print-only header (matches the on-screen `terms-page-head`). The
+ *  fixed @page header in globals.css handles repeating on every
+ *  page; this inline element ensures the FIRST page also has the
+ *  visual band even in browsers that don't honour fixed positioning
+ *  during print. */
+function PrintHeader() {
+  return (
+    <div className="terms-page-head">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logo.png"
+        alt="82Rentals"
+        className="terms-page-logo"
+      />
+      <div className="terms-page-company">82Rentals Oy</div>
+    </div>
+  );
+}
+
+function CoverContent({
+  t,
+  isEn,
+  forPrint,
+}: {
+  t: typeof terms.fi;
+  isEn: boolean;
+  forPrint?: boolean;
+}) {
+  return (
+    <div
+      className={`terms-cover ${forPrint ? "terms-cover-print" : ""}`}
+    >
+      <div className="terms-cover-eyebrow">
+        {isEn ? "Rental agreement" : "Vuokrasopimus"}
+      </div>
+      <h1 className="terms-cover-title">{t.title}</h1>
+      <p className="terms-cover-intro">{t.intro}</p>
+      <div className="terms-cover-meta">
+        <div className="terms-cover-meta-label">
+          {isEn ? "Rental provider" : "Vuokranantaja"}
         </div>
-      )}
-
-      {/* ============================================================
-       *  FOOTER — on screen this is a muted single-line credit.
-       *  In print the document footer (version + page number) is
-       *  injected by @page rules in globals.css so the contract
-       *  paginates like a real legal document.
-       *  ============================================================ */}
-      <footer className="mt-10 pt-6 border-t border-brand-primary/20 text-xs text-brand-secondary/65 leading-relaxed not-print">
-        {t.footer}
-      </footer>
-
-      <div className="print-only terms-pdf-signature">
-        <div className="terms-pdf-signature-line" />
-        <div className="terms-pdf-signature-caption">
-          {isEn
-            ? "By confirming the booking, the renter accepts these terms."
-            : "Varauksen vahvistamalla vuokralainen hyväksyy nämä ehdot."}
-        </div>
-        <div className="terms-pdf-signature-company">
-          {COMPANY.name} · {COMPANY.address}
+        <div className="terms-cover-meta-value">
+          {COMPANY.name}
           <br />
-          {COMPANY.email} · {COMPANY.phone}
-        </div>
-        <div className="terms-pdf-signature-version">
-          {versionLabel} {TERMS_VERSION} · {updatedLabel} {TERMS_UPDATED}
+          {COMPANY.address}
+          <br />
+          {COMPANY.phone} · {COMPANY.email}
         </div>
       </div>
     </div>
   );
 }
 
-function Paragraphs({ body, muted }: { body: string; muted?: boolean }) {
+function SectionContent({ section }: { section: Section }) {
+  return (
+    <section className="terms-section">
+      <h3 className="terms-heading">{section.heading}</h3>
+      <Paragraphs body={section.body} />
+    </section>
+  );
+}
+
+function Paragraphs({ body }: { body: string }) {
   // Split on blank lines so each paragraph in the source string
   // renders as its own block, then promote consecutive "· "-prefixed
   // lines into a bulleted list.
   const paragraphs = body.split(/\n\s*\n/);
   return (
-    <div
-      className={`terms-body-text mt-3 space-y-3 leading-relaxed ${
-        muted ? "text-brand-secondary/75" : "text-brand-secondary/85"
-      }`}
-    >
+    <div className="terms-body-text mt-3 space-y-3 leading-relaxed">
       {paragraphs.map((p, idx) => {
         const lines = p.split("\n");
         const bulletLines = lines.filter((l) => l.trim().startsWith("·"));
