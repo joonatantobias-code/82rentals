@@ -28,6 +28,12 @@ export type Platform = "tiktok" | "instagram";
 export type Reel = {
   id: string;
   platform: Platform;
+  // Optional one-liner shown above the caption on a specific reel —
+  // used for the booking-URL + hashtag block on the featured intro
+  // video. Real social-media posts don't have a "bio per post"; this
+  // is just a slot the carousel exposes when one reel needs to carry
+  // extra branding text beyond the caption.
+  bio?: string;
   // Caption straight from the post — never translated, since the user is
   // about to click through to the original. Keep it short (≈ 80 chars).
   caption: string;
@@ -59,7 +65,8 @@ const MOCK_REELS: Reel[] = [
   {
     id: "tt-aloitus",
     platform: "tiktok",
-    caption: "82Rentals — aloitusvideo #vesijetti #helsinki #seadoo",
+    bio: "Varaukset → 82rentals.com",
+    caption: "82Rentals — aloitusvideo #vesijetti #helsinki #seadoo #vuokraus",
     likes: "12.4k",
     comments: "184",
     shares: "612",
@@ -71,7 +78,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "ig-001",
     platform: "instagram",
-    caption: "Hernesaaresta Kaivopuistoon, kahvi mukana #vesijetti #helsinki",
+    caption: "Hernesaaresta Kaivopuistoon, kahvi mukana",
     likes: "8.7k",
     comments: "92",
     shares: "243",
@@ -83,7 +90,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "tt-002",
     platform: "tiktok",
-    caption: "Ensimmäinen ajo, viimeinen jännitys #vesijetti #seadoo #helsinki",
+    caption: "Ensimmäinen ajo, viimeinen jännitys",
     likes: "5.9k",
     comments: "127",
     shares: "318",
@@ -95,7 +102,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "ig-002",
     platform: "instagram",
-    caption: "Spark Trixx tempuilla, kavereita kannella #seadoo #sparktrixx #helsinki",
+    caption: "Spark Trixx tempuilla, kavereita kannella",
     likes: "21.2k",
     comments: "412",
     shares: "1.1k",
@@ -107,7 +114,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "tt-003",
     platform: "tiktok",
-    caption: "Lauttasaaresta Vallisaareen #vesijetti #helsinki #saaristo",
+    caption: "Lauttasaaresta Vallisaareen",
     likes: "3.1k",
     comments: "58",
     shares: "146",
@@ -119,7 +126,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "ig-003",
     platform: "instagram",
-    caption: "Auringonlasku saaristossa #vesijetti #helsinki #kesä",
+    caption: "Auringonlasku saaristossa",
     likes: "4.3k",
     comments: "67",
     shares: "188",
@@ -131,7 +138,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "tt-004",
     platform: "tiktok",
-    caption: "Kaverit ja 90 hv #vesijetti #seadoo #vuokraus",
+    caption: "Kaverit ja 90 hv",
     likes: "9.5k",
     comments: "201",
     shares: "457",
@@ -143,7 +150,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "ig-004",
     platform: "instagram",
-    caption: "Kun kaveri pyytää selfietä #vesijetti #helsinki #kesä",
+    caption: "Kun kaveri pyytää selfietä",
     likes: "2.8k",
     comments: "44",
     shares: "92",
@@ -155,7 +162,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "tt-005",
     platform: "tiktok",
-    caption: "Synttärilahja kaverille #vesijetti #lahjaidea #helsinki",
+    caption: "Synttärilahja kaverille",
     likes: "15.1k",
     comments: "312",
     shares: "722",
@@ -167,7 +174,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "ig-005",
     platform: "instagram",
-    caption: "Päivä joka jää muistiin #vesijetti #seadoo #helsinki",
+    caption: "Päivä joka jää muistiin",
     likes: "6.2k",
     comments: "108",
     shares: "234",
@@ -179,7 +186,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "tt-006",
     platform: "tiktok",
-    caption: "Kaveriporukan kesän paras päivä #vesijetti #kaverit #helsinki",
+    caption: "Kaveriporukan kesän paras päivä",
     likes: "18.6k",
     comments: "374",
     shares: "841",
@@ -191,7 +198,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "ig-006",
     platform: "instagram",
-    caption: "Saaristoreitti kahdelle #vesijetti #saaristo #helsinki",
+    caption: "Saaristoreitti kahdelle",
     likes: "7.4k",
     comments: "121",
     shares: "281",
@@ -203,7 +210,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "tt-007",
     platform: "tiktok",
-    caption: "Aamuauringossa ennen kaupunkia #vesijetti #helsinki #aamu",
+    caption: "Aamuauringossa ennen kaupunkia",
     likes: "10.9k",
     comments: "229",
     shares: "496",
@@ -215,7 +222,7 @@ const MOCK_REELS: Reel[] = [
   {
     id: "ig-007",
     platform: "instagram",
-    caption: "Helsinki keulasta katsottuna #vesijetti #helsinki #seadoo",
+    caption: "Helsinki keulasta katsottuna",
     likes: "13.2k",
     comments: "256",
     shares: "538",
