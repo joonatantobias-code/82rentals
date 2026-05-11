@@ -26,7 +26,7 @@ export default function Footer() {
   return (
     <footer
       id="footer"
-      className="relative bg-brand-secondary text-white mt-12 overflow-hidden"
+      className="not-print relative bg-brand-secondary text-white mt-12 overflow-hidden"
     >
       <div className="h-1 bg-brand-primary" />
       <div className="absolute inset-0 pattern-grid opacity-20 pointer-events-none" />

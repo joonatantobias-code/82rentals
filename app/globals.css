@@ -582,14 +582,31 @@ body {
  * ============================================================================ */
 
 @media print {
-  /* Hide every page chrome element that isn't part of the contract. */
-  nav, header.not-print, footer.not-print,
+  /* Hide every page chrome element that isn't part of the contract.
+   * The site's <header>/<footer> get hidden via the `not-print` class
+   * applied to the components; the more aggressive selectors below
+   * catch the residual hero/blob decorations that don't carry the
+   * class. */
+  header, footer, nav,
   .blob-primary, .blob-turquoise, .blob-orange,
   .num82-outline, .num82-outline-dark, .pattern-grid, .pattern-dots,
   .not-print {
     display: none !important;
   }
   .print-only { display: block !important; }
+
+  /* Strip the section/card wrapper around TermsView so the printed
+   * pages start at the top of the sheet with no leading whitespace
+   * from the on-screen layout's vertical padding. */
+  .terms-print-section,
+  .terms-print-section .terms-print-card {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    max-width: 100% !important;
+  }
 
   body, html {
     background: #FFFFFF !important;
