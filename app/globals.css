@@ -419,3 +419,65 @@ body {
     display: none;
   }
 }
+
+/* Print stylesheet for /sopimusehdot. The customer uses the browser's
+ * built-in "Save as PDF" / "Print" to get a clean, black-and-white
+ * version of the terms. We strip every brand colour, decorative
+ * surface and surrounding chrome (nav, footer, blobs, hero) so the
+ * resulting PDF is single-column black text on white — the explicit
+ * requirement, since the document is printed on a B&W printer. */
+.print-only { display: none !important; }
+@media print {
+  /* Hide every page chrome element that isn't part of the contract. */
+  nav, header, footer, .blob-primary, .blob-turquoise, .blob-orange,
+  .num82-outline, .num82-outline-dark, .pattern-grid, .pattern-dots,
+  .not-print {
+    display: none !important;
+  }
+  .print-only { display: block !important; }
+
+  /* Wipe colours: contract prints as black on white, no shadows. */
+  body, html {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+    font-size: 11pt;
+    line-height: 1.5;
+  }
+  .terms-print, .terms-print * {
+    color: #000000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    border-color: #000000 !important;
+  }
+  /* Section headings keep weight + size so the document is readable
+   * as a paper contract; no decorative typography. */
+  .terms-print h1 {
+    font-size: 18pt;
+    margin-bottom: 4pt;
+  }
+  .terms-print h3 {
+    font-size: 12pt;
+    margin-top: 16pt;
+    page-break-after: avoid;
+  }
+  .terms-print p, .terms-print li {
+    font-size: 11pt;
+    color: #000000 !important;
+  }
+  /* Keep each section together on the page where possible. */
+  .terms-section { page-break-inside: avoid; }
+  /* Strip any wrapper card on /sopimusehdot. */
+  .card-soft, .section { padding: 0 !important; background: transparent !important; }
+  main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+  a {
+    color: #000000 !important;
+    text-decoration: underline;
+  }
+  /* Show URL after external link so the printed page is self-contained. */
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 9pt;
+    word-break: break-all;
+  }
+}
