@@ -129,35 +129,25 @@ export default function TermsView() {
       </div>
 
       {/* ============================================================
-       *  PRINT-ONLY: every page rendered in order, let @page handle
-       *  pagination. The fixed brand header from globals.css repeats
-       *  at the top of every printed page.
+       *  PRINT-ONLY: every page rendered in order. Each block carries
+       *  the same head + body + foot chrome the on-screen frame uses,
+       *  so the printed PDF looks identical to the page-flip view in
+       *  the browser. `page-break-after: always` (from globals.css)
+       *  guarantees one section per A4 sheet.
        *  ============================================================ */}
       <div className="print-only terms-pdf-pages">
-        {/* Cover page (page 1) */}
-        <div className="terms-pdf-page">
-          <PrintHeader />
-          <div className="terms-pdf-page-body">
-            <CoverContent t={t} isEn={isEn} forPrint />
-          </div>
-        </div>
-
-        {/* Section pages */}
-        {t.sections.map((s) => (
-          <div key={s.id} className="terms-pdf-page">
+        {pages.map((p, idx) => (
+          <div key={idx} className="terms-pdf-page">
             <PrintHeader />
             <div className="terms-pdf-page-body">
-              <SectionContent section={s} />
+              {p.kind === "cover" ? (
+                <CoverContent t={t} isEn={isEn} forPrint />
+              ) : (
+                <SectionContent section={p.section} />
+              )}
             </div>
-          </div>
-        ))}
-
-        {/* Appendix pages */}
-        {t.appendices.map((a) => (
-          <div key={a.id} className="terms-pdf-page terms-pdf-appendix">
-            <PrintHeader />
-            <div className="terms-pdf-page-body">
-              <SectionContent section={a} />
+            <div className="terms-page-foot">
+              Sivu {idx + 1} / {pages.length}
             </div>
           </div>
         ))}
