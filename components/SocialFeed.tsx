@@ -74,7 +74,7 @@ export default function SocialFeed() {
   );
 
   return (
-    <section className="cv-auto relative py-16 md:py-24 overflow-hidden">
+    <section className="relative py-16 md:py-24 overflow-hidden">
       <div className="blob-primary w-[280px] h-[280px] -top-10 -left-20" />
       <div className="blob-turquoise w-[220px] h-[220px] bottom-10 -right-10" />
 
@@ -287,11 +287,8 @@ function CarouselLayer({
   // so the browser starts playback as soon as the element is ready
   // — we don't have to guess when metadata lands. This effect then
   // pauses every card that isn't the active layer's centre. Net
-  // result: at most one decoder per platform is alive at a time
-  // (same as the previous behaviour) but the first centre clip
-  // always reliably starts because the browser handled play() from
-  // its own autoplay path, not from a React lifecycle hook racing
-  // against metadata.
+  // result: at most one decoder per platform is alive at a time but
+  // the first centre clip always reliably starts.
   useEffect(() => {
     cardEntries.forEach((entry) => {
       const refKey = `${entry.reel.id}-${entry.copyKey}`;
@@ -307,6 +304,41 @@ function CarouselLayer({
         if (!v.paused) v.pause();
       }
     });
+  }, [isActive, ci, cardEntries]);
+
+  // Mobile browsers (Safari especially) pause autoplaying muted
+  // videos as soon as they scroll out of the viewport and refuse to
+  // resume them on scroll-back unless something explicitly calls
+  // .play() again. The IntersectionObserver below watches every
+  // card and, when the carousel re-enters the viewport, re-plays
+  // the active-layer centre. Without this the iOS user saw the
+  // carousel sitting frozen on its poster after scrolling past it
+  // once.
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const v = entry.target as HTMLVideoElement;
+          if (!isActive) continue;
+          const refKey = (v.dataset.refkey as string) || "";
+          const cardEntry = cardEntries.find(
+            (e) => `${e.reel.id}-${e.copyKey}` === refKey,
+          );
+          if (!cardEntry) continue;
+          if (cardEntry.virtualIdx === ci && v.paused) {
+            const p = v.play();
+            if (p && typeof p.catch === "function") p.catch(() => {});
+          }
+        }
+      },
+      { rootMargin: "200px 0px", threshold: 0.05 },
+    );
+    videoRefs.current.forEach((v) => {
+      if (v) obs.observe(v);
+    });
+    return () => obs.disconnect();
   }, [isActive, ci, cardEntries]);
 
   return (
