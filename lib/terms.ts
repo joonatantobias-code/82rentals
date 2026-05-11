@@ -191,9 +191,12 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         id: "15",
         heading: "15. Peruutusehdot ja säävaraus",
         body: [
-          `15.1. Maksuton peruutus on mahdollinen, kun se tehdään viimeistään 24 tuntia ennen vuokra-ajan alkua. Tämän jälkeen tehdyistä peruutuksista veloitetaan 50 % vuokran kokonaishinnasta.`,
-          `15.2. Mikäli sääolosuhteet (kova tuuli, ukkonen, myrsky, sankka sumu tai muu turvallisuutta vaarantava ilmiö) tekevät ajamisesta vaarallista, vuokranantajalla on oikeus siirtää varausta korvauksetta toiseen ajankohtaan tai palauttaa vuokra kokonaisuudessaan. Kevyt sade ei lähtökohtaisesti ole peruutusperuste.`,
-          `15.3. Mikäli vuokralainen peruu varauksen sairauden tai muun ennakoimattoman henkilökohtaisen esteen johdosta, sovitaan korvausjärjestelyistä erikseen.`,
+          `15.1. Asiakas voi peruuttaa varauksensa milloin tahansa olemalla yhteydessä vuokranantajaan puhelimitse tai sähköpostitse. Peruutuksesta perittävä maksu määräytyy seuraavasti:`,
+          `15.1.1. Mikäli peruutus tehdään viimeistään 48 tuntia ennen vuokra-ajan alkamista, peruutus on maksuton eikä asiakkaalta peritä mitään.`,
+          `15.1.2. Mikäli peruutus tehdään alle 48 tuntia mutta vähintään 24 tuntia ennen vuokra-ajan alkamista, vuokrahinnasta veloitetaan 50 %.`,
+          `15.1.3. Mikäli peruutus tehdään alle 24 tuntia ennen vuokra-ajan alkamista tai vuokralainen ei saavu sovittuna ajankohtana paikalle, vuokrahinnasta veloitetaan 100 %.`,
+          `15.2. Mikäli sääolosuhteet (kova tuuli, ukkonen, myrsky, sankka sumu tai muu turvallisuutta vaarantava ilmiö) tekevät ajamisesta vaarallista, vuokranantajalla on oikeus siirtää varausta korvauksetta toiseen ajankohtaan tai palauttaa vuokra kokonaisuudessaan. Kevyt sade ei lähtökohtaisesti ole peruutusperuste. Säävaraukseen vetoaminen edellyttää, että vuokranantaja arvioi olosuhteet turvallisuusriskiksi.`,
+          `15.3. Vuokranantajalla on oikeus peruuttaa varaus myös teknisten ongelmien, kaluston rikkoutumisen tai muun ennalta arvaamattoman syyn vuoksi. Tällöin asiakkaalle palautetaan jo maksettu vuokra kokonaisuudessaan tai vaihtoehtoisesti varaus siirretään uuteen, asiakkaan kanssa erikseen sovittavaan ajankohtaan.`,
         ].join("\n\n"),
       },
       {
@@ -423,9 +426,12 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         id: "15",
         heading: "15. Cancellation policy and weather",
         body: [
-          `15.1. Free cancellation is possible when made at least 24 hours before the start of the rental period. After that, 50% of the total rental price is charged.`,
-          `15.2. If weather conditions (strong wind, thunderstorm, storm, dense fog or another safety-threatening phenomenon) make driving unsafe, the rental provider may move the booking to another time at no cost, or refund the rental in full. Light rain is not, by default, a reason to cancel.`,
-          `15.3. If the renter cancels due to illness or another unforeseeable personal obstacle, compensation arrangements are agreed separately.`,
+          `15.1. The renter may cancel the booking at any time by contacting the rental provider by phone or email. The cancellation fee is determined as follows:`,
+          `15.1.1. If the cancellation is made at least 48 hours before the start of the rental period, the cancellation is free of charge.`,
+          `15.1.2. If the cancellation is made less than 48 hours but at least 24 hours before the start of the rental period, 50% of the rental price is charged.`,
+          `15.1.3. If the cancellation is made less than 24 hours before the start of the rental period, or the renter does not show up at the agreed time, 100% of the rental price is charged.`,
+          `15.2. If weather conditions (strong wind, thunderstorm, storm, dense fog or another safety-threatening phenomenon) make riding unsafe, the rental provider may move the booking to another time at no cost or refund the rental in full. Light rain is not, by default, a reason to cancel. Invoking the weather clause requires the rental provider to assess the conditions as a safety risk.`,
+          `15.3. The rental provider also has the right to cancel a booking due to technical problems, equipment failure or another unforeseeable reason. In that case the rental fee is refunded in full or the booking is moved to a new time agreed separately with the renter.`,
         ].join("\n\n"),
       },
       {

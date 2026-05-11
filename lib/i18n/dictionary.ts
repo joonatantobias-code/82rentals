@@ -271,7 +271,7 @@ export const dictionary = {
       },
       edit: "Muokkaa",
       reviewLegal:
-        "Maksuton peruutus 24 tuntia ennen ajoa. Varaus vahvistuu välittömästi ja saat vahvistuksen sähköpostiisi. Sopimusehtomme ovat voimassa kaikkiin uusiin varauksiin.",
+        "Maksuton peruutus 48 tuntia ennen vuokra-ajan alkua. 24–48 h ennen: 50 % vuokrahinnasta. Alle 24 h ennen: 100 %. Varaus vahvistuu välittömästi ja saat vahvistuksen sähköpostiisi.",
       submit: "Vahvista varaus",
       submitting: "Varataan…",
       acceptTermsBefore: "Olen lukenut ja hyväksyn ",
@@ -527,7 +527,7 @@ export const dictionary = {
           },
           {
             q: "Mikä on peruutusehto?",
-            a: "Maksuton peruutus 24 tuntia ennen varauksen alkua. Tämän jälkeen veloitamme 50 %. Säästä johtuvat peruutukset meiltä ovat aina 100 % palautuskelpoisia tai siirrettävissä uuteen aikaan.",
+            a: "Peruutus on maksuton, kun se tehdään viimeistään 48 tuntia ennen vuokra-ajan alkua. Alle 48 h mutta yli 24 h ennen tehdyistä peruutuksista veloitetaan 50 % vuokrahinnasta, ja alle 24 h ennen tehdyistä peruutuksista koko vuokrahinta (100 %). Säävaraukset meidän puoleltamme (turvallisuussyy) ovat aina 100 % palautuskelpoisia tai siirrettävissä uuteen aikaan.",
           },
           {
             q: "Mistä noudan vesijetin?",
@@ -548,7 +548,7 @@ export const dictionary = {
         reassurances: [
           {
             title: "Maksuton peruutus",
-            text: "24 h ennen varauksen alkua kuluitta.",
+            text: "Maksutta 48 h ennen vuokra-aikaa.",
           },
           {
             title: "Lähtö Kipparlahden satamasta",
@@ -881,7 +881,7 @@ export const dictionary = {
       },
       edit: "Edit",
       reviewLegal:
-        "Free cancellation up to 24 hours before the ride. The booking is confirmed immediately and you'll get a confirmation by email. Our terms apply to every new booking.",
+        "Free cancellation up to 48 hours before the rental. 24–48 h before: 50% of the rental price. Less than 24 h before: 100%. The booking is confirmed immediately and you'll get a confirmation by email.",
       submit: "Confirm booking",
       submitting: "Booking…",
       acceptTermsBefore: "I have read and accept the ",
@@ -1137,7 +1137,7 @@ export const dictionary = {
           },
           {
             q: "What's your cancellation policy?",
-            a: "Free cancellation up to 24 hours before. After that we charge 50%. Weather-related cancellations from our side are always 100% refundable or rebookable.",
+            a: "Cancellation is free when made at least 48 hours before the rental. Less than 48 hours but at least 24 hours before, 50% of the rental price is charged. Less than 24 hours before, the full price (100%). Weather-related cancellations from our side (safety reasons) are always 100% refundable or rebookable.",
           },
           {
             q: "Where do I pick up the jet ski?",
@@ -1158,7 +1158,7 @@ export const dictionary = {
         reassurances: [
           {
             title: "Free cancellation",
-            text: "Cancel up to 24 hours before for free.",
+            text: "Free up to 48 h before the rental.",
           },
           {
             title: "Departure from Kipparlahden satama",
