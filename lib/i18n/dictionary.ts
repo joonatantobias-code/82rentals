@@ -472,6 +472,28 @@ export const dictionary = {
         heroTitle: "Näin se toimii.",
         heroDesc:
           "Sinun ei tarvitse omistaa perävaunua, etsiä parkkia tai jonottaa vuokraamossa. Me hoidamme logistiikan, sinä hoidat kaasukahvan.",
+        prepEyebrow: "Mitä seuraavaksi",
+        prepTitle: "Näin valmistaudut ajoon.",
+        prepBody:
+          "Pari pientä asiaa hoidettavaksi ennen kuin pääset vesille. Sama lista lähtee sinulle myös sähköpostiin varauksen yhteydessä.",
+        prepItems: [
+          {
+            title: "Saavu paikalle 15 minuuttia ennen ajoa",
+            text: "Käymme yhdessä lyhyen perehdytyksen läpi ennen vesille lähtöä.",
+          },
+          {
+            title: "Ota mukaan asianmukaiset varusteet",
+            text: "Uima-asu, vaihtovaatteet ja pyyhe. Pelastusliivit ja paikannin tulevat meiltä.",
+          },
+          {
+            title: "Mukaan kuvallinen henkilöllisyystodistus",
+            text: "Sekä ajajalla että matkustajalla. Molempien tulee olla vähintään 16-vuotiaita.",
+          },
+          {
+            title: "Maksu paikan päällä ennen ajoa",
+            text: "Maksu otetaan vastaan kortilla tai käteisellä juuri ennen vesille lähtöä.",
+          },
+        ],
         ctaTitle: "Yhdellä klikkauksella vesille.",
         ctaSubtitle:
           "Varaa Sea-Doo Spark Trixx ja saat sen toimitettuna haluamaasi paikkaan.",
@@ -1059,6 +1081,28 @@ export const dictionary = {
         heroTitle: "How it works.",
         heroDesc:
           "You don't need a trailer, parking spot or queue. We handle the logistics, you handle the throttle.",
+        prepEyebrow: "What's next",
+        prepTitle: "Here's how you prepare for your ride.",
+        prepBody:
+          "A couple of small things to handle before you hit the water. The same list is sent to you by email when you book.",
+        prepItems: [
+          {
+            title: "Arrive 15 minutes before your ride",
+            text: "We'll go through a quick briefing together before heading out on the water.",
+          },
+          {
+            title: "Bring the right gear",
+            text: "Swimwear, a change of clothes and a towel. Life jackets and the GPS tracker are on us.",
+          },
+          {
+            title: "Bring a photo ID",
+            text: "Both the driver and the passenger. Both must be at least 16 years old.",
+          },
+          {
+            title: "Payment on-site before the ride",
+            text: "We take payment by card or cash right before you hit the water.",
+          },
+        ],
         ctaTitle: "One click and you're on the water.",
         ctaSubtitle:
           "Book the Sea-Doo Spark Trixx and we'll deliver it where you want.",
