@@ -28,14 +28,11 @@ export type Platform = "tiktok" | "instagram";
 export type Reel = {
   id: string;
   platform: Platform;
-  // Optional one-liner shown above the caption on a specific reel —
-  // used for the booking-URL + hashtag block on the featured intro
-  // video. Real social-media posts don't have a "bio per post"; this
-  // is just a slot the carousel exposes when one reel needs to carry
-  // extra branding text beyond the caption.
-  bio?: string;
   // Caption straight from the post — never translated, since the user is
   // about to click through to the original. Keep it short (≈ 80 chars).
+  // For our own brand reels, the caption is also where "linkki biossa"
+  // belongs — TikTok strips clickable URLs from captions, so real
+  // creators point viewers at their profile bio instead.
   caption: string;
   // Engagement counts as already-formatted strings (e.g. "12.4k") so we
   // don't need to know each platform's locale conventions at render time.
@@ -65,13 +62,24 @@ const MOCK_REELS: Reel[] = [
   {
     id: "tt-aloitus",
     platform: "tiktok",
-    bio: "Varaukset → 82rentals.com",
-    caption: "82Rentals — aloitusvideo #vesijetti #helsinki #seadoo #vuokraus",
+    caption: "Linkki biossa varauksiin 🌊 #vesijetti #helsinki #seadoo #vuokraus",
     likes: "12.4k",
     comments: "184",
     shares: "612",
     videoUrl: "/Aloitusvideo.mp4",
     posterUrl: LOCAL_PHOTOS.coupleAction,
+    postUrl: TIKTOK_PROFILE,
+    audioLabel: "alkuperäinen ääni",
+  },
+  {
+    id: "tt-nopeus",
+    platform: "tiktok",
+    caption: "Linkki biossa varauksiin ⚡️ #vesijetti #seadoo #sparktrixx #helsinki",
+    likes: "16.8k",
+    comments: "274",
+    shares: "523",
+    videoUrl: "/Nopeusvideo.mp4",
+    posterUrl: LOCAL_PHOTOS.yellowRider,
     postUrl: TIKTOK_PROFILE,
     audioLabel: "alkuperäinen ääni",
   },

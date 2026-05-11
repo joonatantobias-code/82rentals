@@ -468,12 +468,7 @@ function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
         <p className="text-[11px] font-extrabold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           82Rentals
         </p>
-        {reel.bio && (
-          <p className="text-[10px] font-semibold leading-tight mt-0.5 opacity-90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
-            {reel.bio}
-          </p>
-        )}
-        <p className={`text-[12px] font-medium leading-snug line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)] ${reel.bio ? "mt-1" : "mt-0.5"}`}>
+        <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
         </p>
         <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
@@ -586,12 +581,7 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
             · Seuraa
           </span>
         </div>
-        {reel.bio && (
-          <p className="text-[10px] font-semibold leading-tight mt-1 opacity-90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
-            {reel.bio}
-          </p>
-        )}
-        <p className={`text-[12px] font-medium leading-snug line-clamp-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)] ${reel.bio ? "mt-1" : "mt-1.5"}`}>
+        <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-1.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
         </p>
         <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
