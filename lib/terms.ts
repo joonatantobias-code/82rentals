@@ -35,7 +35,7 @@ export const terms: Record<TermsLocale, { title: string; sections: { heading: st
       {
         heading: "5. Ajaja ja ikäraja",
         body:
-          "Vesijetin ajajan on oltava vähintään 18-vuotias ja todistettava henkilöllisyytensä voimassa olevalla kuvallisella henkilötodistuksella. Ajaminen alkoholin tai huumaavien aineiden vaikutuksen alaisena on ehdottomasti kielletty ja johtaa vuokrauksen päättymiseen ilman korvauksia.",
+          "Sekä vesijetin ajajan että matkustajan on oltava vähintään 16-vuotiaita ja molempien on todistettava henkilöllisyytensä voimassa olevalla kuvallisella henkilötodistuksella. Ajaminen alkoholin tai huumaavien aineiden vaikutuksen alaisena on ehdottomasti kielletty ja johtaa vuokrauksen päättymiseen ilman korvauksia.",
       },
       {
         heading: "6. Vakuutus ja vastuu",
@@ -85,7 +85,7 @@ export const terms: Record<TermsLocale, { title: string; sections: { heading: st
       {
         heading: "5. Driver and age limit",
         body:
-          "The jet ski driver must be at least 18 years old and present a valid photo ID. Driving under the influence of alcohol or drugs is strictly prohibited and will end the rental immediately without compensation.",
+          "Both the driver and the passenger must be at least 16 years old and present a valid photo ID. Driving under the influence of alcohol or drugs is strictly prohibited and will end the rental immediately without compensation.",
       },
       {
         heading: "6. Insurance and liability",

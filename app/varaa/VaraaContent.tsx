@@ -7,7 +7,7 @@ import {
   Shield,
   Truck,
   Clock,
-  Phone,
+  Users,
   type LucideIcon,
 } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
@@ -44,7 +44,7 @@ const REASSURANCE_VISUALS: ReassuranceVisual[] = [
     iconRotate: 8,
   },
   {
-    icon: Phone,
+    icon: Users,
     bg: "bg-brand-secondary",
     accentHex: "#0A3D62",
     iconRotate: -8,

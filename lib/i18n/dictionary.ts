@@ -492,7 +492,7 @@ export const dictionary = {
         items: [
           {
             q: "Tarvitsenko ajokortin?",
-            a: "Et. Sea-Doo Spark Trixx 2up:in ajamiseen Suomessa ei vaadita erillistä vesikulkuneuvokorttia. Alaikäraja on 18 vuotta ja tarvitset voimassa olevan henkilöllisyystodistuksen. Annamme lyhyen turvaopastuksen ennen jokaista ajoa.",
+            a: "Et. Sea-Doo Spark Trixx 2up:in ajamiseen Suomessa ei vaadita erillistä vesikulkuneuvokorttia. Sekä ajajan että matkustajan tulee olla vähintään 16-vuotiaita ja tarvitset mukaan voimassa olevan kuvallisen henkilöllisyystodistuksen. Annamme lyhyen perehdytyksen ennen jokaista ajoa.",
           },
           {
             q: "Onko se turvallista? Entä vakuutus?",
@@ -536,8 +536,8 @@ export const dictionary = {
             text: "Aamusta iltaan, sinun aikataulullasi.",
           },
           {
-            title: "Vahvistus 30 min",
-            text: "Otamme yhteyttä puhelimitse heti.",
+            title: "Yli 16v ajaja ja matkustaja",
+            text: "Sekä ajajan että matkustajan tulee olla vähintään 16-vuotiaita.",
           },
         ],
       },
@@ -1079,7 +1079,7 @@ export const dictionary = {
         items: [
           {
             q: "Do I need a license?",
-            a: "No. Driving the Sea-Doo Spark Trixx 2up in Finland doesn't require a separate watercraft license. Minimum age is 18 and you'll need a valid ID. We give a quick safety briefing before every ride.",
+            a: "No. Driving the Sea-Doo Spark Trixx 2up in Finland doesn't require a separate watercraft license. Both the driver and the passenger must be at least 16 years old and need to bring a valid photo ID. We give a quick briefing before every ride.",
           },
           {
             q: "Is it safe? What about insurance?",
@@ -1123,8 +1123,8 @@ export const dictionary = {
             text: "Morning to evening, on your schedule.",
           },
           {
-            title: "Confirmation 30 min",
-            text: "We call you back right away.",
+            title: "16+ driver and passenger",
+            text: "Both the driver and the passenger must be at least 16 years old.",
           },
         ],
       },
