@@ -1488,27 +1488,19 @@ function SlotGrid({
   return (
     <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-2.5">
       {available.map((s) => {
-        const free = day.slots[s] ?? MAX_QUANTITY;
         const isSelected = selected === s;
         return (
           <button
             type="button"
             key={s}
             onClick={() => onPick(s)}
-            className={`px-2 py-3 rounded-xl border-2 transition-all flex flex-col items-center min-h-[64px] ${
+            className={`rounded-xl border-2 transition-all flex items-center justify-center min-h-[56px] sm:min-h-[60px] font-display font-bold text-lg sm:text-xl leading-none ${
               isSelected
                 ? "border-brand-secondary bg-brand-secondary text-white shadow-soft"
                 : "border-brand-primary/30 bg-white text-brand-secondary hover:border-brand-primary"
             }`}
           >
-            <span className="font-display text-lg font-bold leading-none">
-              {s}
-            </span>
-            <span className="text-[10px] mt-1.5 uppercase tracking-wider">
-              {free === 1
-                ? t.booking.slotFreeOne
-                : t.booking.slotFreeMany.replace("{n}", String(free))}
-            </span>
+            {s}
           </button>
         );
       })}
