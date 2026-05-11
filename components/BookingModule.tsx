@@ -1438,38 +1438,10 @@ function MonthCalendar({
               aria-pressed={isSelected}
             >
               <span className={g.outside ? "opacity-40" : ""}>{g.day}</span>
-              {!disabled && !isSelected && (
-                <span
-                  className={`mt-0.5 h-1 w-1 rounded-full ${
-                    totalFree > 1
-                      ? "bg-brand-primary"
-                      : totalFree === 1
-                      ? "bg-brand-primary/50"
-                      : "bg-transparent"
-                  }`}
-                />
-              )}
-              {fullyBooked && !g.outside && (
-                <span className="absolute bottom-0.5 text-[8px] font-bold text-red-500">
-                  {t.booking.legend.full.toLowerCase()}
-                </span>
-              )}
             </button>
           );
         })}
       </div>
-
-      <p className="mt-3 flex items-center gap-3 text-[11px] text-brand-secondary/60">
-        <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-brand-primary" /> {t.booking.legend.plenty}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-brand-primary/50" /> {t.booking.legend.few}
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-2 rounded-full bg-red-400/60" /> {t.booking.legend.full}
-        </span>
-      </p>
     </div>
   );
 }
