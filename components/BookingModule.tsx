@@ -1234,6 +1234,19 @@ type GridDay = {
   isPast: boolean;
 };
 
+// Local-date → "YYYY-MM-DD" without going through .toISOString(),
+// which converts to UTC and shifts the date by one for any browser
+// east of Greenwich. The whole calendar grid keys off these
+// strings, so a Helsinki-local 16.5. was previously being looked up
+// against "2026-05-15" availability data → opening day showed as
+// fully closed and the rest of the row was off by one.
+function toLocalIso(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 function buildMonthGrid(year: number, month: number): GridDay[] {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -1244,7 +1257,7 @@ function buildMonthGrid(year: number, month: number): GridDay[] {
   for (let i = startDay - 1; i >= 0; i--) {
     const d = new Date(year, month, -i);
     days.push({
-      iso: d.toISOString().slice(0, 10),
+      iso: toLocalIso(d),
       day: d.getDate(),
       outside: true,
       isPast: d < today,
@@ -1254,7 +1267,7 @@ function buildMonthGrid(year: number, month: number): GridDay[] {
   for (let i = 1; i <= lastOfMonth; i++) {
     const d = new Date(year, month, i);
     days.push({
-      iso: d.toISOString().slice(0, 10),
+      iso: toLocalIso(d),
       day: i,
       outside: false,
       isPast: d < today,
@@ -1266,7 +1279,7 @@ function buildMonthGrid(year: number, month: number): GridDay[] {
     const next = new Date(lastDate);
     next.setDate(next.getDate() + 1);
     days.push({
-      iso: next.toISOString().slice(0, 10),
+      iso: toLocalIso(next),
       day: next.getDate(),
       outside: true,
       isPast: false,
@@ -1329,7 +1342,7 @@ function MonthCalendar({
     return x;
   }, []);
 
-  const earliestIso = useMemo(() => today.toISOString().slice(0, 10), [today]);
+  const earliestIso = useMemo(() => toLocalIso(today), [today]);
   const latestIso = useMemo(() => {
     if (days.length === 0) return null;
     return days[days.length - 1].date;
@@ -1578,27 +1591,28 @@ function ReviewRow({
   onEdit: () => void;
   editLabel: string;
 }) {
-  // Items are top-aligned so multi-line values (long pickup
-  // addresses, free-form notes, …) wrap inside the value column
-  // instead of pushing the "Muokkaa" button off-screen the way the
-  // previous `truncate` did on phones. min-w-0 on the value cell
-  // lets the flex item shrink below its intrinsic width, which is
-  // what makes `break-words` actually wrap inside a flex row.
+  // Mobile: stack the label above the value so a long value
+  // (delivery address, free-form notes) gets the full row width
+  // and wraps cleanly, instead of fighting for 2/3 of a narrow
+  // viewport. Tablet/desktop keeps the original side-by-side
+  // layout because the row is plenty wide.
   return (
-    <div className="flex items-start justify-between gap-3 px-4 py-3 text-sm">
-      <span className="text-brand-secondary/60 uppercase tracking-wider text-[11px] font-bold w-1/3 shrink-0 pt-0.5">
+    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 sm:gap-3 px-4 py-3 text-sm">
+      <span className="text-brand-secondary/60 uppercase tracking-wider text-[11px] font-bold sm:w-1/3 sm:shrink-0 sm:pt-0.5">
         {label}
       </span>
-      <span className="text-brand-secondary font-semibold flex-1 min-w-0 break-words">
-        {value}
-      </span>
-      <button
-        type="button"
-        onClick={onEdit}
-        className="text-xs font-semibold text-brand-primary-600 hover:text-brand-secondary shrink-0 pt-0.5"
-      >
-        {editLabel}
-      </button>
+      <div className="flex items-start justify-between gap-3 sm:flex-1 sm:min-w-0">
+        <span className="text-brand-secondary font-semibold flex-1 min-w-0 break-words">
+          {value}
+        </span>
+        <button
+          type="button"
+          onClick={onEdit}
+          className="text-xs font-semibold text-brand-primary-600 hover:text-brand-secondary shrink-0 pt-0.5"
+        >
+          {editLabel}
+        </button>
+      </div>
     </div>
   );
 }
