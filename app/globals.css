@@ -64,14 +64,16 @@ label {
 }
 
 /* Tell the browser that below-the-fold sections don't need to be
- * laid out / painted until they're about to scroll into view. Big
- * wins on mobile where layout cost is dominant. The named class is
- * applied selectively (SocialFeed, Footer, large content sections)
- * — applying it everywhere can break sticky headers or anchor
- * scrolling. */
-.cv-auto {
-  content-visibility: auto;
-  contain-intrinsic-size: 1px 800px;
+ * laid out / painted until they're about to scroll into view. Only
+ * applied on phones — desktop has the paint budget for the whole
+ * page and applying content-visibility there caused users to see
+ * brief scroll-jumps as below-fold sections inflated from the
+ * intrinsic-size placeholder into their real height. */
+@media (max-width: 768px) {
+  .cv-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 1px 800px;
+  }
 }
 
 /* Text-selection highlight. Uses brand-primary (sky blue) on

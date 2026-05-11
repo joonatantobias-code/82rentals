@@ -11,7 +11,7 @@ export default function Lifestyle() {
   const t = useT();
   const stats = [
     {
-      to: 130,
+      to: 30,
       decimals: 0,
       suffix: "+",
       label: t.lifestyle.stat1,

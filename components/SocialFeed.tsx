@@ -284,13 +284,23 @@ function CarouselLayer({
   }
 
   // Only the dead-centre card actually plays. Every other card on
-  // the carousel sits on its poster frame. With three brand videos
-  // and platform-paired copies, the active layer would otherwise
-  // try to decode 6+ video streams at once which is what made the
-  // mobile experience jitter and made some cards render as plain
-  // black before any frame arrived. One decoder per platform is
-  // also closer to how the real TikTok / Reels feeds behave —
-  // exactly one clip is alive at a time.
+  // the carousel sits on its poster frame. One decoder per platform
+  // matches how the real TikTok / Reels feeds behave (exactly one
+  // clip is alive at a time) and keeps mobile decoders well under
+  // their concurrent-stream ceiling.
+  //
+  // Implementation notes:
+  //  - We attempt the seek + play synchronously when possible, but
+  //    the video may not yet have loaded metadata on the first run.
+  //    In that case we attach a one-shot `loadedmetadata` listener
+  //    that re-attempts the seek and the play once the element is
+  //    actually ready. Without this fallback the centre card just
+  //    sat on its poster forever — the play() call landed before
+  //    the element was playable and was silently dropped.
+  //  - autoPlay is also set on the JSX side so the browser starts
+  //    the centre clip as soon as bytes arrive, even before this
+  //    effect runs in React's lifecycle. The effect then handles
+  //    every subsequent slide transition.
   useEffect(() => {
     cardEntries.forEach((entry) => {
       const refKey = `${entry.reel.id}-${entry.copyKey}`;
@@ -298,15 +308,23 @@ function CarouselLayer({
       if (!v) return;
       const shouldPlay = isActive && entry.virtualIdx === ci;
       if (shouldPlay) {
-        // Seek back to startOffset (or 0) so re-entering the centre
-        // always restarts the clip from the intended frame instead
-        // of resuming mid-playback after a previous viewing.
-        try {
-          const offset = entry.reel.startOffset ?? 0;
-          if (v.duration && offset < v.duration) v.currentTime = offset;
-          else v.currentTime = 0;
-        } catch {}
-        if (v.paused) v.play().catch(() => {});
+        const offset = entry.reel.startOffset ?? 0;
+        const seekAndPlay = () => {
+          try {
+            if (offset > 0 && v.duration && offset < v.duration) {
+              v.currentTime = offset;
+            } else {
+              v.currentTime = 0;
+            }
+          } catch {}
+          const p = v.play();
+          if (p && typeof p.catch === "function") p.catch(() => {});
+        };
+        if (v.readyState >= 1) {
+          seekAndPlay();
+        } else {
+          v.addEventListener("loadedmetadata", seekAndPlay, { once: true });
+        }
       } else {
         if (!v.paused) v.pause();
       }
@@ -367,7 +385,8 @@ function CarouselLayer({
                 poster={reel.posterUrl}
                 muted
                 playsInline
-                preload="metadata"
+                autoPlay={isActive && isCenter}
+                preload={isCenter ? "auto" : "metadata"}
                 onEnded={() => {
                   // Advance only when this card is currently centred
                   // on the active layer — otherwise a previously-
