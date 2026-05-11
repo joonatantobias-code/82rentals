@@ -44,17 +44,17 @@ export default function Lifestyle() {
     <section className="cv-auto relative my-12 md:my-24">
       <div className="relative h-[70vh] min-h-[460px] w-full overflow-hidden">
         {/* Founders shot, framed for the wide hero (2880×1200, 12:5).
-            object-cover with object-position 70% keeps the rider +
-            handlebars near the right side fully in frame on every
-            common viewport ratio while letting the field on the left
-            crop first when screens get extra wide. */}
+            Desktop sits at object-position 70 % so the rider stays in
+            frame on wide viewports. Mobile shifts the focal point to
+            ~45 % so the founder's face lands roughly in the middle of
+            the cropped portrait area instead of being pushed off the
+            right edge by the narrower viewport. */}
         <Image
           src={LOCAL_PHOTOS.founders}
           alt=""
           fill
           sizes="100vw"
-          className="object-cover"
-          style={{ objectPosition: "70% center" }}
+          className="object-cover object-[45%_center] md:object-[70%_center]"
           priority={false}
         />
         <div className="absolute inset-0 bg-brand-secondary/70" />
