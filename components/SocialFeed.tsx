@@ -359,15 +359,15 @@ function CarouselLayer({
               isCenter ? "shadow-glow" : ""
             }`}
           >
-            {/* Inner is rendered at a single fixed design size (250 ×
-                ~444, the desktop card). The outer button shrinks per
+            {/* Inner renders at a single fixed design size (250 ×
+                ~444 — the desktop card). The outer button shrinks per
                 breakpoint and we transform-scale this inner to match.
-                Every internal text, icon, padding and rail-position
-                stays pixel-identical on every screen — handle, avatar
-                and music line all stay where they sit on desktop,
-                instead of being squashed off the bottom of a smaller
-                mobile card. */}
-            <div className="relative w-[250px] aspect-[9/16] origin-top-left scale-[0.68] sm:scale-[0.8] md:scale-[0.92] lg:scale-100">
+                Must be absolutely positioned so its 250 × 444 layout
+                box doesn't push the outer's height past the aspect-
+                ratio'd target — aspect-ratio is a preference, not a
+                hard cap, and a too-large in-flow child silently grew
+                the button into a tall black rectangle on phones. */}
+            <div className="absolute top-0 left-0 w-[250px] aspect-[9/16] origin-top-left scale-[0.68] sm:scale-[0.8] md:scale-[0.92] lg:scale-100">
               <video
                 ref={(el) => {
                   videoRefs.current.set(refKey, el);
