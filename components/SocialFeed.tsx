@@ -23,6 +23,12 @@ import { getReels, type Platform, type Reel } from "@/lib/socialFeed";
 const SLIDE_DURATION = 650;
 const FILTER_FADE_MS = 280;
 
+// Profile bio line shown under the handle on every card — same on
+// TikTok and Reels so the call-to-action is consistent across the
+// carousel. Real social bios are usually 1 short line with a URL,
+// which is what this mirrors.
+const PROFILE_BIO = "Varaukset → 82rentals.com";
+
 function TikTokGlyph({ size = 18 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -468,7 +474,10 @@ function TikTokOverlay({ reel, isCenter }: { reel: Reel; isCenter: boolean }) {
         <p className="text-[11px] font-extrabold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           82Rentals
         </p>
-        <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+        <p className="text-[10px] font-semibold leading-tight mt-0.5 opacity-90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+          {PROFILE_BIO}
+        </p>
+        <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
         </p>
         <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
@@ -581,7 +590,10 @@ function ReelsOverlay({ reel }: { reel: Reel }) {
             · Seuraa
           </span>
         </div>
-        <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-1.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+        <p className="text-[10px] font-semibold leading-tight mt-1 opacity-90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
+          {PROFILE_BIO}
+        </p>
+        <p className="text-[12px] font-medium leading-snug line-clamp-2 mt-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
           {reel.caption}
         </p>
         <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium opacity-95 drop-shadow-[0_1px_2px_rgba(0,0,0,0.55)]">
