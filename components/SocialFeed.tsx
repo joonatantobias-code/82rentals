@@ -383,10 +383,27 @@ function CarouselLayer({
               <video
                 ref={(el) => {
                   videoRefs.current.set(refKey, el);
-                  if (el) el.dataset.refkey = refKey;
+                  if (el) {
+                    el.dataset.refkey = refKey;
+                    // Seek to the per-reel start offset once metadata
+                    // is ready, so the same brand clip on TikTok vs
+                    // Instagram opens on a different frame and reads
+                    // as two distinct posts.
+                    const offset = reel.startOffset ?? 0;
+                    if (offset > 0) {
+                      const seek = () => {
+                        try {
+                          if (el.duration && offset < el.duration) {
+                            el.currentTime = offset;
+                          }
+                        } catch {}
+                      };
+                      if (el.readyState >= 1) seek();
+                      else el.addEventListener("loadedmetadata", seek, { once: true });
+                    }
+                  }
                 }}
                 src={reel.videoUrl}
-                poster={reel.posterUrl}
                 muted
                 loop
                 playsInline
