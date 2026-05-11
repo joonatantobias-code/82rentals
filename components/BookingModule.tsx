@@ -1511,7 +1511,12 @@ function SlotGrid({
   t: T;
 }) {
   if (!day) return null;
-  if (validStarts.length === 0) {
+  // Filter out fully-booked slots entirely so the customer never sees
+  // a "Varattu" tile — taken hours just don't appear in the picker.
+  const available = validStarts.filter(
+    (s) => (day.slots[s] ?? MAX_QUANTITY) > 0,
+  );
+  if (validStarts.length === 0 || available.length === 0) {
     return (
       <p className="text-sm text-brand-secondary/70">
         {t.booking.contactBody}
@@ -1520,20 +1525,16 @@ function SlotGrid({
   }
   return (
     <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-2.5">
-      {validStarts.map((s) => {
+      {available.map((s) => {
         const free = day.slots[s] ?? MAX_QUANTITY;
-        const taken = free === 0;
         const isSelected = selected === s;
         return (
           <button
             type="button"
             key={s}
-            onClick={() => !taken && onPick(s)}
-            disabled={taken}
+            onClick={() => onPick(s)}
             className={`px-2 py-3 rounded-xl border-2 transition-all flex flex-col items-center min-h-[64px] ${
-              taken
-                ? "border-black/5 bg-brand-bg text-brand-secondary/40 cursor-not-allowed"
-                : isSelected
+              isSelected
                 ? "border-brand-secondary bg-brand-secondary text-white shadow-soft"
                 : "border-brand-primary/30 bg-white text-brand-secondary hover:border-brand-primary"
             }`}
@@ -1542,9 +1543,7 @@ function SlotGrid({
               {s}
             </span>
             <span className="text-[10px] mt-1.5 uppercase tracking-wider">
-              {taken
-                ? t.booking.slotFull
-                : free === 1
+              {free === 1
                 ? t.booking.slotFreeOne
                 : t.booking.slotFreeMany.replace("{n}", String(free))}
             </span>
