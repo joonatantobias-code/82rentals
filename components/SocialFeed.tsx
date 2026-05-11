@@ -359,45 +359,55 @@ function CarouselLayer({
               isCenter ? "shadow-glow" : ""
             }`}
           >
-            <video
-              ref={(el) => {
-                videoRefs.current.set(refKey, el);
-              }}
-              src={reel.videoUrl}
-              poster={reel.posterUrl}
-              autoPlay={isActive}
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+            {/* Inner is rendered at a single fixed design size (250 ×
+                ~444, the desktop card). The outer button shrinks per
+                breakpoint and we transform-scale this inner to match.
+                Every internal text, icon, padding and rail-position
+                stays pixel-identical on every screen — handle, avatar
+                and music line all stay where they sit on desktop,
+                instead of being squashed off the bottom of a smaller
+                mobile card. */}
+            <div className="relative w-[250px] aspect-[9/16] origin-top-left scale-[0.68] sm:scale-[0.8] md:scale-[0.92] lg:scale-100">
+              <video
+                ref={(el) => {
+                  videoRefs.current.set(refKey, el);
+                }}
+                src={reel.videoUrl}
+                poster={reel.posterUrl}
+                autoPlay={isActive}
+                muted
+                loop
+                playsInline
+                preload="metadata"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
 
-            {platform === "tiktok" ? (
-              <TikTokOverlay reel={reel} isCenter={isCenter} />
-            ) : (
-              <ReelsOverlay reel={reel} />
-            )}
+              {platform === "tiktok" ? (
+                <TikTokOverlay reel={reel} isCenter={isCenter} />
+              ) : (
+                <ReelsOverlay reel={reel} />
+              )}
 
-            <div
-              className="absolute inset-0 bg-white pointer-events-none"
-              style={{
-                opacity: scrimOpacity,
-                // Sync scrim with the main slide transition so it never
-                // animates a "darkening flash" during a wrap reset.
-                transition: transitionsOn
-                  ? `opacity ${SLIDE_DURATION}ms ease`
-                  : "none",
-              }}
-            />
+              <div
+                className="absolute inset-0 bg-white pointer-events-none"
+                style={{
+                  opacity: scrimOpacity,
+                  // Sync scrim with the main slide transition so it never
+                  // animates a "darkening flash" during a wrap reset.
+                  transition: transitionsOn
+                    ? `opacity ${SLIDE_DURATION}ms ease`
+                    : "none",
+                }}
+              />
 
-            {isCenter && (
-              <span className="absolute inset-0 grid place-items-center pointer-events-none">
-                <span className="h-12 w-12 rounded-full bg-white/90 grid place-items-center text-black opacity-0 group-hover/card:opacity-100 transition-opacity">
-                  <Play size={18} className="fill-black translate-x-0.5" />
+              {isCenter && (
+                <span className="absolute inset-0 grid place-items-center pointer-events-none">
+                  <span className="h-12 w-12 rounded-full bg-white/90 grid place-items-center text-black opacity-0 group-hover/card:opacity-100 transition-opacity">
+                    <Play size={18} className="fill-black translate-x-0.5" />
+                  </span>
                 </span>
-              </span>
-            )}
+              )}
+            </div>
           </button>
         );
       })}

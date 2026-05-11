@@ -57,13 +57,13 @@ const INSTAGRAM_PROFILE = "https://instagram.com/82rentals";
 // fetch from /api/social-feed). The shape is what the carousel renders.
 const MOCK_REELS: Reel[] = [
   {
-    id: "tt-001",
+    id: "tt-aloitus",
     platform: "tiktok",
-    caption: "Aamuajo Suomenlinnan ohi",
+    caption: "82Rentals — aloitusvideo",
     likes: "12.4k",
     comments: "184",
     shares: "612",
-    videoUrl: PEXELS_VIDEOS.tricks,
+    videoUrl: "/Aloitusvideo.mp4",
     posterUrl: LOCAL_PHOTOS.coupleAction,
     postUrl: TIKTOK_PROFILE,
     audioLabel: "alkuperäinen ääni",
