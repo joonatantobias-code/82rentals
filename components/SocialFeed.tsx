@@ -171,12 +171,12 @@ function CarouselLayer({
   const [transitionsOn, setTransitionsOn] = useState(true);
   const videoRefs = useRef<Map<string, HTMLVideoElement | null>>(new Map());
 
-  // Auto-advance only for the active platform.
-  useEffect(() => {
-    if (!isActive || len === 0) return;
-    const id = setInterval(() => setCi((c) => c + 1), 3000);
-    return () => clearInterval(id);
-  }, [isActive, len]);
+  // No auto-advance interval. The carousel waits for the centre
+  // video to finish playing and then slides to the next reel — see
+  // the `onEnded` handler on the centre <video>. This matches how
+  // real TikTok / Reels feeds work (one full clip at a time) and
+  // also relieves mobile decoders, which were thrashing while a 3 s
+  // ticker swapped cards mid-playback.
 
   // Reset ci back inside [0, len) once it crosses a boundary in either
   // direction (auto-rotate pushes it past len, or a click on a left-side
@@ -283,56 +283,34 @@ function CarouselLayer({
     return 0.62;
   }
 
-  // Play only the cards within ±1 of the current centre, so at most
-  // three video decoders run at the same time. Earlier the whole
-  // visible band (±3) auto-played, which on mid-range phones meant
-  // 7 simultaneous decodes per platform and a janky slide. The
-  // leaving and entering neighbours stay playing through the
-  // transition so the slide doesn't freeze visibly.
+  // Only the dead-centre card actually plays. Every other card on
+  // the carousel sits on its poster frame. With three brand videos
+  // and platform-paired copies, the active layer would otherwise
+  // try to decode 6+ video streams at once which is what made the
+  // mobile experience jitter and made some cards render as plain
+  // black before any frame arrived. One decoder per platform is
+  // also closer to how the real TikTok / Reels feeds behave —
+  // exactly one clip is alive at a time.
   useEffect(() => {
     cardEntries.forEach((entry) => {
       const refKey = `${entry.reel.id}-${entry.copyKey}`;
       const v = videoRefs.current.get(refKey);
       if (!v) return;
-      const shouldPlay = isActive && Math.abs(entry.virtualIdx - ci) <= 1;
+      const shouldPlay = isActive && entry.virtualIdx === ci;
       if (shouldPlay) {
+        // Seek back to startOffset (or 0) so re-entering the centre
+        // always restarts the clip from the intended frame instead
+        // of resuming mid-playback after a previous viewing.
+        try {
+          const offset = entry.reel.startOffset ?? 0;
+          if (v.duration && offset < v.duration) v.currentTime = offset;
+          else v.currentTime = 0;
+        } catch {}
         if (v.paused) v.play().catch(() => {});
       } else {
         if (!v.paused) v.pause();
       }
     });
-  }, [isActive, ci, cardEntries]);
-
-  // Browsers (Chromium especially) pause autoplaying videos once
-  // they scroll out of the viewport and don't always resume on
-  // return. The IntersectionObserver below re-evaluates playback
-  // for the active centre/neighbours whenever the carousel scrolls
-  // back into view.
-  useEffect(() => {
-    if (typeof IntersectionObserver === "undefined") return;
-    const obs = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const v = entry.target as HTMLVideoElement;
-          if (!isActive) continue;
-          const refKey = (v.dataset.refkey as string) || "";
-          const cardEntry = cardEntries.find(
-            (e) => `${e.reel.id}-${e.copyKey}` === refKey,
-          );
-          if (!cardEntry) continue;
-          const shouldPlay = Math.abs(cardEntry.virtualIdx - ci) <= 1;
-          if (shouldPlay && v.paused) {
-            v.play().catch(() => {});
-          }
-        }
-      },
-      { rootMargin: "200px 0px", threshold: 0.05 },
-    );
-    videoRefs.current.forEach((v) => {
-      if (v) obs.observe(v);
-    });
-    return () => obs.disconnect();
   }, [isActive, ci, cardEntries]);
 
   return (
@@ -383,31 +361,22 @@ function CarouselLayer({
               <video
                 ref={(el) => {
                   videoRefs.current.set(refKey, el);
-                  if (el) {
-                    el.dataset.refkey = refKey;
-                    // Seek to the per-reel start offset once metadata
-                    // is ready, so the same brand clip on TikTok vs
-                    // Instagram opens on a different frame and reads
-                    // as two distinct posts.
-                    const offset = reel.startOffset ?? 0;
-                    if (offset > 0) {
-                      const seek = () => {
-                        try {
-                          if (el.duration && offset < el.duration) {
-                            el.currentTime = offset;
-                          }
-                        } catch {}
-                      };
-                      if (el.readyState >= 1) seek();
-                      else el.addEventListener("loadedmetadata", seek, { once: true });
-                    }
-                  }
+                  if (el) el.dataset.refkey = refKey;
                 }}
                 src={reel.videoUrl}
+                poster={reel.posterUrl}
                 muted
-                loop
                 playsInline
                 preload="metadata"
+                onEnded={() => {
+                  // Advance only when this card is currently centred
+                  // on the active layer — otherwise a previously-
+                  // playing video that ended off-screen could yank
+                  // the carousel sideways.
+                  if (isActive && isCenter) {
+                    setCi((c) => c + 1);
+                  }
+                }}
                 className="absolute inset-0 w-full h-full object-cover"
               />
 

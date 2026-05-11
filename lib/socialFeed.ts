@@ -41,6 +41,11 @@ export type Reel = {
   // proxied URL from /api/social-feed/proxy?id=... so we can cache and
   // avoid CDN-signing expiry surprises.
   videoUrl: string;
+  // Still frame extracted from the same video, used while the video
+  // element waits to decode its first frame. Generated from the real
+  // mp4 via qlmanage so every visual on the carousel comes straight
+  // from our own clip — no stock filler.
+  posterUrl: string;
   // Where the post lives — used for the "click again to open" action.
   postUrl: string;
   // Audio / sound label printed at the bottom of the card. Authentic
@@ -72,6 +77,7 @@ const BRAND_VIDEOS = [
   {
     slug: "aloitus",
     videoUrl: "/Aloitusvideo.mp4",
+    posterUrl: "/Aloitusvideo-poster.jpg",
     caption: "Linkki biossa varauksiin 🌊 #vesijetti #helsinki #seadoo #vuokraus",
     likes: { tt: "12.4k", ig: "9.1k" },
     comments: { tt: "184", ig: "132" },
@@ -81,6 +87,7 @@ const BRAND_VIDEOS = [
   {
     slug: "nopeus",
     videoUrl: "/Nopeusvideo.mp4",
+    posterUrl: "/Nopeusvideo-poster.jpg",
     caption: "Linkki biossa varauksiin ⚡️ #vesijetti #seadoo #sparktrixx #helsinki",
     likes: { tt: "16.8k", ig: "11.4k" },
     comments: { tt: "274", ig: "186" },
@@ -90,6 +97,7 @@ const BRAND_VIDEOS = [
   {
     slug: "lowcortisol",
     videoUrl: "/Low-cortisol.mp4",
+    posterUrl: "/Low-cortisol-poster.jpg",
     caption: "Linkki biossa varauksiin 🧘 #vesijetti #helsinki #stressfree #saaristo",
     likes: { tt: "8.2k", ig: "7.6k" },
     comments: { tt: "112", ig: "98" },
@@ -107,6 +115,7 @@ const MOCK_REELS: Reel[] = BRAND_VIDEOS.flatMap((v) => [
     comments: v.comments.tt,
     shares: v.shares.tt,
     videoUrl: v.videoUrl,
+    posterUrl: v.posterUrl,
     postUrl: TIKTOK_PROFILE,
     audioLabel: "alkuperäinen ääni",
   },
@@ -118,6 +127,7 @@ const MOCK_REELS: Reel[] = BRAND_VIDEOS.flatMap((v) => [
     comments: v.comments.ig,
     shares: v.shares.ig,
     videoUrl: v.videoUrl,
+    posterUrl: v.posterUrl,
     postUrl: INSTAGRAM_PROFILE,
     audioLabel: "Original audio",
     startOffset: v.igStartOffset,
