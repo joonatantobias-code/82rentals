@@ -295,6 +295,22 @@ export default function BookingModule() {
     }
   }
 
+  // After a successful submit the step 4 review block is replaced by
+  // the shorter SuccessView. The document gets shorter, leaving the
+  // browser parked at a scroll position that now sits below the new
+  // content — the page appears to "jump down". Scroll the booking
+  // card back to the top of the viewport so the customer lands on
+  // the success message instead of in empty space.
+  useEffect(() => {
+    if (status !== "success") return;
+    requestAnimationFrame(() => {
+      const el = cardRef.current;
+      if (!el) return;
+      const top = el.getBoundingClientRect().top + window.scrollY - 88;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    });
+  }, [status]);
+
   return (
     <section
       id="book"
