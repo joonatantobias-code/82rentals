@@ -23,23 +23,36 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "82Rentals · Vesijetin vuokraus Helsingissä | Sea-Doo Spark Trixx",
-    template: "%s · 82Rentals",
+    // Title is the single most weighted SEO signal — primary keyword
+    // "Vesijettivuokraus Helsinki" leads, the English long-tail
+    // "Jet Ski Rental Helsinki" follows because we want to rank for
+    // tourist-facing English queries too. Brand name last so search
+    // results read as a service first, brand second.
+    default:
+      "Vesijettivuokraus Helsinki – Jet Ski Rental Helsinki | 82Rentals",
+    template: "%s | Vesijettivuokraus Helsinki · 82Rentals",
   },
   description:
-    "Vuokraa Sea-Doo Spark Trixx -vesijetti Helsingissä. Lähtö Kipparlahden satamasta. Polttoaine ja vakuutus aina hintaan. Hinnat alkaen 179 €.",
+    "Vesijettivuokraus Helsingissä — vuokraa Sea-Doo Spark Trixx -vesijetti Kipparlahden satamasta. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Jet ski rental in Helsinki, easy online booking. Hinnat alkaen 179 €.",
   applicationName: SITE_NAME,
   keywords: [
-    "vesijetin vuokraus",
-    "vesijetti Helsinki",
-    "jet ski rental Helsinki",
-    "Sea-Doo Spark Trixx",
-    "82Rentals",
-    "watercraft rental Finland",
-    "vesiskootteri vuokraus",
-    "personal watercraft Finland",
+    "vesijettivuokraus Helsinki",
+    "vesijetin vuokraus Helsinki",
     "vesijetti vuokraus Helsinki",
+    "vesijetti Helsinki",
+    "vesijettivuokraus",
+    "vesiskootteri vuokraus Helsinki",
+    "jet ski rental Helsinki",
+    "jetski rental Helsinki",
     "jetski Helsinki",
+    "rent jet ski Helsinki",
+    "Sea-Doo Spark Trixx Helsinki",
+    "Sea-Doo vuokraus Helsinki",
+    "watercraft rental Helsinki",
+    "vesiurheilu Helsinki",
+    "vesijetti Kipparlahti",
+    "Helsinki jet ski",
+    "82Rentals",
   ],
   authors: [{ name: "82Rentals Oy" }],
   creator: "82Rentals Oy",
@@ -54,19 +67,30 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title: "82Rentals · Vesijetin vuokraus Helsingissä",
+    title:
+      "Vesijettivuokraus Helsinki – Jet Ski Rental Helsinki | 82Rentals",
     description:
-      "Sea-Doo Spark Trixx vesijetti, lähtö Kipparlahden satamasta. Polttoaine sisältyy. Hinnat alkaen 179 €.",
+      "Sea-Doo Spark Trixx -vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta, polttoaine ja vakuutus hintaan. Book online from 179 €.",
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: "fi_FI",
     alternateLocale: ["en_US"],
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "82Rentals — Vesijettivuokraus Helsinki",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "82Rentals · Vesijetin vuokraus Helsingissä",
+    title:
+      "Vesijettivuokraus Helsinki – Jet Ski Rental Helsinki | 82Rentals",
     description:
-      "Sea-Doo Spark Trixx vesijetti, toimitus haluamaasi rantaan Helsingissä.",
+      "Sea-Doo Spark Trixx, lähtö Kipparlahden satamasta. Polttoaine sisältyy. Hinnat alkaen 179 €.",
+    images: ["/opengraph-image"],
   },
   icons: {
     icon: "/logo.png",
@@ -99,27 +123,46 @@ export const viewport: Viewport = {
 
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  // SportsActivityLocation + LocalBusiness gives Google two strong
+  // schema signals at once: we're a place you can do an activity,
+  // and we're a business with hours, price range, geo, etc. Both
+  // surface useful rich-result UI in SERP.
+  "@type": ["LocalBusiness", "SportsActivityLocation"],
   "@id": `${SITE_URL}/#business`,
   name: "82Rentals Oy",
-  alternateName: "82Rentals",
+  alternateName: ["82Rentals", "Vesijettivuokraus Helsinki", "Jet Ski Rental Helsinki"],
   url: SITE_URL,
   logo: `${SITE_URL}/logo.png`,
-  image: `${SITE_URL}/logo.png`,
+  image: [`${SITE_URL}/logo.png`, `${SITE_URL}/Aloitusvideo-poster.jpg`],
   telephone: "+358401866664",
   email: "82rentals.info@gmail.com",
   priceRange: "€€",
   description:
-    "Vesijetin vuokraus Helsingissä. Sea-Doo Spark Trixx, lähtö Kipparlahden satamasta.",
+    "Vesijettivuokraus Helsingissä — Sea-Doo Spark Trixx -vesijetin vuokraus Kipparlahden satamasta. Jet ski rental in Helsinki: fuel, life jackets and insurance included.",
+  slogan: "Vesijettivuokraus Helsinki · Jet Ski Rental Helsinki",
+  knowsLanguage: ["fi", "en"],
   address: {
     "@type": "PostalAddress",
+    streetAddress: "Kipparlahdenkuja 3",
+    postalCode: "00810",
     addressLocality: "Helsinki",
+    addressRegion: "Uusimaa",
     addressCountry: "FI",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 60.1699,
-    longitude: 24.9384,
+    latitude: 60.1909,
+    longitude: 25.0224,
+  },
+  // Reviews summary so search results can display the gold-star
+  // rich snippet. Counts the 18 visible 5-star cards plus the
+  // hidden 4-star review for an accurate average.
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    reviewCount: 19,
+    bestRating: "5",
+    worstRating: "1",
   },
   areaServed: {
     "@type": "City",

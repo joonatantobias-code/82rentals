@@ -283,24 +283,15 @@ function CarouselLayer({
     return 0.62;
   }
 
-  // Only the dead-centre card actually plays. Every other card on
-  // the carousel sits on its poster frame. One decoder per platform
-  // matches how the real TikTok / Reels feeds behave (exactly one
-  // clip is alive at a time) and keeps mobile decoders well under
-  // their concurrent-stream ceiling.
-  //
-  // Implementation notes:
-  //  - We attempt the seek + play synchronously when possible, but
-  //    the video may not yet have loaded metadata on the first run.
-  //    In that case we attach a one-shot `loadedmetadata` listener
-  //    that re-attempts the seek and the play once the element is
-  //    actually ready. Without this fallback the centre card just
-  //    sat on its poster forever — the play() call landed before
-  //    the element was playable and was silently dropped.
-  //  - autoPlay is also set on the JSX side so the browser starts
-  //    the centre clip as soon as bytes arrive, even before this
-  //    effect runs in React's lifecycle. The effect then handles
-  //    every subsequent slide transition.
+  // Pause/play loop. Every <video> ships with the autoPlay attribute
+  // so the browser starts playback as soon as the element is ready
+  // — we don't have to guess when metadata lands. This effect then
+  // pauses every card that isn't the active layer's centre. Net
+  // result: at most one decoder per platform is alive at a time
+  // (same as the previous behaviour) but the first centre clip
+  // always reliably starts because the browser handled play() from
+  // its own autoplay path, not from a React lifecycle hook racing
+  // against metadata.
   useEffect(() => {
     cardEntries.forEach((entry) => {
       const refKey = `${entry.reel.id}-${entry.copyKey}`;
@@ -308,22 +299,9 @@ function CarouselLayer({
       if (!v) return;
       const shouldPlay = isActive && entry.virtualIdx === ci;
       if (shouldPlay) {
-        const offset = entry.reel.startOffset ?? 0;
-        const seekAndPlay = () => {
-          try {
-            if (offset > 0 && v.duration && offset < v.duration) {
-              v.currentTime = offset;
-            } else {
-              v.currentTime = 0;
-            }
-          } catch {}
+        if (v.paused) {
           const p = v.play();
           if (p && typeof p.catch === "function") p.catch(() => {});
-        };
-        if (v.readyState >= 1) {
-          seekAndPlay();
-        } else {
-          v.addEventListener("loadedmetadata", seekAndPlay, { once: true });
         }
       } else {
         if (!v.paused) v.pause();
@@ -385,8 +363,23 @@ function CarouselLayer({
                 poster={reel.posterUrl}
                 muted
                 playsInline
-                autoPlay={isActive && isCenter}
-                preload={isCenter ? "auto" : "metadata"}
+                autoPlay
+                preload="metadata"
+                onLoadedMetadata={(e) => {
+                  // Apply the per-reel start offset once metadata
+                  // is ready (Instagram variants of the brand clips
+                  // open a few seconds in, so the same source video
+                  // looks distinct on the IG tab). Guarded so we
+                  // never seek past the end.
+                  const offset = reel.startOffset ?? 0;
+                  if (offset <= 0) return;
+                  const el = e.currentTarget;
+                  try {
+                    if (el.duration && offset < el.duration) {
+                      el.currentTime = offset;
+                    }
+                  } catch {}
+                }}
                 onEnded={() => {
                   // Advance only when this card is currently centred
                   // on the active layer — otherwise a previously-
