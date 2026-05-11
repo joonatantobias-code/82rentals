@@ -19,20 +19,14 @@ const routes: {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
-  return routes.map((r) => {
-    const url = `${SITE_URL}${r.path}`;
-    return {
-      url,
-      lastModified,
-      changeFrequency: r.changeFrequency,
-      priority: r.priority,
-      alternates: {
-        languages: {
-          fi: url,
-          en: url,
-          "x-default": url,
-        },
-      },
-    };
-  });
+  return routes.map((r) => ({
+    url: `${SITE_URL}${r.path}`,
+    lastModified,
+    changeFrequency: r.changeFrequency,
+    priority: r.priority,
+    // No `alternates.languages` block: both locales render from the
+    // same URL via LocaleProvider, so emitting fi/en/x-default
+    // hreflangs that all point back at the same URL just confuses
+    // Search Console into flagging duplicate-with-canonical issues.
+  }));
 }

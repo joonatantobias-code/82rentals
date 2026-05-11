@@ -29,13 +29,15 @@ export function buildPageMetadata({
   return {
     title,
     description,
+    // Only emit a self-canonical. Previously we also emitted hreflang
+    // annotations (`languages: { fi, en, x-default }`) all pointing at
+    // the SAME URL — Search Console reads that as "every page is the
+    // alternate variant of itself" and flags each page as "Alternate
+    // page with proper canonical tag". The site renders both locales
+    // from the same URL via LocaleProvider, so there are no separate
+    // per-language URLs to announce.
     alternates: {
       canonical: url,
-      languages: {
-        fi: url,
-        en: url,
-        "x-default": url,
-      },
     },
     openGraph: {
       type,
