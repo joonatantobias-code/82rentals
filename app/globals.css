@@ -24,6 +24,56 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Kill the 300 ms tap-delay on every interactive element and stop
+ * double-tap-to-zoom from firing on buttons/links. The browser still
+ * lets the user pinch-zoom the page, just not the controls. */
+a,
+button,
+[role="button"],
+input,
+select,
+textarea,
+label {
+  touch-action: manipulation;
+}
+
+/* Mobile only — strip the more expensive eye-candy that costs paint
+ * time on phones and gives almost nothing back visually at small
+ * sizes. The same surfaces still get their solid colour treatments;
+ * just the GPU-heavy blur and shadow layers are dropped. */
+@media (max-width: 768px) {
+  /* Backdrop-blur is the single most expensive effect on a phone GPU
+   * — neutralise every variant Tailwind ships. The surface keeps its
+   * background colour, so cards still read as distinct. */
+  .backdrop-blur,
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg,
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl,
+  .backdrop-blur-3xl {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  /* Heavy decorative shadows (shadow-glow, shadow-cta, etc.) cost
+   * paint time during scroll. Keep shadow-soft for card legibility. */
+  .shadow-glow,
+  .shadow-cta {
+    box-shadow: 0 6px 18px -6px rgba(10, 61, 98, 0.18) !important;
+  }
+}
+
+/* Tell the browser that below-the-fold sections don't need to be
+ * laid out / painted until they're about to scroll into view. Big
+ * wins on mobile where layout cost is dominant. The named class is
+ * applied selectively (SocialFeed, Footer, large content sections)
+ * — applying it everywhere can break sticky headers or anchor
+ * scrolling. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 800px;
+}
+
 /* Text-selection highlight. Uses brand-primary (sky blue) on
  * brand-secondary (deep navy) text — high enough contrast that the
  * selection stays visible on every surface the site uses, including

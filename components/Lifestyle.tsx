@@ -41,7 +41,7 @@ export default function Lifestyle() {
   ];
 
   return (
-    <section className="relative my-12 md:my-24">
+    <section className="cv-auto relative my-12 md:my-24">
       <div className="relative h-[70vh] min-h-[460px] w-full overflow-hidden">
         {/* Founders shot, framed for the wide hero (2880×1200, 12:5).
             object-cover with object-position 70% keeps the rider +

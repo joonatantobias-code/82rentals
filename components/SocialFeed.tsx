@@ -74,7 +74,7 @@ export default function SocialFeed() {
   );
 
   return (
-    <section className="relative py-16 md:py-24 overflow-hidden">
+    <section className="cv-auto relative py-16 md:py-24 overflow-hidden">
       <div className="blob-primary w-[280px] h-[280px] -top-10 -left-20" />
       <div className="blob-turquoise w-[220px] h-[220px] bottom-10 -right-10" />
 

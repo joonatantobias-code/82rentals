@@ -73,15 +73,20 @@ const INSTAGRAM_PROFILE = "https://instagram.com/82rentals";
 // two distinct posts. Captions stay platform-neutral and follow
 // the real-creator convention of "Linkki biossa" because neither
 // feed renders clickable URLs inside the post overlay.
+// Engagement numbers grounded around a ~1 000-likes-per-post
+// baseline so the carousel doesn't pretend to be a viral mega-
+// account. Top performer ~1.8k, weakest ~640. Comments at 2–3 %
+// of likes, shares at ~1 %. Realistic for a small Helsinki
+// rental brand.
 const BRAND_VIDEOS = [
   {
     slug: "aloitus",
     videoUrl: "/Aloitusvideo.mp4",
     posterUrl: "/Aloitusvideo-poster.jpg",
     caption: "Linkki biossa varauksiin 🌊 #vesijetti #helsinki #seadoo #vuokraus",
-    likes: { tt: "12.4k", ig: "9.1k" },
-    comments: { tt: "184", ig: "132" },
-    shares: { tt: "612", ig: "284" },
+    likes: { tt: "1.2k", ig: "980" },
+    comments: { tt: "28", ig: "22" },
+    shares: { tt: "14", ig: "9" },
     igStartOffset: 4,
   },
   {
@@ -89,9 +94,9 @@ const BRAND_VIDEOS = [
     videoUrl: "/Nopeusvideo.mp4",
     posterUrl: "/Nopeusvideo-poster.jpg",
     caption: "Linkki biossa varauksiin ⚡️ #vesijetti #seadoo #sparktrixx #helsinki",
-    likes: { tt: "16.8k", ig: "11.4k" },
-    comments: { tt: "274", ig: "186" },
-    shares: { tt: "523", ig: "342" },
+    likes: { tt: "1.8k", ig: "1.4k" },
+    comments: { tt: "42", ig: "31" },
+    shares: { tt: "22", ig: "16" },
     igStartOffset: 6,
   },
   {
@@ -99,9 +104,9 @@ const BRAND_VIDEOS = [
     videoUrl: "/Low-cortisol.mp4",
     posterUrl: "/Low-cortisol-poster.jpg",
     caption: "Linkki biossa varauksiin 🧘 #vesijetti #helsinki #stressfree #saaristo",
-    likes: { tt: "8.2k", ig: "7.6k" },
-    comments: { tt: "112", ig: "98" },
-    shares: { tt: "264", ig: "201" },
+    likes: { tt: "720", ig: "640" },
+    comments: { tt: "18", ig: "14" },
+    shares: { tt: "8", ig: "6" },
     igStartOffset: 3,
   },
 ] as const;

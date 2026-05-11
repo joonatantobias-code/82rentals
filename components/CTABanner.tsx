@@ -23,7 +23,7 @@ export default function CTABanner({
   const finalLabel = primaryLabel ?? t.common.bookNow;
 
   return (
-    <section className="px-5 sm:px-8 py-14 md:py-20">
+    <section className="cv-auto px-5 sm:px-8 py-14 md:py-20">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}

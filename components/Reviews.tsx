@@ -107,7 +107,7 @@ export default function Reviews() {
   return (
     <section
       id="reviews"
-      className="section relative"
+      className="section cv-auto relative"
       // overflow-anchor: none stops the browser from re-anchoring its
       // scroll position when items mount inside the section. With it
       // on, adding cards below was nudging the viewport down to keep
