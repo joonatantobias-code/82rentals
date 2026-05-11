@@ -271,7 +271,7 @@ export const dictionary = {
       },
       edit: "Muokkaa",
       reviewLegal:
-        "Maksuton peruutus 24 tuntia ennen ajoa. Vahvistamme sinulle puhelimitse 30 minuutin sisällä varauksesta. Saa ajaa Suomen vesillä.",
+        "Maksuton peruutus 24 tuntia ennen ajoa. Varaus vahvistuu välittömästi ja saat vahvistuksen sähköpostiisi. Sopimusehtomme ovat voimassa kaikkiin uusiin varauksiin.",
       submit: "Vahvista varaus",
       submitting: "Varataan…",
       acceptTermsBefore: "Olen lukenut ja hyväksyn ",
@@ -294,10 +294,11 @@ export const dictionary = {
       summaryDeliveryValue: "Sisältyy",
       summaryBriefing: "Lyhyt perehdytys",
       summaryTotal: "Yhteensä",
-      successTitle: "Varaus vastaanotettu!",
+      successTitle: "Varaus vahvistettu!",
       successBody:
         "{qty}× Sea-Doo Spark Trixx · {date} klo {slot}, kesto {duration}. Toimitus paikkaan {pickup}.",
-      successConfirm: "Vahvistamme puhelimitse 30 minuutin sisällä.",
+      successConfirm:
+        "Aikasi on lukittu kalenteriin. Lähetimme vahvistuksen sähköpostiisi.",
       successTotal: "Yhteensä:",
       successAgain: "Tee uusi varaus",
       legend: {
@@ -880,7 +881,7 @@ export const dictionary = {
       },
       edit: "Edit",
       reviewLegal:
-        "Free cancellation up to 24 hours before. We confirm by phone within 30 minutes of booking. You can ride anywhere in Finnish waters.",
+        "Free cancellation up to 24 hours before the ride. The booking is confirmed immediately and you'll get a confirmation by email. Our terms apply to every new booking.",
       submit: "Confirm booking",
       submitting: "Booking…",
       acceptTermsBefore: "I have read and accept the ",
@@ -903,10 +904,11 @@ export const dictionary = {
       summaryDeliveryValue: "Included",
       summaryBriefing: "Short briefing",
       summaryTotal: "Total",
-      successTitle: "Booking received!",
+      successTitle: "Booking confirmed!",
       successBody:
         "{qty}× Sea-Doo Spark Trixx · {date} at {slot}, duration {duration}. Delivery to {pickup}.",
-      successConfirm: "We confirm by phone within 30 minutes.",
+      successConfirm:
+        "Your slot is locked in. We've sent the confirmation to your email.",
       successTotal: "Total:",
       successAgain: "Make another booking",
       legend: {

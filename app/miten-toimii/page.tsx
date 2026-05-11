@@ -35,8 +35,8 @@ const howToJsonLd = {
     {
       "@type": "HowToStep",
       position: 3,
-      name: "Vahvistus puhelimitse",
-      text: "Soitamme 30 minuutin sisällä ja vahvistamme yksityiskohdat.",
+      name: "Välitön sähköpostivahvistus",
+      text: "Saat vahvistuksen sähköpostiisi varauksen tehtyäsi. Aikasi on lukittu kalenteriin.",
     },
     {
       "@type": "HowToStep",

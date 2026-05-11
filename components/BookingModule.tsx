@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { PICKUP } from "@/lib/pickup";
 import PickupInfo from "./PickupInfo";
-import TermsView from "./TermsView";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Calendar as CalendarIcon,
@@ -187,7 +186,6 @@ export default function BookingModule() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [acceptTerms, setAcceptTerms] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
 
@@ -859,13 +857,14 @@ export default function BookingModule() {
                         />
                         <span className="text-sm text-brand-secondary/85 leading-relaxed">
                           {t.booking.acceptTermsBefore}{" "}
-                          <button
-                            type="button"
-                            onClick={() => setShowTerms(true)}
+                          <a
+                            href="/sopimusehdot"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="font-bold text-brand-secondary underline decoration-brand-primary decoration-2 underline-offset-4 hover:text-brand-primary-700"
                           >
-                            {t.booking.acceptTermsLink}
-                          </button>
+                            {t.booking.acceptTermsLink} ↗
+                          </a>
                           {t.booking.acceptTermsAfter}
                         </span>
                       </label>
@@ -967,44 +966,6 @@ export default function BookingModule() {
           </aside>
         </div>
       </motion.div>
-
-      {showTerms && (
-        <div className="fixed inset-0 z-50 flex items-end lg:items-center justify-center">
-          <button
-            onClick={() => setShowTerms(false)}
-            className="absolute inset-0 bg-brand-secondary/55"
-            aria-label="Sulje"
-          />
-          <div className="relative bg-white w-full lg:max-w-2xl lg:rounded-2xl rounded-t-2xl shadow-soft max-h-[92vh] flex flex-col">
-            <div className="h-12 px-5 flex items-center justify-between border-b border-brand-primary/15">
-              <span className="font-display font-bold text-brand-secondary">
-                {t.booking.termsModalTitle}
-              </span>
-              <button
-                onClick={() => setShowTerms(false)}
-                className="text-brand-secondary/70 hover:text-brand-secondary text-sm font-semibold"
-              >
-                {t.common.back === "Takaisin" ? "Sulje" : "Close"}
-              </button>
-            </div>
-            <div className="overflow-y-auto p-5 lg:p-6">
-              <TermsView />
-            </div>
-            <div className="px-5 lg:px-6 py-3 border-t border-brand-primary/15 flex justify-end">
-              <button
-                type="button"
-                onClick={() => {
-                  setAcceptTerms(true);
-                  setShowTerms(false);
-                }}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-secondary text-white px-4 h-11 text-sm font-semibold hover:bg-brand-primary hover:text-brand-secondary"
-              >
-                {t.booking.termsModalAccept}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <style jsx>{`
         :global(.booking-input) {
