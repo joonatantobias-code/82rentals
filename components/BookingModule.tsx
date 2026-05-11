@@ -1578,18 +1578,24 @@ function ReviewRow({
   onEdit: () => void;
   editLabel: string;
 }) {
+  // Items are top-aligned so multi-line values (long pickup
+  // addresses, free-form notes, …) wrap inside the value column
+  // instead of pushing the "Muokkaa" button off-screen the way the
+  // previous `truncate` did on phones. min-w-0 on the value cell
+  // lets the flex item shrink below its intrinsic width, which is
+  // what makes `break-words` actually wrap inside a flex row.
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
-      <span className="text-brand-secondary/60 uppercase tracking-wider text-[11px] font-bold w-1/3 shrink-0">
+    <div className="flex items-start justify-between gap-3 px-4 py-3 text-sm">
+      <span className="text-brand-secondary/60 uppercase tracking-wider text-[11px] font-bold w-1/3 shrink-0 pt-0.5">
         {label}
       </span>
-      <span className="text-brand-secondary font-semibold flex-1 truncate">
+      <span className="text-brand-secondary font-semibold flex-1 min-w-0 break-words">
         {value}
       </span>
       <button
         type="button"
         onClick={onEdit}
-        className="text-xs font-semibold text-brand-primary-600 hover:text-brand-secondary"
+        className="text-xs font-semibold text-brand-primary-600 hover:text-brand-secondary shrink-0 pt-0.5"
       >
         {editLabel}
       </button>
