@@ -283,45 +283,57 @@ function CarouselLayer({
     return 0.62;
   }
 
-  // Pause inactive-layer videos to save decoder cost; resume on activation.
+  // Play only the cards within ±1 of the current centre, so at most
+  // three video decoders run at the same time. Earlier the whole
+  // visible band (±3) auto-played, which on mid-range phones meant
+  // 7 simultaneous decodes per platform and a janky slide. The
+  // leaving and entering neighbours stay playing through the
+  // transition so the slide doesn't freeze visibly.
   useEffect(() => {
-    videoRefs.current.forEach((v) => {
+    cardEntries.forEach((entry) => {
+      const refKey = `${entry.reel.id}-${entry.copyKey}`;
+      const v = videoRefs.current.get(refKey);
       if (!v) return;
-      if (isActive) v.play().catch(() => {});
-      else v.pause();
+      const shouldPlay = isActive && Math.abs(entry.virtualIdx - ci) <= 1;
+      if (shouldPlay) {
+        if (v.paused) v.play().catch(() => {});
+      } else {
+        if (!v.paused) v.pause();
+      }
     });
-  }, [isActive]);
+  }, [isActive, ci, cardEntries]);
 
-  // Browsers (especially Chromium) auto-pause autoplay videos when they
-  // scroll out of the viewport. Without this watcher, scrolling away
-  // and back to the carousel left the visible cards on a frozen frame
-  // until the user clicked, because autoplay only fires on initial
-  // load. We watch the active layer's videos via IntersectionObserver
-  // and call .play() the moment they re-intersect with the viewport.
+  // Browsers (Chromium especially) pause autoplaying videos once
+  // they scroll out of the viewport and don't always resume on
+  // return. The IntersectionObserver below re-evaluates playback
+  // for the active centre/neighbours whenever the carousel scrolls
+  // back into view.
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") return;
-    const observed = videoRefs.current;
     const obs = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
           const v = entry.target as HTMLVideoElement;
-          if (!isActive) {
-            // Inactive layer should stay paused regardless.
-            if (!v.paused) v.pause();
-            continue;
-          }
-          if (entry.isIntersecting && v.paused) {
+          if (!isActive) continue;
+          const refKey = (v.dataset.refkey as string) || "";
+          const cardEntry = cardEntries.find(
+            (e) => `${e.reel.id}-${e.copyKey}` === refKey,
+          );
+          if (!cardEntry) continue;
+          const shouldPlay = Math.abs(cardEntry.virtualIdx - ci) <= 1;
+          if (shouldPlay && v.paused) {
             v.play().catch(() => {});
           }
         }
       },
-      { rootMargin: "200px 0px", threshold: 0.05 }
+      { rootMargin: "200px 0px", threshold: 0.05 },
     );
-    observed.forEach((v) => {
+    videoRefs.current.forEach((v) => {
       if (v) obs.observe(v);
     });
     return () => obs.disconnect();
-  }, [isActive]);
+  }, [isActive, ci, cardEntries]);
 
   return (
     <div
@@ -371,10 +383,10 @@ function CarouselLayer({
               <video
                 ref={(el) => {
                   videoRefs.current.set(refKey, el);
+                  if (el) el.dataset.refkey = refKey;
                 }}
                 src={reel.videoUrl}
                 poster={reel.posterUrl}
-                autoPlay={isActive}
                 muted
                 loop
                 playsInline
