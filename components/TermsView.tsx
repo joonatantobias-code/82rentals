@@ -173,26 +173,34 @@ function PageFrame({
   pageNumber: number;
   totalPages: number;
 }) {
+  // Two-layer markup: the outer wrapper carries the A4 aspect ratio
+  // so its size is independent of content. The inner absolutely-inset
+  // flex column holds head/body/foot — body scrolls within if content
+  // exceeds the page. Without the absolute inner, long sections
+  // pushed the aspect-ratio'd outer taller than short ones, which is
+  // why the page card visibly bounced when flipping between sections.
   return (
     <div className="terms-page-frame">
-      <div className="terms-page-head">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/logo.png"
-          alt="82Rentals"
-          className="terms-page-logo"
-        />
-        <div className="terms-page-company">82Rentals Oy</div>
-      </div>
+      <div className="terms-page-frame-inner">
+        <div className="terms-page-head">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.png"
+            alt="82Rentals"
+            className="terms-page-logo"
+          />
+          <div className="terms-page-company">82Rentals Oy</div>
+        </div>
 
-      <div
-        className={`terms-page-body ${isCover ? "terms-page-body-cover" : ""}`}
-      >
-        {children}
-      </div>
+        <div
+          className={`terms-page-body ${isCover ? "terms-page-body-cover" : ""}`}
+        >
+          {children}
+        </div>
 
-      <div className="terms-page-foot">
-        Sivu {pageNumber} / {totalPages}
+        <div className="terms-page-foot">
+          Sivu {pageNumber} / {totalPages}
+        </div>
       </div>
     </div>
   );

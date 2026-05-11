@@ -448,18 +448,22 @@ body {
  * scrolls within the card so the visual rhythm of paging stays
  * uniform. */
 .terms-page-frame {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  aspect-ratio: 210 / 297; /* A4 portrait — hard-locked via inner */
+}
+.terms-page-frame-inner {
+  position: absolute;
+  inset: 0;
   background: #FFFFFF;
   border: 1px solid #E5EDF5;
   border-radius: 14px;
   box-shadow: 0 18px 44px -22px rgba(10, 61, 98, 0.25);
-  padding: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 760px;
-  margin: 0 auto;
-  aspect-ratio: 210 / 297; /* A4 portrait */
 }
 .terms-page-head {
   display: flex;
