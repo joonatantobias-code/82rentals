@@ -171,12 +171,16 @@ function CarouselLayer({
   const [transitionsOn, setTransitionsOn] = useState(true);
   const videoRefs = useRef<Map<string, HTMLVideoElement | null>>(new Map());
 
-  // No auto-advance interval. The carousel waits for the centre
-  // video to finish playing and then slides to the next reel — see
-  // the `onEnded` handler on the centre <video>. This matches how
-  // real TikTok / Reels feeds work (one full clip at a time) and
-  // also relieves mobile decoders, which were thrashing while a 3 s
-  // ticker swapped cards mid-playback.
+  // Safety net: if the centre video fails to fire onEnded within
+  // 20 s (autoplay blocked, decoder hiccup, network stall, …) we
+  // still rotate the carousel so the user never sees a frozen
+  // poster. onEnded → advance immediately, this timer kicks in
+  // only when the video itself never reports end.
+  useEffect(() => {
+    if (!isActive || len === 0) return;
+    const t = setTimeout(() => setCi((c) => c + 1), 20_000);
+    return () => clearTimeout(t);
+  }, [isActive, ci, len]);
 
   // Reset ci back inside [0, len) once it crosses a boundary in either
   // direction (auto-rotate pushes it past len, or a click on a left-side
@@ -283,12 +287,19 @@ function CarouselLayer({
     return 0.62;
   }
 
-  // Pause/play loop. Every <video> ships with the autoPlay attribute
-  // so the browser starts playback as soon as the element is ready
-  // — we don't have to guess when metadata lands. This effect then
-  // pauses every card that isn't the active layer's centre. Net
-  // result: at most one decoder per platform is alive at a time but
-  // the first centre clip always reliably starts.
+  // Pause/play loop. Every <video> ships with the autoPlay
+  // attribute so the browser starts playback as soon as the element
+  // is ready. This effect then enforces "at most one decoder per
+  // active platform layer is alive" by pausing everything that
+  // isn't the current centre.
+  //
+  // On the centre card we *always* call .play() (even when the
+  // element looks like it's already playing) and watch the
+  // returned promise. If the autoplay path was blocked and the
+  // promise rejects, we retry once on the loadedmetadata or
+  // canplay events — that single retry is what keeps the carousel
+  // moving on iOS Safari, which sometimes drops the initial
+  // autoplay if too many <video> elements try to start at once.
   useEffect(() => {
     cardEntries.forEach((entry) => {
       const refKey = `${entry.reel.id}-${entry.copyKey}`;
@@ -296,10 +307,20 @@ function CarouselLayer({
       if (!v) return;
       const shouldPlay = isActive && entry.virtualIdx === ci;
       if (shouldPlay) {
-        if (v.paused) {
+        const tryPlay = () => {
           const p = v.play();
-          if (p && typeof p.catch === "function") p.catch(() => {});
-        }
+          if (p && typeof p.catch === "function") {
+            p.catch(() => {
+              // Re-attempt once the element is actually playable.
+              const retry = () => {
+                v.play().catch(() => {});
+                v.removeEventListener("canplay", retry);
+              };
+              v.addEventListener("canplay", retry, { once: true });
+            });
+          }
+        };
+        tryPlay();
       } else {
         if (!v.paused) v.pause();
       }
