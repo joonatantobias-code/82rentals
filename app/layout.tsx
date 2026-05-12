@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     template: "%s | Vesijettivuokraus Helsinki · 82Rentals",
   },
   description:
-    "Vesijettivuokraus Helsingissä — vuokraa Sea-Doo Spark Trixx -vesijetti Kipparlahden satamasta. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Jet ski rental in Helsinki, easy online booking. Hinnat alkaen 179 €.",
+    "Vuokraa vesijetti Helsingissä helposti netistä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Hinnat alkaen 179 €. Jet ski rental in Helsinki — book online.",
   applicationName: SITE_NAME,
   keywords: [
     "vesijettivuokraus Helsinki",
@@ -46,8 +46,6 @@ export const metadata: Metadata = {
     "jetski rental Helsinki",
     "jetski Helsinki",
     "rent jet ski Helsinki",
-    "Sea-Doo Spark Trixx Helsinki",
-    "Sea-Doo vuokraus Helsinki",
     "watercraft rental Helsinki",
     "vesiurheilu Helsinki",
     "vesijetti Kipparlahti",
@@ -70,7 +68,7 @@ export const metadata: Metadata = {
     title:
       "Vesijettivuokraus Helsinki – Jet Ski Rental Helsinki | 82Rentals",
     description:
-      "Sea-Doo Spark Trixx -vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta, polttoaine ja vakuutus hintaan. Book online from 179 €.",
+      "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine ja vakuutus aina hintaan. Hinnat alkaen 179 €.",
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: "fi_FI",
@@ -89,7 +87,7 @@ export const metadata: Metadata = {
     title:
       "Vesijettivuokraus Helsinki – Jet Ski Rental Helsinki | 82Rentals",
     description:
-      "Sea-Doo Spark Trixx, lähtö Kipparlahden satamasta. Polttoaine sisältyy. Hinnat alkaen 179 €.",
+      "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta, polttoaine ja vakuutus sisältyy. Hinnat alkaen 179 €.",
     images: ["/opengraph-image"],
   },
   icons: {
@@ -138,7 +136,7 @@ const localBusinessJsonLd = {
   email: "82rentals.info@gmail.com",
   priceRange: "€€",
   description:
-    "Vesijettivuokraus Helsingissä — Sea-Doo Spark Trixx -vesijetin vuokraus Kipparlahden satamasta. Jet ski rental in Helsinki: fuel, life jackets and insurance included.",
+    "Vesijetin vuokraus Helsingissä Kipparlahden satamasta. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Helppo online-varaus. Jet ski rental in Helsinki — book online.",
   slogan: "Vesijettivuokraus Helsinki · Jet Ski Rental Helsinki",
   knowsLanguage: ["fi", "en"],
   address: {

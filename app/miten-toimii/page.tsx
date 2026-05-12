@@ -17,7 +17,7 @@ const howToJsonLd = {
   "@id": `${SITE_URL}/miten-toimii#howto`,
   name: "Näin vuokraat vesijetin 82Rentalsilta",
   description:
-    "Vuokraa Sea-Doo Spark Trixx Helsingissä neljässä helpossa askeleessa.",
+    "Vuokraa vesijetti Helsingissä neljässä helpossa askeleessa.",
   totalTime: "PT1M",
   step: [
     {

@@ -4,11 +4,11 @@ import JsonLd from "@/components/JsonLd";
 import { SITE_URL, buildPageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = buildPageMetadata({
-  title: "Sea-Doo Spark Trixx 2up",
+  title: "Vesijettimme",
   description:
-    "Sea-Doo Spark Trixx 2up on leikkisä, kahdelle ajajalle suunniteltu vesijetti. 90 hv Rotax, säädettävä ohjaustanko ja kevyt runko. Vuokraa Helsingissä alkaen 179 € / tunti, polttoaine sisältyy.",
+    "Tutustu vesijetteihimme — kaksipaikkainen, ketterä peli ensikertalaiselle ja kokeneelle ajajalle. Hinnat alkaen 179 € / tunti, polttoaine ja pelastusliivit aina hintaan.",
   path: "/vesijettimme",
-  ogTitle: "Sea-Doo Spark Trixx 2up · vesijetin vuokraus Helsingissä",
+  ogTitle: "Vesijetin vuokraus Helsingissä · 82Rentals",
 });
 
 const productJsonLd = {

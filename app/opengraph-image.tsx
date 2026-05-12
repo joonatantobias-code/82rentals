@@ -68,7 +68,7 @@ export default async function OgImage() {
               textTransform: "uppercase",
             }}
           >
-            Sea-Doo Spark Trixx · Helsinki
+            Vesijetin vuokraus · Helsinki
           </div>
           <div
             style={{
