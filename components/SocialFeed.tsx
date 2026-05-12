@@ -171,14 +171,15 @@ function CarouselLayer({
   const [transitionsOn, setTransitionsOn] = useState(true);
   const videoRefs = useRef<Map<string, HTMLVideoElement | null>>(new Map());
 
-  // Safety net: if the centre video fails to fire onEnded within
-  // 20 s (autoplay blocked, decoder hiccup, network stall, …) we
-  // still rotate the carousel so the user never sees a frozen
-  // poster. onEnded → advance immediately, this timer kicks in
-  // only when the video itself never reports end.
+  // 5-second rotation while the layer is active. Each card sits in
+  // the centre for 5 s, then the carousel advances. Videos
+  // themselves use the native `loop` attribute, so whatever frame
+  // they manage to decode in those 5 s loops cleanly. The
+  // play/pause useEffect below only plays the centre, so we're
+  // never running more than one decoder per active layer.
   useEffect(() => {
     if (!isActive || len === 0) return;
-    const t = setTimeout(() => setCi((c) => c + 1), 20_000);
+    const t = setTimeout(() => setCi((c) => c + 1), 5_000);
     return () => clearTimeout(t);
   }, [isActive, ci, len]);
 
@@ -416,8 +417,9 @@ function CarouselLayer({
                 poster={reel.posterUrl}
                 muted
                 playsInline
-                autoPlay
-                preload="metadata"
+                loop
+                autoPlay={isCenter && isActive}
+                preload={isCenter ? "auto" : "metadata"}
                 onLoadedMetadata={(e) => {
                   // Apply the per-reel start offset once metadata
                   // is ready (Instagram variants of the brand clips
@@ -432,15 +434,6 @@ function CarouselLayer({
                       el.currentTime = offset;
                     }
                   } catch {}
-                }}
-                onEnded={() => {
-                  // Advance only when this card is currently centred
-                  // on the active layer — otherwise a previously-
-                  // playing video that ended off-screen could yank
-                  // the carousel sideways.
-                  if (isActive && isCenter) {
-                    setCi((c) => c + 1);
-                  }
                 }}
                 className="absolute inset-0 w-full h-full object-cover"
               />
