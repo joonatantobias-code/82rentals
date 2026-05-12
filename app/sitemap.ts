@@ -11,7 +11,9 @@ const routes: {
   { path: "/vesijettimme", priority: 0.9, changeFrequency: "monthly" },
   { path: "/hinnasto", priority: 0.9, changeFrequency: "monthly" },
   { path: "/miten-toimii", priority: 0.7, changeFrequency: "monthly" },
-  { path: "/meista", priority: 0.7, changeFrequency: "monthly" },
+  // /meista intentionally low priority — it's a story page, not
+  // the page that should rank for the booking / rental queries.
+  { path: "/meista", priority: 0.4, changeFrequency: "monthly" },
   { path: "/ukk", priority: 0.6, changeFrequency: "monthly" },
   { path: "/yhteystiedot", priority: 0.6, changeFrequency: "yearly" },
   { path: "/sopimusehdot", priority: 0.4, changeFrequency: "yearly" },

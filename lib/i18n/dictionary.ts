@@ -35,13 +35,13 @@ export const dictionary = {
       yhteystiedot: "Yhteystiedot",
     },
     hero: {
-      location: "Helsinki, Suomi",
+      location: "Vesijettivuokraus Helsinki",
       ratingLabel: "4,9 / 5",
       title1: "Koe kesän",
       titleHighlight: "paras päivä",
       title2: "vesillä.",
       subhead:
-        "Nauti lyhyestä kesästä aallonharjalla 82 km/h vauhdissa. Polttoaine, pelastusliivit ja perehdytys kuuluvat hintaan. Sinä hoidat vain hymyn, joka pysyy kasvoilla pitkään ajon jälkeenkin.",
+        "82Rentals on helsinkiläinen vesijettivuokraamo Kipparlahden satamasta. Nauti lyhyestä kesästä aallonharjalla 82 km/h vauhdissa. Polttoaine, pelastusliivit ja perehdytys kuuluvat aina hintaan.",
       cta: "Varaa nyt",
       bullet1: "Lähtö Kipparlahden satamasta",
       bullet2: "Ei ajokorttivaatimusta",
@@ -645,7 +645,7 @@ export const dictionary = {
       yhteystiedot: "Contact",
     },
     hero: {
-      location: "Helsinki, Finland",
+      location: "Jet Ski Rental Helsinki",
       ratingLabel: "4.9 / 5",
       title1: "Live the",
       titleHighlight: "best day",
