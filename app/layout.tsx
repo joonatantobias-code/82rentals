@@ -23,14 +23,14 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    // Title is the single most weighted SEO signal — primary keyword
-    // "Vesijettivuokraus Helsinki" leads, the English long-tail
-    // "Jet Ski Rental Helsinki" follows because we want to rank for
-    // tourist-facing English queries too. Brand name last so search
-    // results read as a service first, brand second.
-    default:
-      "Vesijettivuokraus Helsinki – Jet Ski Rental Helsinki | 82Rentals",
-    template: "%s | Vesijettivuokraus Helsinki · 82Rentals",
+    // Title is the single most weighted SEO signal. Brand owner
+    // wants the service keyword + city leading, with the brand
+    // name kept short and trailing — no model name or English
+    // long-tail in the SERP title, since the previous variant
+    // (which included "Sea-Doo Spark Trixx") was getting picked
+    // up by Google as the result title.
+    default: "Vesijettivuokraus Helsinki - 82Rentals Oy",
+    template: "%s | Vesijettivuokraus Helsinki - 82Rentals Oy",
   },
   description:
     "Vuokraa vesijetti Helsingissä helposti netistä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Hinnat alkaen 179 €. Jet ski rental in Helsinki — book online.",
@@ -65,8 +65,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title:
-      "Vesijettivuokraus Helsinki – Jet Ski Rental Helsinki | 82Rentals",
+    title: "Vesijettivuokraus Helsinki - 82Rentals Oy",
     description:
       "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine ja vakuutus aina hintaan. Hinnat alkaen 179 €.",
     url: SITE_URL,
@@ -84,8 +83,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title:
-      "Vesijettivuokraus Helsinki – Jet Ski Rental Helsinki | 82Rentals",
+    title: "Vesijettivuokraus Helsinki - 82Rentals Oy",
     description:
       "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta, polttoaine ja vakuutus sisältyy. Hinnat alkaen 179 €.",
     images: ["/opengraph-image"],

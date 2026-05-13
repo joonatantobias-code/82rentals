@@ -350,14 +350,14 @@ export const dictionary = {
     pages: {
       home: {},
       vesijetti: {
-        title: "Sea-Doo Spark Trixx 2up",
+        title: "Vuokrattava vesijetti",
         eyebrow: "Kalusto",
-        heroTitle: "Sea-Doo Spark Trixx 2up.",
+        heroTitle: "Vesijetin vuokraus Helsingissä.",
         heroDesc: "Ensikertalaisystävällinen ja turvallinen vesijetti.",
         productEyebrow: "Laitteisto",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doon leikkisin malli. Suunniteltu kuskeille, jotka haluavat pitää hauskaa aalloilla turvallisesti.",
+          "Leikkisä ja ketterä vesijetti. Suunniteltu kuskeille, jotka haluavat pitää hauskaa aalloilla turvallisesti.",
         productCta: "Varaa tämä vesijetti",
         features: [
           {
@@ -965,14 +965,14 @@ export const dictionary = {
     pages: {
       home: {},
       vesijetti: {
-        title: "Sea-Doo Spark Trixx 2up",
+        title: "Jet ski for rent",
         eyebrow: "The machine",
-        heroTitle: "Sea-Doo Spark Trixx 2up.",
+        heroTitle: "Jet ski rental in Helsinki.",
         heroDesc: "Beginner-friendly and safe to ride.",
         productEyebrow: "The hardware",
         productTitle: "Sea-Doo Spark Trixx 2up.",
         productBody:
-          "Sea-Doo's most playful model. Built for riders who want to have real fun on the waves, safely.",
+          "Playful and nimble. Built for riders who want to have real fun on the waves, safely.",
         productCta: "Book this jet ski",
         features: [
           {
