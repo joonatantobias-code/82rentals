@@ -165,14 +165,6 @@ function isValidFullName(v: string) {
   return parts.length >= 2;
 }
 
-function isoDateToday(): string {
-  const d = new Date();
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  return `${y}-${m}-${day}`;
-}
-
 /** Whole years between `dob` and today. Used to gate the renter at
  *  ≥16 and to display the same number client-side and server-side. */
 function ageInYears(dob: string): number | null {
@@ -925,16 +917,12 @@ export default function BookingModule() {
                         label={t.booking.birthdateLabel}
                         required
                       >
-                        <input
-                          type="date"
+                        <BirthdatePicker
                           value={birthdate}
-                          onChange={(e) => setBirthdate(e.target.value)}
-                          className={`booking-input ${
-                            birthdateError ? "!border-red-400" : ""
-                          }`}
-                          autoComplete="bday"
-                          max={isoDateToday()}
-                          aria-invalid={birthdateError ? true : undefined}
+                          onChange={setBirthdate}
+                          hasError={!!birthdateError}
+                          t={t}
+                          autoCompletePrefix="bday"
                         />
                         {birthdateError ? (
                           <FieldError text={birthdateError} />
@@ -1012,16 +1000,11 @@ export default function BookingModule() {
                               label={t.booking.companionBirthdateLabel}
                               required
                             >
-                              <input
-                                type="date"
+                              <BirthdatePicker
                                 value={companionBirthdate}
-                                onChange={(e) => setCompanionBirthdate(e.target.value)}
-                                className={`booking-input ${
-                                  companionBirthdateError ? "!border-red-400" : ""
-                                }`}
-                                autoComplete="off"
-                                max={isoDateToday()}
-                                aria-invalid={companionBirthdateError ? true : undefined}
+                                onChange={setCompanionBirthdate}
+                                hasError={!!companionBirthdateError}
+                                t={t}
                               />
                               {companionBirthdateError && (
                                 <FieldError text={companionBirthdateError} />
@@ -1789,6 +1772,123 @@ function Field({
         )}
       </span>
       {children}
+    </div>
+  );
+}
+
+/**
+ * Three-select birthdate picker — vuosi / kuukausi / päivä. Native
+ * <select> on purpose: on iOS / Android these spin up the platform
+ * wheel picker, which is the fastest possible way to land on a date
+ * far in the past (the native <input type="date"> caps out at one
+ * tap-per-month and is awful for years like 1972). The composite
+ * value is emitted as a YYYY-MM-DD string so the rest of the form,
+ * validator, and API all keep working unchanged.
+ *
+ * Year range is `today.year - 95` to `today.year - 6` — wide enough
+ * for any plausible rider (renter min age check still gates this on
+ * ≥16 in canGoStep4), narrow enough that the dropdown isn't a mile
+ * long.
+ */
+function BirthdatePicker({
+  value,
+  onChange,
+  hasError,
+  t,
+  autoCompletePrefix,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  hasError: boolean;
+  t: T;
+  autoCompletePrefix?: string;
+}) {
+  const parts = value.split("-");
+  const year = parts[0] ?? "";
+  const month = parts[1] ?? "";
+  const day = parts[2] ?? "";
+
+  const thisYear = new Date().getFullYear();
+  const years: number[] = [];
+  for (let y = thisYear - 6; y >= thisYear - 95; y--) years.push(y);
+
+  // Days available depend on (year, month). Default to 31 if either
+  // is missing so the user can still pick a value first; we clamp
+  // after both are known.
+  const monthInt = Number(month);
+  const yearInt = Number(year);
+  const dayCount =
+    monthInt && yearInt ? new Date(yearInt, monthInt, 0).getDate() : 31;
+  const days: number[] = Array.from({ length: dayCount }, (_, i) => i + 1);
+
+  function commit(next: { y?: string; m?: string; d?: string }) {
+    const y = next.y ?? year;
+    const m = next.m ?? month;
+    let d = next.d ?? day;
+    // Re-clamp day if month/year change shrinks the calendar.
+    if (y && m && d) {
+      const max = new Date(Number(y), Number(m), 0).getDate();
+      if (Number(d) > max) d = String(max);
+    }
+    if (y && m && d) {
+      onChange(
+        `${y.padStart(4, "0")}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`,
+      );
+    } else {
+      onChange("");
+    }
+  }
+
+  const cls = `booking-input ${hasError ? "!border-red-400" : ""}`;
+  const auto = autoCompletePrefix;
+
+  return (
+    <div className="grid grid-cols-3 gap-2">
+      <select
+        value={day}
+        onChange={(e) => commit({ d: e.target.value })}
+        className={cls}
+        autoComplete={auto ? `${auto}-day` : "off"}
+        aria-invalid={hasError ? true : undefined}
+        aria-label={t.booking.birthdateDayPlaceholder}
+      >
+        <option value="">{t.booking.birthdateDayPlaceholder}</option>
+        {days.map((d) => (
+          <option key={d} value={String(d)}>
+            {d}
+          </option>
+        ))}
+      </select>
+      <select
+        value={month}
+        onChange={(e) => commit({ m: e.target.value })}
+        className={cls}
+        autoComplete={auto ? `${auto}-month` : "off"}
+        aria-invalid={hasError ? true : undefined}
+        aria-label={t.booking.birthdateMonthPlaceholder}
+      >
+        <option value="">{t.booking.birthdateMonthPlaceholder}</option>
+        {t.booking.birthdateMonths.map((name, i) => (
+          <option key={i} value={String(i + 1)}>
+            {name}
+          </option>
+        ))}
+      </select>
+      <select
+        value={year}
+        onChange={(e) => commit({ y: e.target.value })}
+        className={cls}
+        autoComplete={auto ? `${auto}-year` : "off"}
+        aria-invalid={hasError ? true : undefined}
+        aria-label={t.booking.birthdateYearPlaceholder}
+      >
+        <option value="">{t.booking.birthdateYearPlaceholder}</option>
+        {years.map((y) => (
+          <option key={y} value={String(y)}>
+            {y}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
