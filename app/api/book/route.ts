@@ -22,7 +22,32 @@ function isValidFullName(v: string) {
   const parts = v.trim().split(/\s+/).filter((p) => p.length >= 2);
   return parts.length >= 2;
 }
+function ageInYears(dob: string): number | null {
+  if (!dob) return null;
+  const d = new Date(`${dob}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return null;
+  const today = new Date();
+  let age = today.getFullYear() - d.getFullYear();
+  const m = today.getMonth() - d.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
+  return age;
+}
+function isValidBirthdate(v: string | undefined | null) {
+  if (!v) return false;
+  const a = ageInYears(v);
+  return a !== null && a >= 0 && a < 120;
+}
+function isAdultRenter(v: string | undefined | null) {
+  if (!v) return false;
+  const a = ageInYears(v);
+  return a !== null && a >= 16;
+}
 
+type Companion = {
+  first_name?: string;
+  last_name?: string;
+  birthdate?: string;
+};
 type Payload = Partial<{
   date: string;
   slot: Slot;
@@ -33,6 +58,8 @@ type Payload = Partial<{
   email: string;
   pickup: string;
   notes: string;
+  birthdate: string;
+  companion: Companion | null;
 }>;
 
 export async function POST(request: Request) {
@@ -101,6 +128,33 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+  if (!isValidBirthdate(payload.birthdate)) {
+    return NextResponse.json(
+      { ok: false, error: "Anna syntymäaikasi." },
+      { status: 400 }
+    );
+  }
+  if (!isAdultRenter(payload.birthdate)) {
+    return NextResponse.json(
+      { ok: false, error: "Vesijetin vuokraajan tulee olla vähintään 16-vuotias." },
+      { status: 400 }
+    );
+  }
+  if (payload.companion) {
+    const c = payload.companion;
+    if (!isValidFullName(`${c.first_name ?? ""} ${c.last_name ?? ""}`)) {
+      return NextResponse.json(
+        { ok: false, error: "Anna kyytiläisen etu- ja sukunimi." },
+        { status: 400 }
+      );
+    }
+    if (!isValidBirthdate(c.birthdate)) {
+      return NextResponse.json(
+        { ok: false, error: "Anna kyytiläisen syntymäaika." },
+        { status: 400 }
+      );
+    }
+  }
 
   // If a CRM is configured, forward the booking there so it lands in the
   // shared bookings table (single source of truth). Otherwise use the mock.
@@ -119,6 +173,8 @@ export async function POST(request: Request) {
           email: payload.email,
           pickup: payload.pickup,
           notes: payload.notes,
+          birthdate: payload.birthdate,
+          companion: payload.companion ?? null,
         }),
         cache: "no-store",
       });
