@@ -4,6 +4,25 @@ import { DURATIONS, MAX_QUANTITY, type Duration } from "@/lib/pricing";
 
 const CRM_URL = process.env.CRM_API_URL;
 
+// Same shape as the client-side validators in BookingModule. The
+// browser checks gate the "Confirm" button; these gate the API
+// directly so a hand-crafted POST can't slip through with a name
+// like "Seppo", a 7-digit phone, or an email like "@.fi" (we got
+// one of those — Resend rejected it but the booking still landed
+// in the CRM).
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function isValidEmail(v: string) {
+  return EMAIL_RE.test(v.trim());
+}
+function isValidPhone(v: string) {
+  const digits = v.replace(/[^\d]/g, "");
+  return digits.length >= 8 && digits.length <= 15;
+}
+function isValidFullName(v: string) {
+  const parts = v.trim().split(/\s+/).filter((p) => p.length >= 2);
+  return parts.length >= 2;
+}
+
 type Payload = Partial<{
   date: string;
   slot: Slot;
@@ -61,6 +80,24 @@ export async function POST(request: Request) {
   if (!Number.isFinite(qty) || qty < 1 || qty > MAX_QUANTITY) {
     return NextResponse.json(
       { ok: false, error: `Vesijettien määrä 1–${MAX_QUANTITY}` },
+      { status: 400 }
+    );
+  }
+  if (!isValidFullName(payload.name!)) {
+    return NextResponse.json(
+      { ok: false, error: "Anna sekä etu- että sukunimi." },
+      { status: 400 }
+    );
+  }
+  if (!isValidPhone(payload.phone!)) {
+    return NextResponse.json(
+      { ok: false, error: "Anna toimiva puhelinnumero (väh. 8 numeroa)." },
+      { status: 400 }
+    );
+  }
+  if (!isValidEmail(payload.email!)) {
+    return NextResponse.json(
+      { ok: false, error: "Anna toimiva sähköpostiosoite." },
       { status: 400 }
     );
   }

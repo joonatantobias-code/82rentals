@@ -143,6 +143,28 @@ function durationLabel(d: Duration, t: T) {
   return t.booking.durationLabels[d];
 }
 
+// Shared validators. Mirror the server-side checks so the form
+// can't slip through bookings that the API would reject — and so
+// the submit button is greyed out until the data is actually
+// usable. The marketing site got a junk booking through earlier
+// (name "Seppo", phone "2558880", email "@.fi") because the only
+// gate was `.trim() !== ""`.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+function isValidEmail(v: string) {
+  return EMAIL_RE.test(v.trim());
+}
+function isValidPhone(v: string) {
+  const digits = v.replace(/[^\d]/g, "");
+  return digits.length >= 8 && digits.length <= 15;
+}
+function isValidFullName(v: string) {
+  // Need two whitespace-separated parts, each ≥ 2 chars (so "Seppo"
+  // or "S P" doesn't pass). Hyphen-joined names ("Anna-Maija
+  // Hyvärinen") still pass because they're one whitespace-token.
+  const parts = v.trim().split(/\s+/).filter((p) => p.length >= 2);
+  return parts.length >= 2;
+}
+
 export default function BookingModule() {
   const t = useT();
   const { locale } = useLocale();
@@ -260,7 +282,9 @@ export default function BookingModule() {
     return Boolean(date && slot && (slotCapacity ?? 0) > 0);
   }
   function canGoStep4() {
-    if (!name.trim() || !phone.trim() || !email.trim()) return false;
+    if (!isValidFullName(name)) return false;
+    if (!isValidPhone(phone)) return false;
+    if (!isValidEmail(email)) return false;
     if (pickupMode === "delivery") {
       if (!pickupRamp.trim()) return false;
       // "Muu paikka pääkaupunkiseudulla" has no fixed address — that
@@ -271,6 +295,22 @@ export default function BookingModule() {
     }
     return true;
   }
+
+  // Field-level error visibility: only surface the message once the
+  // user has actually typed something, so the form doesn't shout at
+  // them the moment they reach step 3.
+  const nameError =
+    name.trim().length > 0 && !isValidFullName(name)
+      ? t.booking.validation.nameError
+      : null;
+  const phoneError =
+    phone.trim().length > 0 && !isValidPhone(phone)
+      ? t.booking.validation.phoneError
+      : null;
+  const emailError =
+    email.trim().length > 0 && !isValidEmail(email)
+      ? t.booking.validation.emailError
+      : null;
 
   async function handleSubmit() {
     setStatus("submitting");
@@ -754,9 +794,13 @@ export default function BookingModule() {
                           value={name}
                           onChange={(e) => setName(e.target.value)}
                           placeholder={t.booking.fullNamePlaceholder}
-                          className="booking-input"
+                          className={`booking-input ${
+                            nameError ? "!border-red-400" : ""
+                          }`}
                           autoComplete="name"
+                          aria-invalid={nameError ? true : undefined}
                         />
+                        {nameError && <FieldError text={nameError} />}
                       </Field>
                       <div className="grid sm:grid-cols-2 gap-4">
                         <Field
@@ -769,10 +813,14 @@ export default function BookingModule() {
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             placeholder={t.booking.phonePlaceholder}
-                            className="booking-input"
+                            className={`booking-input ${
+                              phoneError ? "!border-red-400" : ""
+                            }`}
                             autoComplete="tel"
                             inputMode="tel"
+                            aria-invalid={phoneError ? true : undefined}
                           />
+                          {phoneError && <FieldError text={phoneError} />}
                         </Field>
                         <Field
                           icon={<Mail size={16} />}
@@ -784,10 +832,14 @@ export default function BookingModule() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             placeholder={t.booking.emailPlaceholder}
-                            className="booking-input"
+                            className={`booking-input ${
+                              emailError ? "!border-red-400" : ""
+                            }`}
                             autoComplete="email"
                             inputMode="email"
+                            aria-invalid={emailError ? true : undefined}
                           />
+                          {emailError && <FieldError text={emailError} />}
                         </Field>
                       </div>
 
@@ -1550,6 +1602,18 @@ function Field({
       </span>
       {children}
     </div>
+  );
+}
+
+function FieldError({ text }: { text: string }) {
+  return (
+    <p
+      className="mt-2 inline-flex items-start gap-1.5 text-xs text-red-600 font-medium"
+      role="alert"
+    >
+      <Info size={12} className="mt-0.5 shrink-0" />
+      <span>{text}</span>
+    </p>
   );
 }
 

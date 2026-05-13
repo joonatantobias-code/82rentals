@@ -254,6 +254,11 @@ export const dictionary = {
       fullNamePlaceholder: "Esim. Matti Meikäläinen",
       phonePlaceholder: "+358 40 123 4567",
       emailPlaceholder: "etunimi.sukunimi@gmail.com",
+      validation: {
+        nameError: "Anna sekä etu- että sukunimi.",
+        phoneError: "Anna toimiva puhelinnumero (väh. 8 numeroa).",
+        emailError: "Anna toimiva sähköpostiosoite.",
+      },
       additionalInfo: "Lisätietoja ja toiveet",
       additionalPlaceholder: "Esim. emme ole ikinä ajaneet aikaisemmin, ehdimme paikalle vasta 5 min myöhässä, voisitko soittaa tilauksen jälkeen…",
       additionalHint: "",
@@ -864,6 +869,11 @@ export const dictionary = {
       fullNamePlaceholder: "E.g. John Doe",
       phonePlaceholder: "+358 40 123 4567",
       emailPlaceholder: "yourname@example.com",
+      validation: {
+        nameError: "Please enter both first and last name.",
+        phoneError: "Please enter a valid phone number (min 8 digits).",
+        emailError: "Please enter a valid email address.",
+      },
       additionalInfo: "Notes and wishes",
       additionalPlaceholder: "E.g. we've never ridden before, we'll be 5 min late, please call after we book…",
       additionalHint: "",
