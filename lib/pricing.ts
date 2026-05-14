@@ -35,7 +35,7 @@ export const BASE_PRICES: Record<Duration, number> = {
  *  varsinaisessa laskutuksessa missään. */
 export const STRIKETHROUGH_PRICES: Record<Duration, number> = {
   "1h": 179, //  60 € säästö
-  "2h": 279, //  90 € säästö
+  "2h": 259, //  70 € säästö
   "3h": 349, // 100 € säästö
 };
 
