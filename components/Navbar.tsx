@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sparkles, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useT } from "@/components/LocaleProvider";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -46,14 +46,48 @@ export default function Navbar() {
 
   return (
     <header
-      className={`not-print fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-brand-secondary ${
-        scrolled ? "py-2 shadow-soft" : "py-3"
+      className={`not-print fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? "shadow-soft" : ""
       }`}
     >
-      <span
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 h-px bg-brand-primary/40 pointer-events-none"
-      />
+      {/* Avajaisalennus-palkki — thin strip above the main nav row.
+          Keeps showing while scrolled so the discount is always
+          visible. Mobile compresses to one short line; desktop
+          shows the full three-price headline + a small CTA link. */}
+      <Link
+        href="/varaa"
+        className="group block bg-brand-primary text-brand-secondary"
+        aria-label={t.announcement.cta}
+      >
+        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 py-1.5 sm:py-2 flex items-center justify-center gap-2 sm:gap-3 text-center">
+          <Sparkles size={14} className="shrink-0" />
+          <span className="text-[12px] sm:text-[13px] font-bold tracking-tight leading-tight">
+            <span className="sm:hidden">{t.announcement.mobileShort}</span>
+            <span className="hidden sm:inline">
+              <span className="uppercase tracking-[0.14em] text-[11px] font-extrabold mr-2 opacity-75">
+                {t.announcement.eyebrow}
+              </span>
+              <span className="tabular-nums">{t.announcement.headline}</span>
+              <span className="hidden lg:inline opacity-70 ml-3 font-medium">
+                · {t.announcement.tagline}
+              </span>
+            </span>
+          </span>
+          <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-bold ml-2 group-hover:translate-x-0.5 transition-transform">
+            {t.announcement.cta} <ArrowRight size={13} />
+          </span>
+        </div>
+      </Link>
+
+      <div
+        className={`relative bg-brand-secondary transition-all duration-300 ${
+          scrolled ? "py-2" : "py-3"
+        }`}
+      >
+        <span
+          aria-hidden
+          className="absolute inset-x-0 bottom-0 h-px bg-brand-primary/40 pointer-events-none"
+        />
 
       <nav className="relative max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between gap-3 lg:gap-6">
         <Link
@@ -130,6 +164,7 @@ export default function Navbar() {
           </button>
         </div>
       </nav>
+      </div>
 
       <AnimatePresence>
         {open && (

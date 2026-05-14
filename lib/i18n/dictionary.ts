@@ -34,6 +34,13 @@ export const dictionary = {
       ukk: "UKK",
       yhteystiedot: "Yhteystiedot",
     },
+    announcement: {
+      eyebrow: "Avajaisalennukset",
+      headline: "1h 119 €  ·  2h 189 €  ·  3h 249 €",
+      tagline: "Säästä jopa 100 € · polttoaine ja toimitus aina hintaan",
+      cta: "Varaa tarjoushintaan",
+      mobileShort: "Avajaisalennukset · alkaen 119 €",
+    },
     hero: {
       location: "Vesijettivuokraus Helsinki",
       ratingLabel: "4,9 / 5",
@@ -177,7 +184,7 @@ export const dictionary = {
         {
           name: "Saaristoseikkailu",
           duration: "3 tuntia",
-          description: "Vapautta vesillä ja paras hinta tunnille — riittävästi aikaa kiertää saaristossa.",
+          description: "Vapautta vesillä ja paras hinta tunnille. Riittävästi aikaa kiertää saaristossa rauhassa.",
           features: [
             "Pelastusliivit ja muut turvavarusteet",
             "Polttoaine",
@@ -197,9 +204,9 @@ export const dictionary = {
       twoUpTitle: "Yhdellä vesijetillä matkustaa kaksi",
       twoUpBody:
         "Sinä ja kaveri, kumppani tai sisarus, samalla pelillä. Ei tarvitse varata kahta jos olette kaksin.",
-      customTitle: "Yli 3 tunnin paketit ja ryhmävaraukset",
+      customTitle: "Pidemmät paketit ja ryhmävaraukset",
       customBody:
-        "Pidemmistä ajoista, koko päivän vuokrauksista, polttariporukoista ja tapahtumista räätälöidään erikseen — laita DM:ää, soita tai sähköpostia.",
+        "Polttariporukat, tapahtumat ja koko päivän vuokraukset hoituvat helposti. Laita DM Instaan, sähköpostia tai soita, niin sovitaan kaikki kerralla.",
     },
     booking: {
       sectionTitle: "Varaa vesijetti 60 sekunnissa.",
@@ -221,7 +228,7 @@ export const dictionary = {
       includedLine: "Polttoaine sisältyy",
       offerBadge: "Avajaistarjous",
       longerNote:
-        "Yli 3 tunnin paketit ja koko päivän vuokraukset sovitaan erikseen — ota yhteyttä DM:llä, puhelimitse tai sähköpostilla.",
+        "Haluatko ajaa pidempään? Laita meille viesti Instaan, sähköpostia tai soita, niin räätälöidään juuri teille sopiva paketti.",
       pickDay: "Valitse päivä",
       pickDayHelper: "Selaa kuukausia nuolista",
       startTimeTitle: "Aloitusaika · {date}",
@@ -436,13 +443,13 @@ export const dictionary = {
       },
       hinnasto: {
         title: "Hinnasto",
-        eyebrow: "Hinnasto",
-        heroTitle: "Aja Helsingissä ilman yllätyksiä.",
+        eyebrow: "Avajaisalennukset voimassa",
+        heroTitle: "Aja Helsingissä avajaishintaan.",
         heroDesc:
-          "Polttoaine, pelastusliivit ja muut turvavarusteet aina hintaan. Lyhyt perehdytys sisältyy. Lähtö Kipparlahden satamasta, lisämaksulla kuljetus onnistuu minne vain. Tiedät aina etukäteen mitä maksat.",
-        ctaTitle: "Lukitse hintasi nyt.",
+          "Avajaiskausi käynnissä. Polttoaine, pelastusliivit ja muut turvavarusteet aina hintaan. Lyhyt perehdytys sisältyy. Lähtö Kipparlahden satamasta, lisämaksulla kuljetus onnistuu minne vain.",
+        ctaTitle: "Nappaa avajaishinta itsellesi.",
         ctaSubtitle:
-          "Hinnat ovat kiinteät, varaa heti, niin saat parhaat ajat itsellesi.",
+          "Tarjous on rajoitetun ajan voimassa. Varaa heti, niin saat parhaat ajat ja parhaan hinnan.",
       },
       meista: {
         title: "Meistä",
@@ -673,6 +680,13 @@ export const dictionary = {
       ukk: "FAQ",
       yhteystiedot: "Contact",
     },
+    announcement: {
+      eyebrow: "Opening offer",
+      headline: "1h €119  ·  2h €189  ·  3h €249",
+      tagline: "Save up to €100 · fuel and delivery always included",
+      cta: "Book the offer",
+      mobileShort: "Opening offer · from €119",
+    },
     hero: {
       location: "Jet Ski Rental Helsinki",
       ratingLabel: "4.9 / 5",
@@ -816,7 +830,7 @@ export const dictionary = {
         {
           name: "Archipelago Run",
           duration: "3 hours",
-          description: "Real freedom on the water and the best price per hour — time to actually explore.",
+          description: "Real freedom on the water and the best price per hour. Time to actually explore the archipelago.",
           features: [
             "Life jackets and safety gear",
             "Fuel",
@@ -836,9 +850,9 @@ export const dictionary = {
       twoUpTitle: "One jet ski fits two",
       twoUpBody:
         "You and a friend, partner or sibling, on the same machine. No need to book two if it's just the two of you.",
-      customTitle: "4 h+ packages and group bookings",
+      customTitle: "Longer packages and group bookings",
       customBody:
-        "Longer rides, full-day rentals, bachelor parties and events are arranged separately — DM us, call, or email.",
+        "Bachelor parties, events and full-day rentals are easy to arrange. DM us on Instagram, email, or give us a call and we'll sort it all in one go.",
     },
     booking: {
       sectionTitle: "Book a jet ski in 60 seconds.",
@@ -860,7 +874,7 @@ export const dictionary = {
       includedLine: "Fuel included",
       offerBadge: "Opening offer",
       longerNote:
-        "Longer rides (4 h+) and full-day rentals are arranged separately — DM us, call, or email.",
+        "Want a longer ride? Send us a DM, an email, or give us a call and we'll put together a package that fits.",
       pickDay: "Pick a day",
       pickDayHelper: "Use the arrows to browse months",
       startTimeTitle: "Start time · {date}",
@@ -1075,13 +1089,13 @@ export const dictionary = {
       },
       hinnasto: {
         title: "Pricing",
-        eyebrow: "Pricing",
-        heroTitle: "Ride in Helsinki, no surprises.",
+        eyebrow: "Opening offer live",
+        heroTitle: "Ride in Helsinki at opening prices.",
         heroDesc:
-          "Fuel, life jackets and other safety gear always included. Short briefing included too. Departure from Kipparlahden satama, delivery anywhere for an extra fee. You always know exactly what you'll pay.",
-        ctaTitle: "Lock in your price now.",
+          "Opening season is on. Fuel, life jackets and safety gear always included. Short briefing too. Departure from Kipparlahden satama, delivery anywhere for an extra fee.",
+        ctaTitle: "Lock in the opening price.",
         ctaSubtitle:
-          "Prices are fixed, book today and grab the slots that suit you best.",
+          "The offer runs for a limited time. Book today and grab the best slots at the best price.",
       },
       meista: {
         title: "About us",

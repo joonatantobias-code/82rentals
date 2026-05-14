@@ -48,14 +48,19 @@ export default function Hero() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/12 backdrop-blur-md border border-white/20 text-sm"
+              className="flex flex-wrap items-center gap-2"
             >
-              <MapPin size={14} className="text-brand-primary" />
-              <span>{t.hero.location}</span>
-              <span className="opacity-50">•</span>
-              <span className="flex items-center gap-1">
-                <Star size={12} className="text-brand-primary fill-brand-primary" />
-                {t.hero.ratingLabel}
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/12 backdrop-blur-md border border-white/20 text-sm">
+                <MapPin size={14} className="text-brand-primary" />
+                <span>{t.hero.location}</span>
+                <span className="opacity-50">•</span>
+                <span className="flex items-center gap-1">
+                  <Star size={12} className="text-brand-primary fill-brand-primary" />
+                  {t.hero.ratingLabel}
+                </span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-primary text-brand-secondary text-[11px] font-extrabold uppercase tracking-[0.16em]">
+                {t.announcement.eyebrow}
               </span>
             </motion.div>
 
@@ -118,7 +123,10 @@ export default function Hero() {
                 <h3 className="font-display text-2xl md:text-3xl font-bold mt-2 leading-tight">
                   {t.hero.offerProduct}
                   <br />
-                  <span className="text-brand-primary">{t.hero.offerPrice}</span>
+                  <span className="text-brand-primary">{t.hero.offerPrice}</span>{" "}
+                  <span className="text-white/55 text-lg md:text-xl font-bold line-through tabular-nums">
+                    279 €
+                  </span>
                 </h3>
                 <ul className="mt-5 space-y-2.5 text-sm text-white/85">
                   <Tick text={t.hero.offerTick1} />

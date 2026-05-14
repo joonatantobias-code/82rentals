@@ -19,7 +19,7 @@ export default function PageHero({
   crumbs?: Crumb[];
 }) {
   return (
-    <section className="relative bg-brand-secondary text-white pt-24 pb-12 md:pt-32 md:pb-16 overflow-hidden">
+    <section className="relative bg-brand-secondary text-white pt-32 pb-12 md:pt-40 md:pb-16 overflow-hidden">
       {/* Subtle pattern */}
       <div className="absolute inset-0 pattern-grid opacity-30 pointer-events-none" />
 
