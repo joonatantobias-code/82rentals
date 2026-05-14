@@ -18,7 +18,12 @@ import {
 } from "lucide-react";
 import BrushUnderline from "@/components/BrushUnderline";
 import { useT } from "@/components/LocaleProvider";
-import { getReels, type Platform, type Reel } from "@/lib/socialFeed";
+import {
+  getReels,
+  fetchLiveReels,
+  type Platform,
+  type Reel,
+} from "@/lib/socialFeed";
 
 const SLIDE_DURATION = 650;
 const FILTER_FADE_MS = 280;
@@ -63,7 +68,23 @@ export default function SocialFeed() {
   const t = useT();
   const [filter, setFilter] = useState<Platform>("tiktok");
 
-  const allReels = useMemo(() => getReels(), []);
+  // Boot with the local mock reels so the carousel has frames on
+  // first paint, then swap in the live IG / TikTok feed once
+  // /api/social-feed returns. The proxy itself falls back to the
+  // same mocks server-side if the platform tokens are missing or
+  // either API errors, so the live → mock transition is invisible
+  // in those cases.
+  const [allReels, setAllReels] = useState<Reel[]>(() => getReels());
+  useEffect(() => {
+    let cancelled = false;
+    fetchLiveReels().then((reels) => {
+      if (!cancelled && reels.length > 0) setAllReels(reels);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const tiktokReels = useMemo(
     () => allReels.filter((r) => r.platform === "tiktok"),
     [allReels]
