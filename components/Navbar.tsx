@@ -8,12 +8,63 @@ import { Menu, X, Sparkles, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useT } from "@/components/LocaleProvider";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import BrushUnderline from "@/components/BrushUnderline";
+
+/**
+ * Live countdown to the end of the current calendar week, defined
+ * as Sunday 23:59:59. Avajaisalennus deadline resets every Monday
+ * 00:00 to the upcoming Sunday, so the bar always shows a few days
+ * left no matter when the visitor lands. Server render uses null so
+ * the SSR HTML doesn't mismatch the first client paint.
+ */
+function useEndOfWeekCountdown() {
+  const [mounted, setMounted] = useState(false);
+  const [now, setNow] = useState<number>(0);
+
+  useEffect(() => {
+    setMounted(true);
+    setNow(Date.now());
+    // Tick every minute. We don't show seconds, so per-second
+    // updates would just waste cycles.
+    const id = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  if (!mounted) return null;
+
+  const d = new Date(now);
+  // getDay: Sun=0, Mon=1, ..., Sat=6. We want to reach the upcoming
+  // Sunday 23:59:59.999. If today IS Sunday, target is today end.
+  const dow = d.getDay();
+  const daysUntilSunday = dow === 0 ? 0 : 7 - dow;
+  const target = new Date(d);
+  target.setDate(d.getDate() + daysUntilSunday);
+  target.setHours(23, 59, 59, 999);
+
+  const remainingMs = Math.max(0, target.getTime() - now);
+  const days = Math.floor(remainingMs / 86_400_000);
+  const hours = Math.floor((remainingMs % 86_400_000) / 3_600_000);
+  const minutes = Math.floor((remainingMs % 3_600_000) / 60_000);
+  return { days, hours, minutes };
+}
 
 export default function Navbar() {
   const pathname = usePathname();
   const t = useT();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const countdown = useEndOfWeekCountdown();
+
+  // Compact "2 pv 14 t" / "14 t 32 min" / "32 min" label. We show
+  // pv+h while at least one day is left, then h+min, then minutes
+  // alone in the final hour.
+  const countdownLabel = countdown
+    ? countdown.days > 0
+      ? `${countdown.days} ${t.announcement.countdownDay} ${countdown.hours} ${t.announcement.countdownHour}`
+      : countdown.hours > 0
+        ? `${countdown.hours} ${t.announcement.countdownHour} ${countdown.minutes} ${t.announcement.countdownMin}`
+        : `${countdown.minutes} ${t.announcement.countdownMin}`
+    : null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -50,30 +101,57 @@ export default function Navbar() {
         scrolled ? "shadow-soft" : ""
       }`}
     >
-      {/* Avajaisalennus-palkki — thin strip above the main nav row.
-          Keeps showing while scrolled so the discount is always
-          visible. Mobile compresses to one short line; desktop
-          shows the full three-price headline + a small CTA link. */}
+      {/* Avajaisalennus-palkki — sticks above the main nav row.
+          "Avajaisalennukset" sana saa saman brush-underline
+          käsittelyn kuin hero-otsikon korostettu sana, mutta tällä
+          kertaa navyna sky-pohjaa vasten. Vieressä elävä countdown
+          joka tippuu kohti viikon viimeistä sunnuntai-iltaa, sekä
+          rauhoittava lupaus että alennus pätee myös myöhemmälle
+          ajalle. Mobiili näyttää kaksi tiivistä riviä. */}
       <Link
         href="/varaa"
         className="group block bg-brand-primary text-brand-secondary"
         aria-label={t.announcement.cta}
       >
-        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 py-1.5 sm:py-2 flex items-center justify-center gap-2 sm:gap-3 text-center">
-          <Sparkles size={14} className="shrink-0" />
-          <span className="text-[12px] sm:text-[13px] font-bold tracking-tight leading-tight">
-            <span className="sm:hidden">{t.announcement.mobileShort}</span>
-            <span className="hidden sm:inline">
-              <span className="uppercase tracking-[0.14em] text-[11px] font-extrabold mr-2 opacity-75">
-                {t.announcement.eyebrow}
-              </span>
-              <span className="tabular-nums">{t.announcement.headline}</span>
-              <span className="hidden lg:inline opacity-70 ml-3 font-medium">
-                · {t.announcement.tagline}
-              </span>
+        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 py-1.5 sm:py-2 flex flex-col sm:flex-row items-center justify-center gap-x-3 gap-y-0.5 text-center leading-tight">
+          <span className="flex items-center gap-2">
+            <Sparkles size={14} className="shrink-0" />
+            <span className="relative inline-block font-extrabold uppercase tracking-[0.14em] text-[11px] sm:text-[12px]">
+              {t.announcement.eyebrow}
+              {/* Same brush-underline animation as the hero
+                  highlight word. Navy ink reads on the sky
+                  background; sits a hair below the baseline so
+                  it doesn't tangle with the dot separators. */}
+              <BrushUnderline
+                color="#0A3D62"
+                variant="spray"
+                thickness={4}
+                delay={0.4}
+                duration={1.0}
+                className="!-bottom-1.5 sm:!-bottom-2 !h-2.5 sm:!h-3"
+              />
             </span>
+            {countdownLabel && (
+              <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-bold opacity-90 tabular-nums whitespace-nowrap">
+                · {t.announcement.countdownPrefix} {countdownLabel}
+              </span>
+            )}
           </span>
-          <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-bold ml-2 group-hover:translate-x-0.5 transition-transform">
+
+          {countdownLabel && (
+            <span className="sm:hidden inline-flex items-center gap-1 text-[11px] font-bold opacity-90 tabular-nums whitespace-nowrap">
+              {t.announcement.countdownPrefix} {countdownLabel}
+            </span>
+          )}
+
+          <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-medium opacity-85 whitespace-nowrap">
+            · {t.announcement.laterNote}
+          </span>
+          <span className="sm:hidden inline-flex items-center text-[11px] font-medium opacity-90 whitespace-nowrap">
+            {t.announcement.laterNoteShort}
+          </span>
+
+          <span className="hidden lg:inline-flex items-center gap-1 text-[12px] font-bold ml-1 group-hover:translate-x-0.5 transition-transform whitespace-nowrap">
             {t.announcement.cta} <ArrowRight size={13} />
           </span>
         </div>
