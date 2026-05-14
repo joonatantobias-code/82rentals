@@ -4,11 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, X, Sparkles, ArrowRight } from "lucide-react";
+import { Menu, X, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useT } from "@/components/LocaleProvider";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import BrushUnderline from "@/components/BrushUnderline";
 
 /**
  * Live countdown to the end of the current calendar week, defined
@@ -24,9 +23,9 @@ function useEndOfWeekCountdown() {
   useEffect(() => {
     setMounted(true);
     setNow(Date.now());
-    // Tick every minute. We don't show seconds, so per-second
-    // updates would just waste cycles.
-    const id = setInterval(() => setNow(Date.now()), 60_000);
+    // Tick every second so the seconds digit visibly ticks — a
+    // running clock is the whole point of the marquee countdown.
+    const id = setInterval(() => setNow(Date.now()), 1_000);
     return () => clearInterval(id);
   }, []);
 
@@ -45,7 +44,12 @@ function useEndOfWeekCountdown() {
   const days = Math.floor(remainingMs / 86_400_000);
   const hours = Math.floor((remainingMs % 86_400_000) / 3_600_000);
   const minutes = Math.floor((remainingMs % 3_600_000) / 60_000);
-  return { days, hours, minutes };
+  const seconds = Math.floor((remainingMs % 60_000) / 1_000);
+  return { days, hours, minutes, seconds };
+}
+
+function pad2(n: number) {
+  return n.toString().padStart(2, "0");
 }
 
 export default function Navbar() {
@@ -55,16 +59,16 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const countdown = useEndOfWeekCountdown();
 
-  // Compact "2 pv 14 t" / "14 t 32 min" / "32 min" label. We show
-  // pv+h while at least one day is left, then h+min, then minutes
-  // alone in the final hour.
+  // Clock-style countdown: "2 pv 14:32:15" while ≥1 day remains,
+  // then collapses to "14:32:15" inside the last day so the digits
+  // visibly tick. Server (and pre-mount client) sees a placeholder
+  // so the marquee width stays stable when the real numbers come
+  // in.
   const countdownLabel = countdown
     ? countdown.days > 0
-      ? `${countdown.days} ${t.announcement.countdownDay} ${countdown.hours} ${t.announcement.countdownHour}`
-      : countdown.hours > 0
-        ? `${countdown.hours} ${t.announcement.countdownHour} ${countdown.minutes} ${t.announcement.countdownMin}`
-        : `${countdown.minutes} ${t.announcement.countdownMin}`
-    : null;
+      ? `${countdown.days} ${t.announcement.countdownDay} ${pad2(countdown.hours)}:${pad2(countdown.minutes)}:${pad2(countdown.seconds)}`
+      : `${pad2(countdown.hours)}:${pad2(countdown.minutes)}:${pad2(countdown.seconds)}`
+    : "—:—:—";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -101,59 +105,32 @@ export default function Navbar() {
         scrolled ? "shadow-soft" : ""
       }`}
     >
-      {/* Avajaisalennus-palkki — sticks above the main nav row.
-          "Avajaisalennukset" sana saa saman brush-underline
-          käsittelyn kuin hero-otsikon korostettu sana, mutta tällä
-          kertaa navyna sky-pohjaa vasten. Vieressä elävä countdown
-          joka tippuu kohti viikon viimeistä sunnuntai-iltaa, sekä
-          rauhoittava lupaus että alennus pätee myös myöhemmälle
-          ajalle. Mobiili näyttää kaksi tiivistä riviä. */}
+      {/* Avajaisalennus-palkki — marquee strip that scrolls a tiny
+          repeating sentence to the left. Whole strip is a Link to
+          /varaa so any click anywhere on the bar goes to booking.
+          The marquee track holds the message twice (a + a) and
+          translates -50%, so when the first copy slides off the
+          left, the second copy lands in the original position and
+          the loop seam is invisible. Pauses on hover so a visitor
+          can actually read the countdown. */}
       <Link
         href="/varaa"
-        className="group block bg-brand-primary text-brand-secondary"
+        className="group block bg-brand-primary text-brand-secondary overflow-hidden py-1.5 sm:py-2"
         aria-label={t.announcement.cta}
       >
-        <div className="relative max-w-7xl mx-auto px-5 sm:px-8 py-1.5 sm:py-2 flex flex-col sm:flex-row items-center justify-center gap-x-3 gap-y-0.5 text-center leading-tight">
-          <span className="flex items-center gap-2">
-            <Sparkles size={14} className="shrink-0" />
-            <span className="relative inline-block font-extrabold uppercase tracking-[0.14em] text-[11px] sm:text-[12px]">
-              {t.announcement.eyebrow}
-              {/* Same brush-underline animation as the hero
-                  highlight word. Navy ink reads on the sky
-                  background; sits a hair below the baseline so
-                  it doesn't tangle with the dot separators. */}
-              <BrushUnderline
-                color="#0A3D62"
-                variant="spray"
-                thickness={4}
-                delay={0.4}
-                duration={1.0}
-                className="!-bottom-1.5 sm:!-bottom-2 !h-2.5 sm:!h-3"
-              />
-            </span>
-            {countdownLabel && (
-              <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-bold opacity-90 tabular-nums whitespace-nowrap">
-                · {t.announcement.countdownPrefix} {countdownLabel}
-              </span>
-            )}
-          </span>
-
-          {countdownLabel && (
-            <span className="sm:hidden inline-flex items-center gap-1 text-[11px] font-bold opacity-90 tabular-nums whitespace-nowrap">
-              {t.announcement.countdownPrefix} {countdownLabel}
-            </span>
-          )}
-
-          <span className="hidden sm:inline-flex items-center gap-1 text-[12px] font-medium opacity-85 whitespace-nowrap">
-            · {t.announcement.laterNote}
-          </span>
-          <span className="sm:hidden inline-flex items-center text-[11px] font-medium opacity-90 whitespace-nowrap">
-            {t.announcement.laterNoteShort}
-          </span>
-
-          <span className="hidden lg:inline-flex items-center gap-1 text-[12px] font-bold ml-1 group-hover:translate-x-0.5 transition-transform whitespace-nowrap">
-            {t.announcement.cta} <ArrowRight size={13} />
-          </span>
+        <div className="marquee-track flex w-max items-center gap-12 whitespace-nowrap group-hover:[animation-play-state:paused]">
+          <AnnouncementSegment
+            eyebrow={t.announcement.eyebrow}
+            prefix={t.announcement.countdownPrefix}
+            countdown={countdownLabel}
+            note={t.announcement.laterNote}
+          />
+          <AnnouncementSegment
+            eyebrow={t.announcement.eyebrow}
+            prefix={t.announcement.countdownPrefix}
+            countdown={countdownLabel}
+            note={t.announcement.laterNote}
+          />
         </div>
       </Link>
 
@@ -305,5 +282,41 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </header>
+  );
+}
+
+/**
+ * One repetition of the marquee message. Sparkles bookend the line
+ * so the eye registers each loop boundary. Text is intentionally
+ * minimal: eyebrow + clock-style countdown + reassurance that the
+ * price holds for later dates. The track renders this twice so the
+ * scroll loop seam is invisible (the second copy lands where the
+ * first started after a -50% translate).
+ */
+function AnnouncementSegment({
+  eyebrow,
+  prefix,
+  countdown,
+  note,
+}: {
+  eyebrow: string;
+  prefix: string;
+  countdown: string;
+  note: string;
+}) {
+  return (
+    <span className="inline-flex items-center gap-3 text-[12px] sm:text-[13px] font-bold leading-none">
+      <Sparkles size={13} className="shrink-0 opacity-80" />
+      <span className="uppercase tracking-[0.18em] font-extrabold">
+        {eyebrow}
+      </span>
+      <span className="opacity-50">·</span>
+      <span className="tabular-nums">
+        {prefix}{" "}
+        <span className="font-extrabold text-brand-secondary">{countdown}</span>
+      </span>
+      <span className="opacity-50">·</span>
+      <span className="font-medium opacity-90">{note}</span>
+    </span>
   );
 }

@@ -233,8 +233,6 @@ export const dictionary = {
       durationTitle: "Kuinka pitkä ajo?",
       includedLine: "Polttoaine sisältyy",
       offerBadge: "Avajaistarjous",
-      longerNote:
-        "Haluatko ajaa pidempään? Laita meille viesti Instaan, sähköpostia tai soita, niin räätälöidään juuri teille sopiva paketti.",
       pickDay: "Valitse päivä",
       pickDayHelper: "Selaa kuukausia nuolista",
       startTimeTitle: "Aloitusaika · {date}",
@@ -885,8 +883,6 @@ export const dictionary = {
       durationTitle: "How long do you want to ride?",
       includedLine: "Fuel included",
       offerBadge: "Opening offer",
-      longerNote:
-        "Want a longer ride? Send us a DM, an email, or give us a call and we'll put together a package that fits.",
       pickDay: "Pick a day",
       pickDayHelper: "Use the arrows to browse months",
       startTimeTitle: "Start time · {date}",

@@ -592,10 +592,6 @@ export default function BookingModule() {
                             );
                           })}
                         </div>
-                        <p className="mt-3 inline-flex items-start gap-1.5 text-xs text-brand-secondary/70">
-                          <Info size={12} className="text-brand-primary-600 mt-0.5 shrink-0" />
-                          <span>{t.booking.longerNote}</span>
-                        </p>
                       </Field>
 
                       <ContactNote
