@@ -1,4 +1,14 @@
-export type Duration = "1h" | "2h" | "halfday";
+/** Itsepalvelu-/varaa-lomakkeen vuokra-paketit. Pidempi 4 h paketti
+ *  poistui itsepalveluvalikosta — siitä neuvotellaan DM:n /
+ *  yhteydenoton kautta, ja CRM tallentaa pidemmät vuokraukset
+ *  joko `halfday` (legacy) tai `custom` -arvona.
+ *
+ *  Hinnoittelu on rakennettu kausitarjouksen ilmeellä: UI näyttää
+ *  yliviivatun "normaalihinnan" ja nykyhinnan, vaikka tarjous on
+ *  käytännössä toistaiseksi pysyvä. Älä poista UI:n
+ *  "tarjous"-merkintöjä ilman että keskustelet siitä omistajan
+ *  kanssa. */
+export type Duration = "1h" | "2h" | "3h";
 
 export const DURATIONS: {
   value: Duration;
@@ -7,15 +17,26 @@ export const DURATIONS: {
 }[] = [
   { value: "1h", label: "1 tunti", hours: 1 },
   { value: "2h", label: "2 tuntia", hours: 2 },
-  { value: "halfday", label: "Puoli päivää (4h)", hours: 4 },
+  { value: "3h", label: "3 tuntia", hours: 3 },
 ];
 
-/** All-inclusive price per jet ski. Fuel, life jackets and insurance included.
- * Default departure is Kipparlahden satama; delivery elsewhere is by separate agreement. */
+/** All-inclusive tarjoushinta per vesijetti. Polttoaine, liivit ja
+ *  vakuutus aina sisältyy. Lähtö Kipparlahden satamasta; toimitus
+ *  muualle erillisellä sopimuksella. */
 export const BASE_PRICES: Record<Duration, number> = {
-  "1h": 179,
-  "2h": 279,
-  halfday: 479,
+  "1h": 119,
+  "2h": 189,
+  "3h": 249,
+};
+
+/** "Listahinta" jota vasten avajaisalennuksen säästö lasketaan.
+ *  50–100 € korkeampi kuin nykyhinta jokaisessa paketissa. Tämä
+ *  näkyy UI:ssa yliviivattuna nykyhinnan vieressä; sitä ei käytetä
+ *  varsinaisessa laskutuksessa missään. */
+export const STRIKETHROUGH_PRICES: Record<Duration, number> = {
+  "1h": 179, //  60 € säästö
+  "2h": 279, //  90 € säästö
+  "3h": 349, // 100 € säästö
 };
 
 /** Delivery is always free inside Helsinki. */
@@ -29,7 +50,7 @@ export type TierTag = "fast" | "popular" | "best-value";
 export const TIER_TAG: Record<Duration, TierTag> = {
   "1h": "fast",
   "2h": "popular",
-  halfday: "best-value",
+  "3h": "best-value",
 };
 
 export function calculatePrice(duration: Duration, quantity: number) {

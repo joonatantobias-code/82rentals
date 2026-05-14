@@ -46,9 +46,9 @@ export const dictionary = {
       bullet1: "Lähtö Kipparlahden satamasta",
       bullet2: "Ei ajokorttivaatimusta",
       bullet3: "Ensikertalaisystävällinen",
-      offerEyebrow: "2h tarjous",
+      offerEyebrow: "Avajaistarjous · 2h",
       offerProduct: "Sea-Doo Spark Trixx 2UP",
-      offerPrice: "279 € / 2h",
+      offerPrice: "189 € / 2h",
       offerTick1: "Lähtö Kipparlahden satamasta",
       offerTick2: "1-2 hengelle, pelastusliivit ja polttoaine kuuluvat hintaan",
       offerTick3: "Lyhyt perehdytys ja eikun vain menoksi",
@@ -175,9 +175,9 @@ export const dictionary = {
           cta: "Varaa suosituin",
         },
         {
-          name: "Saaristopäivä",
-          duration: "4 tuntia",
-          description: "Eniten vapautta vesillä ja paras hinta tunnille.",
+          name: "Saaristoseikkailu",
+          duration: "3 tuntia",
+          description: "Vapautta vesillä ja paras hinta tunnille — riittävästi aikaa kiertää saaristossa.",
           features: [
             "Pelastusliivit ja muut turvavarusteet",
             "Polttoaine",
@@ -188,6 +188,7 @@ export const dictionary = {
           cta: "Valitse paras arvo",
         },
       ],
+      offerBadge: "Avajaistarjous",
       mostPopular: "Suosituin valinta",
       bookSuffix: "Varaa",
       allInclusiveTitle: "Kaikki sisältyy hintaan",
@@ -196,9 +197,9 @@ export const dictionary = {
       twoUpTitle: "Yhdellä vesijetillä matkustaa kaksi",
       twoUpBody:
         "Sinä ja kaveri, kumppani tai sisarus, samalla pelillä. Ei tarvitse varata kahta jos olette kaksin.",
-      customTitle: "Eri pituiset paketit ja ryhmävaraukset",
+      customTitle: "Yli 3 tunnin paketit ja ryhmävaraukset",
       customBody:
-        "Räätälöimme paketin pidemmistä ajoista, polttariporukoista ja tapahtumista. Soita tai laita sähköpostia.",
+        "Pidemmistä ajoista, koko päivän vuokrauksista, polttariporukoista ja tapahtumista räätälöidään erikseen — laita DM:ää, soita tai sähköpostia.",
     },
     booking: {
       sectionTitle: "Varaa vesijetti 60 sekunnissa.",
@@ -218,6 +219,9 @@ export const dictionary = {
         "Yhdelle vesijetille mahtuu 1 tai 2 henkilöä. Voit ottaa myös kaksi vesijettiä, jos haluatte ajaa kaksin omillanne. Kalustossa maksimissaan 2 vesijettiä.",
       durationTitle: "Kuinka pitkä ajo?",
       includedLine: "Polttoaine sisältyy",
+      offerBadge: "Avajaistarjous",
+      longerNote:
+        "Yli 3 tunnin paketit ja koko päivän vuokraukset sovitaan erikseen — ota yhteyttä DM:llä, puhelimitse tai sähköpostilla.",
       pickDay: "Valitse päivä",
       pickDayHelper: "Selaa kuukausia nuolista",
       startTimeTitle: "Aloitusaika · {date}",
@@ -364,7 +368,7 @@ export const dictionary = {
       durationLabels: {
         "1h": "1 tunti",
         "2h": "2 tuntia",
-        halfday: "Puoli päivää (4h)",
+        "3h": "3 tuntia",
       },
     },
     pages: {
@@ -681,9 +685,9 @@ export const dictionary = {
       bullet1: "Departure from Kipparlahden satama",
       bullet2: "No license required",
       bullet3: "First-timer friendly",
-      offerEyebrow: "2h deal",
+      offerEyebrow: "Opening offer · 2h",
       offerProduct: "Sea-Doo Spark Trixx 2UP",
-      offerPrice: "€279 / 2h",
+      offerPrice: "€189 / 2h",
       offerTick1: "Departure from Kipparlahden satama",
       offerTick2: "Fits 1-2 people, life jackets and fuel included",
       offerTick3: "Quick briefing and you're off",
@@ -810,9 +814,9 @@ export const dictionary = {
           cta: "Book the favourite",
         },
         {
-          name: "Archipelago Day",
-          duration: "4 hours",
-          description: "Most freedom on the water and the best price per hour.",
+          name: "Archipelago Run",
+          duration: "3 hours",
+          description: "Real freedom on the water and the best price per hour — time to actually explore.",
           features: [
             "Life jackets and safety gear",
             "Fuel",
@@ -823,6 +827,7 @@ export const dictionary = {
           cta: "Pick best value",
         },
       ],
+      offerBadge: "Opening offer",
       mostPopular: "Most popular",
       bookSuffix: "Book",
       allInclusiveTitle: "Everything is included",
@@ -831,9 +836,9 @@ export const dictionary = {
       twoUpTitle: "One jet ski fits two",
       twoUpBody:
         "You and a friend, partner or sibling, on the same machine. No need to book two if it's just the two of you.",
-      customTitle: "Different lengths and group bookings",
+      customTitle: "4 h+ packages and group bookings",
       customBody:
-        "We tailor packages for longer rides, bachelor parties and events. Call or email and we'll arrange it.",
+        "Longer rides, full-day rentals, bachelor parties and events are arranged separately — DM us, call, or email.",
     },
     booking: {
       sectionTitle: "Book a jet ski in 60 seconds.",
@@ -853,6 +858,9 @@ export const dictionary = {
         "One jet ski fits 1 or 2 people. You can also take two jet skis if you'd rather ride solo each. Maximum two jet skis per booking.",
       durationTitle: "How long do you want to ride?",
       includedLine: "Fuel included",
+      offerBadge: "Opening offer",
+      longerNote:
+        "Longer rides (4 h+) and full-day rentals are arranged separately — DM us, call, or email.",
       pickDay: "Pick a day",
       pickDayHelper: "Use the arrows to browse months",
       startTimeTitle: "Start time · {date}",
@@ -999,7 +1007,7 @@ export const dictionary = {
       durationLabels: {
         "1h": "1 hour",
         "2h": "2 hours",
-        halfday: "Half day (4h)",
+        "3h": "3 hours",
       },
     },
     pages: {

@@ -27,6 +27,7 @@ import {
   type Duration,
   calculatePrice,
   BASE_PRICES,
+  STRIKETHROUGH_PRICES,
 } from "@/lib/pricing";
 import { useLocale, useT } from "@/components/LocaleProvider";
 
@@ -531,7 +532,13 @@ export default function BookingModule() {
                         label={t.booking.durationTitle}
                         required
                       >
-                        <div className="grid grid-cols-2 gap-3">
+                        {/* Three duration tiles in a 3-col grid on
+                            desktop, 1-col stack on phones. Each tile
+                            shows the offer price big, the previous
+                            list price small + struck through, and a
+                            small "Tarjous" pill so the visitor reads
+                            this as a limited-time deal. */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                           {DURATIONS.map((d) => {
                             const active = duration === d.value;
                             return (
@@ -550,11 +557,29 @@ export default function BookingModule() {
                                     <CheckCircle2 size={18} className="text-brand-primary" />
                                   </span>
                                 )}
-                                <div className="font-display text-xl sm:text-2xl font-extrabold">
+                                <span
+                                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                                    active
+                                      ? "bg-white/15 text-brand-primary"
+                                      : "bg-brand-primary text-brand-secondary"
+                                  }`}
+                                >
+                                  {t.booking.offerBadge}
+                                </span>
+                                <div className="font-display text-xl sm:text-2xl font-extrabold mt-2">
                                   {durationLabel(d.value, t)}
                                 </div>
-                                <div className="font-display text-2xl sm:text-3xl font-extrabold mt-2">
-                                  {BASE_PRICES[d.value]} €
+                                <div className="mt-2 flex items-baseline gap-2 flex-wrap">
+                                  <span className="font-display text-2xl sm:text-3xl font-extrabold leading-none">
+                                    {BASE_PRICES[d.value]} €
+                                  </span>
+                                  <span
+                                    className={`text-xs sm:text-sm font-semibold line-through tabular-nums ${
+                                      active ? "text-white/55" : "text-brand-secondary/45"
+                                    }`}
+                                  >
+                                    {STRIKETHROUGH_PRICES[d.value]} €
+                                  </span>
                                 </div>
                                 <div
                                   className={`text-xs mt-1 ${
@@ -567,6 +592,10 @@ export default function BookingModule() {
                             );
                           })}
                         </div>
+                        <p className="mt-3 inline-flex items-start gap-1.5 text-xs text-brand-secondary/70">
+                          <Info size={12} className="text-brand-primary-600 mt-0.5 shrink-0" />
+                          <span>{t.booking.longerNote}</span>
+                        </p>
                       </Field>
 
                       <ContactNote

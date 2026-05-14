@@ -6,7 +6,7 @@ import { SITE_URL, buildPageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Vesijettimme",
   description:
-    "Tutustu vesijetteihimme — kaksipaikkainen, ketterä peli ensikertalaiselle ja kokeneelle ajajalle. Hinnat alkaen 179 € / tunti, polttoaine ja pelastusliivit aina hintaan.",
+    "Tutustu vesijetteihimme — kaksipaikkainen, ketterä peli ensikertalaiselle ja kokeneelle ajajalle. Avajaistarjous alkaen 119 € / tunti, polttoaine ja pelastusliivit aina hintaan.",
   path: "/vesijettimme",
   ogTitle: "Vesijetin vuokraus Helsingissä · 82Rentals",
 });
@@ -24,8 +24,8 @@ const productJsonLd = {
   offers: {
     "@type": "AggregateOffer",
     priceCurrency: "EUR",
-    lowPrice: "179",
-    highPrice: "479",
+    lowPrice: "119",
+    highPrice: "249",
     offerCount: 3,
     availability: "https://schema.org/InStock",
     url: `${SITE_URL}/varaa`,

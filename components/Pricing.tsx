@@ -4,9 +4,9 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, ArrowRight, Users, Mail, Phone, Flame, Zap, Gem } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
-import { BASE_PRICES, TIER_TAG, type Duration } from "@/lib/pricing";
+import { BASE_PRICES, STRIKETHROUGH_PRICES, TIER_TAG, type Duration } from "@/lib/pricing";
 
-const ORDER: Duration[] = ["1h", "2h", "halfday"];
+const ORDER: Duration[] = ["1h", "2h", "3h"];
 
 const TAG_ICON = {
   fast: Zap,
@@ -85,9 +85,16 @@ export default function Pricing() {
               </p>
 
               <div className="mt-5">
-                <div className="flex items-baseline gap-1">
+                <div className="flex items-baseline gap-2 flex-wrap">
                   <span className="font-display text-4xl md:text-5xl font-extrabold">
                     {tier.price} €
+                  </span>
+                  <span
+                    className={`text-base font-semibold line-through tabular-nums ${
+                      tier.highlight ? "text-white/55" : "text-brand-secondary/45"
+                    }`}
+                  >
+                    {STRIKETHROUGH_PRICES[tier.duration]} €
                   </span>
                   <span
                     className={`text-sm ${
@@ -97,6 +104,15 @@ export default function Pricing() {
                     {t.common.perJet}
                   </span>
                 </div>
+                <span
+                  className={`mt-2 inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-[0.16em] ${
+                    tier.highlight
+                      ? "bg-white/15 text-brand-primary"
+                      : "bg-brand-primary text-brand-secondary"
+                  }`}
+                >
+                  {t.pricing.offerBadge}
+                </span>
               </div>
 
               <ul className="mt-5 space-y-2.5">

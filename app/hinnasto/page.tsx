@@ -6,7 +6,7 @@ import { SITE_URL, buildPageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Hinnasto",
   description:
-    "Selkeä ja kaikki sisältyvä hinnoittelu. Polttoaine, toimitus ja vakuutus aina hintaan. 1h 179 €, 2h 279 €, 4h 479 €.",
+    "Selkeä ja kaikki sisältyvä hinnoittelu. Polttoaine, toimitus ja vakuutus aina hintaan. Avajaistarjous: 1h 119 €, 2h 189 €, 3h 249 €.",
   path: "/hinnasto",
   ogTitle: "Hinnasto · 82Rentals",
 });
@@ -20,21 +20,21 @@ const offerCatalogJsonLd = {
     {
       "@type": "Offer",
       name: "1 tunnin vuokra (polttoaine sisältyy)",
-      price: "179",
+      price: "119",
       priceCurrency: "EUR",
       url: `${SITE_URL}/varaa`,
     },
     {
       "@type": "Offer",
       name: "2 tunnin vuokra (polttoaine sisältyy)",
-      price: "279",
+      price: "189",
       priceCurrency: "EUR",
       url: `${SITE_URL}/varaa`,
     },
     {
       "@type": "Offer",
-      name: "Puoli päivää, 4 h (polttoaine sisältyy)",
-      price: "479",
+      name: "3 tunnin vuokra (polttoaine sisältyy)",
+      price: "249",
       priceCurrency: "EUR",
       url: `${SITE_URL}/varaa`,
     },
