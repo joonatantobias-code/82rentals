@@ -18,20 +18,7 @@ import {
 } from "lucide-react";
 import BrushUnderline from "@/components/BrushUnderline";
 import { useT } from "@/components/LocaleProvider";
-import {
-  getReels,
-  fetchLiveReels,
-  type Platform,
-  type Reel,
-} from "@/lib/socialFeed";
-import {
-  InstagramEmbed,
-  InstagramEmbedScript,
-} from "@/components/InstagramEmbed";
-import {
-  INSTAGRAM_POST_URLS,
-  TIKTOK_POST_URLS,
-} from "@/lib/socialPosts";
+import { getReels, type Platform, type Reel } from "@/lib/socialFeed";
 
 const SLIDE_DURATION = 650;
 const FILTER_FADE_MS = 280;
@@ -76,23 +63,7 @@ export default function SocialFeed() {
   const t = useT();
   const [filter, setFilter] = useState<Platform>("tiktok");
 
-  // Boot with the local mock reels so the carousel has frames on
-  // first paint, then swap in the live IG / TikTok feed once
-  // /api/social-feed returns. The proxy itself falls back to the
-  // same mocks server-side if the platform tokens are missing or
-  // either API errors, so the live → mock transition is invisible
-  // in those cases.
-  const [allReels, setAllReels] = useState<Reel[]>(() => getReels());
-  useEffect(() => {
-    let cancelled = false;
-    fetchLiveReels().then((reels) => {
-      if (!cancelled && reels.length > 0) setAllReels(reels);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
+  const allReels = useMemo(() => getReels(), []);
   const tiktokReels = useMemo(
     () => allReels.filter((r) => r.platform === "tiktok"),
     [allReels]
@@ -153,89 +124,27 @@ export default function SocialFeed() {
         </div>
       </div>
 
-      {/* Body switches by platform AND by whether real post URLs are
-          configured. With real URLs we render the official platform
-          embed widget so the video / caption / likes / comments are
-          pulled live from the platform. Without URLs we fall back to
-          the original 3D carousel that plays our own brand clips. */}
-      {filter === "instagram" && INSTAGRAM_POST_URLS.length > 0 ? (
-        <EmbedScroller>
-          <InstagramEmbedScript />
-          {INSTAGRAM_POST_URLS.map((url) => (
-            <div
-              key={url}
-              className="snap-center shrink-0"
-              style={{ width: "min(540px, calc(100vw - 2.5rem))" }}
-            >
-              <InstagramEmbed url={url} />
-            </div>
-          ))}
-        </EmbedScroller>
-      ) : filter === "tiktok" && TIKTOK_POST_URLS.length > 0 ? (
-        // Placeholder for when TikTok URLs land. Until then the
-        // TikTok tab keeps the carousel below.
-        <EmbedScroller>
-          {TIKTOK_POST_URLS.map((url) => (
-            <div
-              key={url}
-              className="snap-center shrink-0"
-              style={{ width: "min(380px, calc(100vw - 2.5rem))" }}
-            >
-              <iframe
-                src={`https://www.tiktok.com/embed/v2/${encodeURIComponent(url)}`}
-                allow="encrypted-media"
-                className="w-full rounded-2xl border border-black/5"
-                style={{ height: "740px" }}
-                title="TikTok video"
-              />
-            </div>
-          ))}
-        </EmbedScroller>
-      ) : (
-        // Both feeds are mounted simultaneously and cross-faded by
-        // opacity. Mounting/unmounting <video> elements caused a
-        // flash when switching platforms — keeping the DOM stable
-        // eliminates it. The inactive layer's videos are paused via
-        // refs so we don't pay double the decoder cost.
-        <div
-          className="relative w-full mx-auto"
-          style={{ height: "clamp(380px, 62vw, 500px)" }}
-        >
-          <CarouselLayer
-            reels={tiktokReels}
-            platform="tiktok"
-            isActive={filter === "tiktok"}
-          />
-          <CarouselLayer
-            reels={instagramReels}
-            platform="instagram"
-            isActive={filter === "instagram"}
-          />
-        </div>
-      )}
-    </section>
-  );
-}
-
-/**
- * Horizontal scroller used by both the IG and (future) TikTok
- * embed modes. Snap-scroll keeps each post anchored as the user
- * swipes; on desktop the scrollbar is hidden by default but
- * shows on hover to hint that there's more content.
- */
-function EmbedScroller({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="relative max-w-7xl mx-auto px-5 sm:px-8">
+      {/* Both feeds are mounted simultaneously and cross-faded by opacity.
+          Mounting/unmounting <video> elements caused the flash the user
+          reported when switching platforms — keeping the DOM stable
+          eliminates it. The inactive layer's videos are paused via refs
+          so we don't pay double the decoder cost. */}
       <div
-        className="flex gap-4 sm:gap-5 overflow-x-auto snap-x snap-mandatory pb-4 -mx-1 px-1"
-        style={{
-          scrollbarWidth: "thin",
-          scrollbarColor: "rgba(10,61,98,0.25) transparent",
-        }}
+        className="relative w-full mx-auto"
+        style={{ height: "clamp(380px, 62vw, 500px)" }}
       >
-        {children}
+        <CarouselLayer
+          reels={tiktokReels}
+          platform="tiktok"
+          isActive={filter === "tiktok"}
+        />
+        <CarouselLayer
+          reels={instagramReels}
+          platform="instagram"
+          isActive={filter === "instagram"}
+        />
       </div>
-    </div>
+    </section>
   );
 }
 

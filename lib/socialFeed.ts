@@ -140,33 +140,10 @@ const MOCK_REELS: Reel[] = BRAND_VIDEOS.flatMap((v) => [
 ]);
 
 /**
- * Synchronous fallback so the component has something to render on
- * first paint while /api/social-feed is in flight (or if it fails).
- * The hook below replaces this with live IG / TikTok data once the
- * fetch resolves.
+ * Returns the reels feed. Currently synchronous and static; switch to an
+ * async version pointing at /api/social-feed once the platform integration
+ * lands. Component code does not need to change — just the call shape.
  */
 export function getReels(): Reel[] {
-  return MOCK_REELS;
-}
-
-/**
- * Fetches the live IG + TikTok feed from our own /api/social-feed
- * proxy. The proxy hits the Graph API / TikTok Display API on the
- * server with our app tokens, normalises both responses into the
- * `Reel` shape, and caches the merged payload for 10 minutes.
- *
- * Falls back to the local brand-clip mocks on any error so the
- * carousel keeps rendering — the marketing site shouldn't go blank
- * because a third-party API hiccuped.
- */
-export async function fetchLiveReels(): Promise<Reel[]> {
-  try {
-    const res = await fetch("/api/social-feed", { cache: "no-store" });
-    if (!res.ok) throw new Error(String(res.status));
-    const data = (await res.json()) as { reels?: Reel[] };
-    if (Array.isArray(data.reels) && data.reels.length > 0) return data.reels;
-  } catch {
-    // Swallow — fall through to mocks below.
-  }
   return MOCK_REELS;
 }
