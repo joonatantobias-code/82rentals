@@ -382,8 +382,10 @@ function RibbonSegment({
           return (
             <span
               key={i}
-              className={`inline-flex items-baseline gap-0.5 rounded-md bg-red-600 text-white px-1.5 py-1 ring-1 ring-inset ring-white/25 shadow-[0_1px_0_0_rgba(0,0,0,0.15)] ${
-                isSeconds ? "animate-pulse" : ""
+              className={`inline-flex items-baseline gap-0.5 rounded-md bg-red-600 text-white px-1.5 py-1 ring-1 ring-inset ring-white/25 ${
+                isSeconds
+                  ? "ribbon-tick"
+                  : "shadow-[0_1px_0_0_rgba(0,0,0,0.15)]"
               }`}
             >
               <span className="text-[13px] sm:text-[14px] font-extrabold tabular-nums leading-none">

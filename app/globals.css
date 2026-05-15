@@ -449,6 +449,40 @@ label {
   animation-play-state: paused;
 }
 
+/* Ribbon countdown tick — fires once per second on the seconds
+ * chip. A small scale bump + a sky-blue ring that expands outward
+ * like a water ripple from a jet trail, so the urgency cue
+ * reads on-brand for a coastal rental. Animation completes in
+ * 1 s exactly so it lines up with each real tick of the seconds
+ * counter. */
+@keyframes ribbon-tick {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(110, 198, 255, 0.65),
+      0 1px 0 0 rgba(0, 0, 0, 0.15);
+  }
+  18% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 3px rgba(110, 198, 255, 0.35),
+      0 1px 0 0 rgba(0, 0, 0, 0.15);
+  }
+  45% {
+    transform: scale(1);
+    box-shadow: 0 0 0 7px rgba(110, 198, 255, 0),
+      0 1px 0 0 rgba(0, 0, 0, 0.15);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(110, 198, 255, 0),
+      0 1px 0 0 rgba(0, 0, 0, 0.15);
+  }
+}
+.ribbon-tick {
+  animation: ribbon-tick 1s ease-out infinite;
+  transform-origin: center;
+  will-change: transform, box-shadow;
+}
+
 /* Reduce motion respect */
 @media (prefers-reduced-motion: reduce) {
   *,
