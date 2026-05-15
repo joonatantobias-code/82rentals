@@ -59,16 +59,25 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const countdown = useEndOfWeekCountdown();
 
-  // Clock-style countdown: "2 pv 14:32:15" while ≥1 day remains,
-  // then collapses to "14:32:15" inside the last day so the digits
-  // visibly tick. Server (and pre-mount client) sees a placeholder
-  // so the marquee width stays stable when the real numbers come
-  // in.
-  const countdownLabel = countdown
-    ? countdown.days > 0
-      ? `${countdown.days} ${t.announcement.countdownDay} ${pad2(countdown.hours)}:${pad2(countdown.minutes)}:${pad2(countdown.seconds)}`
-      : `${pad2(countdown.hours)}:${pad2(countdown.minutes)}:${pad2(countdown.seconds)}`
-    : "—:—:—";
+  // Four-unit countdown — days, hours, minutes, seconds rendered
+  // as separate chips so each value reads as its own quantity.
+  // Server (and pre-mount client) gets a placeholder pad ("—") so
+  // the marquee width doesn't jump when the real numbers land.
+  const countdownUnits = countdown
+    ? [
+        { value: pad2(countdown.days), unit: t.announcement.countdownDay },
+        { value: pad2(countdown.hours), unit: t.announcement.countdownHour },
+        { value: pad2(countdown.minutes), unit: t.announcement.countdownMin },
+        { value: pad2(countdown.seconds), unit: "s" },
+      ]
+    : [
+        { value: "—", unit: t.announcement.countdownDay },
+        { value: "—", unit: t.announcement.countdownHour },
+        { value: "—", unit: t.announcement.countdownMin },
+        { value: "—", unit: "s" },
+      ];
+
+  const isHome = pathname === "/";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -105,30 +114,35 @@ export default function Navbar() {
         scrolled ? "shadow-soft" : ""
       }`}
     >
-      {/* Avajaisalennus-palkki — left-scrolling ribbon. Renders
-          six copies of the segment so the bar is always packed
-          with content (no visible gap during the loop, even on
-          ultra-wide displays), and the track translates -50% so
-          when the first half slides off, the second half lands
-          exactly where the first started. Pauses on hover so a
-          visitor can read the countdown without it sliding past. */}
-      <Link
-        href="/varaa"
-        className="group block bg-brand-primary text-brand-secondary overflow-hidden py-1.5 sm:py-2"
-        aria-label={t.announcement.cta}
-      >
-        <div className="marquee-track flex w-max items-center whitespace-nowrap group-hover:[animation-play-state:paused]">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <AnnouncementSegment
-              key={i}
+      {/* Avajaisalennus-palkki — only renders on the home page.
+          Other pages get the bare navbar so the ribbon doesn't
+          dominate every screen. Marquee mirrors TrustBanner's
+          structure (two identical copies of a strip translating
+          -50%) so both ribbons feel like one family at the same
+          visual scroll speed. */}
+      {isHome && (
+        <Link
+          href="/varaa"
+          className="group block bg-brand-primary text-brand-secondary overflow-hidden py-2"
+          aria-label={t.announcement.cta}
+        >
+          <div className="marquee-track flex w-max items-center whitespace-nowrap group-hover:[animation-play-state:paused] pl-8">
+            <RibbonStrip
               eyebrow={t.announcement.eyebrow}
               prefix={t.announcement.countdownPrefix}
-              countdown={countdownLabel}
+              units={countdownUnits}
               note={t.announcement.laterNote}
             />
-          ))}
-        </div>
-      </Link>
+            <RibbonStrip
+              eyebrow={t.announcement.eyebrow}
+              prefix={t.announcement.countdownPrefix}
+              units={countdownUnits}
+              note={t.announcement.laterNote}
+              ariaHidden
+            />
+          </div>
+        </Link>
+      )}
 
       <div
         className={`relative bg-brand-secondary transition-all duration-300 ${
@@ -282,39 +296,86 @@ export default function Navbar() {
 }
 
 /**
- * One repetition of the marquee message. Sparkles bookend the line
- * so the eye registers each loop boundary. Text is intentionally
- * minimal: eyebrow + clock-style countdown + reassurance that the
- * price holds for later dates. The track renders this twice so the
- * scroll loop seam is invisible (the second copy lands where the
- * first started after a -50% translate).
+ * One half of the marquee ribbon. Mirrors TrustBanner's Strip
+ * structure: a row of segments with their own internal spacing,
+ * rendered twice in the track. After translateX(-50%) the second
+ * strip occupies the visual position the first held at frame 0,
+ * so the loop seam is invisible. Two segments per strip keeps the
+ * track wide enough to fill the viewport on common displays.
  */
-function AnnouncementSegment({
+function RibbonStrip({
   eyebrow,
   prefix,
-  countdown,
+  units,
+  note,
+  ariaHidden,
+}: {
+  eyebrow: string;
+  prefix: string;
+  units: Array<{ value: string; unit: string }>;
+  note: string;
+  ariaHidden?: boolean;
+}) {
+  return (
+    <div className="flex gap-10 pr-10 shrink-0" aria-hidden={ariaHidden}>
+      <RibbonSegment
+        eyebrow={eyebrow}
+        prefix={prefix}
+        units={units}
+        note={note}
+      />
+      <RibbonSegment
+        eyebrow={eyebrow}
+        prefix={prefix}
+        units={units}
+        note={note}
+      />
+    </div>
+  );
+}
+
+/**
+ * One segment: sparkles glyph, eyebrow, countdown unit chips,
+ * later-date reassurance. The countdown renders the four units
+ * (days / hours / minutes / seconds) as separate inverted chips
+ * so each quantity reads as its own number, the way real
+ * countdown widgets show them.
+ */
+function RibbonSegment({
+  eyebrow,
+  prefix,
+  units,
   note,
 }: {
   eyebrow: string;
   prefix: string;
-  countdown: string;
+  units: Array<{ value: string; unit: string }>;
   note: string;
 }) {
   return (
-    <span className="inline-flex items-center gap-3 text-[12px] sm:text-[13px] font-bold leading-none mr-8 sm:mr-10">
+    <span className="inline-flex items-center gap-3 text-[12px] sm:text-[13px] font-bold leading-none whitespace-nowrap">
       <Sparkles size={13} className="shrink-0 opacity-80" />
       <span className="uppercase tracking-[0.18em] font-extrabold">
         {eyebrow}
       </span>
       <span className="opacity-50">·</span>
-      {/* Countdown chip — inverted colours (navy pill, sky text)
-          so it pops out of the sky-blue ribbon and reads instantly
-          as the actionable "X aikaa jäljellä" cue. */}
-      <span className="inline-flex items-center gap-1.5 rounded-md bg-brand-secondary text-brand-primary px-2 py-1 text-[12px] sm:text-[13px] font-extrabold tabular-nums">
-        <span className="opacity-80 uppercase tracking-[0.12em] text-[10px]">
+      <span className="inline-flex items-center gap-1.5">
+        <span className="uppercase tracking-[0.14em] text-[10px] font-extrabold opacity-75">
           {prefix}
         </span>
-        <span>{countdown}</span>
+        {units.map((u, i) => (
+          <span
+            key={i}
+            className="inline-flex items-baseline gap-0.5 rounded-md bg-brand-secondary text-brand-primary px-1.5 py-1"
+          >
+            <span className="text-[13px] sm:text-[14px] font-extrabold tabular-nums leading-none">
+              {u.value}
+            </span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.08em] opacity-85 leading-none">
+              {u.unit}
+            </span>
+          </span>
+        ))}
       </span>
       <span className="opacity-50">·</span>
       <span className="font-medium opacity-90">{note}</span>
