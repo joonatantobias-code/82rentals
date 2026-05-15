@@ -105,32 +105,28 @@ export default function Navbar() {
         scrolled ? "shadow-soft" : ""
       }`}
     >
-      {/* Avajaisalennus-palkki — marquee strip that scrolls a tiny
-          repeating sentence to the left. Whole strip is a Link to
-          /varaa so any click anywhere on the bar goes to booking.
-          The marquee track holds the message twice (a + a) and
-          translates -50%, so when the first copy slides off the
-          left, the second copy lands in the original position and
-          the loop seam is invisible. Pauses on hover so a visitor
-          can actually read the countdown. */}
+      {/* Avajaisalennus-palkki — left-scrolling ribbon. Renders
+          six copies of the segment so the bar is always packed
+          with content (no visible gap during the loop, even on
+          ultra-wide displays), and the track translates -50% so
+          when the first half slides off, the second half lands
+          exactly where the first started. Pauses on hover so a
+          visitor can read the countdown without it sliding past. */}
       <Link
         href="/varaa"
         className="group block bg-brand-primary text-brand-secondary overflow-hidden py-1.5 sm:py-2"
         aria-label={t.announcement.cta}
       >
-        <div className="marquee-track flex w-max items-center gap-12 whitespace-nowrap group-hover:[animation-play-state:paused]">
-          <AnnouncementSegment
-            eyebrow={t.announcement.eyebrow}
-            prefix={t.announcement.countdownPrefix}
-            countdown={countdownLabel}
-            note={t.announcement.laterNote}
-          />
-          <AnnouncementSegment
-            eyebrow={t.announcement.eyebrow}
-            prefix={t.announcement.countdownPrefix}
-            countdown={countdownLabel}
-            note={t.announcement.laterNote}
-          />
+        <div className="marquee-track flex w-max items-center whitespace-nowrap group-hover:[animation-play-state:paused]">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <AnnouncementSegment
+              key={i}
+              eyebrow={t.announcement.eyebrow}
+              prefix={t.announcement.countdownPrefix}
+              countdown={countdownLabel}
+              note={t.announcement.laterNote}
+            />
+          ))}
         </div>
       </Link>
 
@@ -305,15 +301,20 @@ function AnnouncementSegment({
   note: string;
 }) {
   return (
-    <span className="inline-flex items-center gap-3 text-[12px] sm:text-[13px] font-bold leading-none">
+    <span className="inline-flex items-center gap-3 text-[12px] sm:text-[13px] font-bold leading-none mr-8 sm:mr-10">
       <Sparkles size={13} className="shrink-0 opacity-80" />
       <span className="uppercase tracking-[0.18em] font-extrabold">
         {eyebrow}
       </span>
       <span className="opacity-50">·</span>
-      <span className="tabular-nums">
-        {prefix}{" "}
-        <span className="font-extrabold text-brand-secondary">{countdown}</span>
+      {/* Countdown chip — inverted colours (navy pill, sky text)
+          so it pops out of the sky-blue ribbon and reads instantly
+          as the actionable "X aikaa jäljellä" cue. */}
+      <span className="inline-flex items-center gap-1.5 rounded-md bg-brand-secondary text-brand-primary px-2 py-1 text-[12px] sm:text-[13px] font-extrabold tabular-nums">
+        <span className="opacity-80 uppercase tracking-[0.12em] text-[10px]">
+          {prefix}
+        </span>
+        <span>{countdown}</span>
       </span>
       <span className="opacity-50">·</span>
       <span className="font-medium opacity-90">{note}</span>
