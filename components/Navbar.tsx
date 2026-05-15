@@ -369,24 +369,53 @@ function RibbonSegment({
       </span>
       <span className="opacity-50">·</span>
       {/* Countdown chips — red on sky so the deadline reads as a
-          warning, not just decorative. Each chip carries a thin
-          inner outline for extra punch, and the last (seconds)
-          chip pulses very subtly via animate-pulse so the eye
-          keeps glancing back to it. */}
+          warning. Days / hours / minutes sit still; the seconds
+          chip fires a one-shot framer-motion tick every time its
+          value changes (key={u.value} forces re-mount per tick).
+          Each tick: chip pops to scale 1.12 with a brief sky-blue
+          inset glow, then eases back to rest in 420 ms. So the
+          animation is *exactly* synced to the actual seconds
+          change, not a continuous loop running on its own clock. */}
       <span className="inline-flex items-center gap-1.5">
         <span className="uppercase tracking-[0.14em] text-[10px] font-extrabold text-red-700">
           {prefix}
         </span>
         {units.map((u, i) => {
           const isSeconds = i === units.length - 1;
+          if (isSeconds) {
+            return (
+              <motion.span
+                key={u.value}
+                initial={{
+                  scale: 1.12,
+                  boxShadow:
+                    "0 0 0 0 rgba(110,198,255,0.55), 0 1px 0 0 rgba(0,0,0,0.15) inset",
+                }}
+                animate={{
+                  scale: 1,
+                  boxShadow:
+                    "0 0 0 0 rgba(110,198,255,0), 0 1px 0 0 rgba(0,0,0,0.15) inset",
+                }}
+                transition={{
+                  duration: 0.42,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                style={{ transformOrigin: "center" }}
+                className="inline-flex items-baseline gap-0.5 rounded-md bg-red-600 text-white px-1.5 py-1 ring-1 ring-inset ring-white/25"
+              >
+                <span className="text-[13px] sm:text-[14px] font-extrabold tabular-nums leading-none">
+                  {u.value}
+                </span>
+                <span className="text-[9px] font-bold uppercase tracking-[0.08em] opacity-85 leading-none">
+                  {u.unit}
+                </span>
+              </motion.span>
+            );
+          }
           return (
             <span
               key={i}
-              className={`inline-flex items-baseline gap-0.5 rounded-md bg-red-600 text-white px-1.5 py-1 ring-1 ring-inset ring-white/25 ${
-                isSeconds
-                  ? "ribbon-tick"
-                  : "shadow-[0_1px_0_0_rgba(0,0,0,0.15)]"
-              }`}
+              className="inline-flex items-baseline gap-0.5 rounded-md bg-red-600 text-white px-1.5 py-1 ring-1 ring-inset ring-white/25 shadow-[0_1px_0_0_rgba(0,0,0,0.15)]"
             >
               <span className="text-[13px] sm:text-[14px] font-extrabold tabular-nums leading-none">
                 {u.value}
