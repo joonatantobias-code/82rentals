@@ -125,7 +125,7 @@ export default function Hero() {
                   <br />
                   <span className="text-brand-primary">{t.hero.offerPrice}</span>{" "}
                   <span className="text-white/55 text-lg md:text-xl font-bold line-through tabular-nums">
-                    229 €
+                    259 €
                   </span>
                 </h3>
                 <ul className="mt-5 space-y-2.5 text-sm text-white/85">

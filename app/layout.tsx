@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     template: "%s | Vesijettivuokraus Helsinki - 82Rentals Oy",
   },
   description:
-    "Vuokraa vesijetti Helsingissä helposti netistä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Avajaistarjous: 1h 100 €, 2h 169 €, 3h 238 €. Jet ski rental in Helsinki — book online.",
+    "Vuokraa vesijetti Helsingissä helposti netistä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Avajaistarjous: 1h 119 €, 2h 199 €, 3h 279 €. Jet ski rental in Helsinki — book online.",
   applicationName: SITE_NAME,
   keywords: [
     "vesijettivuokraus Helsinki",
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Vesijettivuokraus Helsinki - 82Rentals Oy",
     description:
-      "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine ja vakuutus aina hintaan. Avajaistarjous alkaen 100 €.",
+      "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine ja vakuutus aina hintaan. Avajaistarjous alkaen 119 €.",
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: "fi_FI",
@@ -85,7 +85,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Vesijettivuokraus Helsinki - 82Rentals Oy",
     description:
-      "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta, polttoaine ja vakuutus sisältyy. Avajaistarjous alkaen 100 €.",
+      "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta, polttoaine ja vakuutus sisältyy. Avajaistarjous alkaen 119 €.",
     images: ["/opengraph-image"],
   },
   icons: {
@@ -190,21 +190,21 @@ const localBusinessJsonLd = {
     {
       "@type": "Offer",
       name: "1 tunnin vuokra (polttoaine sisältyy)",
-      price: "100",
+      price: "119",
       priceCurrency: "EUR",
       url: `${SITE_URL}/varaa`,
     },
     {
       "@type": "Offer",
       name: "2 tunnin vuokra (polttoaine sisältyy)",
-      price: "169",
+      price: "199",
       priceCurrency: "EUR",
       url: `${SITE_URL}/varaa`,
     },
     {
       "@type": "Offer",
       name: "3 tunnin vuokra (polttoaine sisältyy)",
-      price: "238",
+      price: "279",
       priceCurrency: "EUR",
       url: `${SITE_URL}/varaa`,
     },

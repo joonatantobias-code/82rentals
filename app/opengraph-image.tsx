@@ -89,7 +89,7 @@ export default async function OgImage() {
               maxWidth: "950px",
             }}
           >
-            Avajaistarjous: 1h 100 €, 2h 169 €, 3h 238 €. Polttoaine aina hintaan.
+            Avajaistarjous: 1h 119 €, 2h 199 €, 3h 279 €. Polttoaine aina hintaan.
           </div>
         </div>
 
