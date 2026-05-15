@@ -126,7 +126,16 @@ export default function Navbar() {
           className="group block bg-brand-primary text-brand-secondary overflow-hidden py-2"
           aria-label={t.announcement.cta}
         >
-          <div className="marquee-track flex w-max items-center whitespace-nowrap group-hover:[animation-play-state:paused] pl-8">
+          {/* The ribbon segment is much wider than a TrustBanner
+              strip (countdown chips eat horizontal space), so even
+              with the same .marquee-track class the px/sec rate
+              looks faster than the trust ribbon below. Override
+              the duration so the ribbon settles into the same
+              visual pace — ~45 px/sec, matching TrustBanner. */}
+          <div
+            className="marquee-track flex w-max items-center whitespace-nowrap group-hover:[animation-play-state:paused] pl-8"
+            style={{ animationDuration: "55s" }}
+          >
             <RibbonStrip
               eyebrow={t.announcement.eyebrow}
               prefix={t.announcement.countdownPrefix}
@@ -359,23 +368,33 @@ function RibbonSegment({
         {eyebrow}
       </span>
       <span className="opacity-50">·</span>
+      {/* Countdown chips — red on sky so the deadline reads as a
+          warning, not just decorative. Each chip carries a thin
+          inner outline for extra punch, and the last (seconds)
+          chip pulses very subtly via animate-pulse so the eye
+          keeps glancing back to it. */}
       <span className="inline-flex items-center gap-1.5">
-        <span className="uppercase tracking-[0.14em] text-[10px] font-extrabold opacity-75">
+        <span className="uppercase tracking-[0.14em] text-[10px] font-extrabold text-red-700">
           {prefix}
         </span>
-        {units.map((u, i) => (
-          <span
-            key={i}
-            className="inline-flex items-baseline gap-0.5 rounded-md bg-brand-secondary text-brand-primary px-1.5 py-1"
-          >
-            <span className="text-[13px] sm:text-[14px] font-extrabold tabular-nums leading-none">
-              {u.value}
+        {units.map((u, i) => {
+          const isSeconds = i === units.length - 1;
+          return (
+            <span
+              key={i}
+              className={`inline-flex items-baseline gap-0.5 rounded-md bg-red-600 text-white px-1.5 py-1 ring-1 ring-inset ring-white/25 shadow-[0_1px_0_0_rgba(0,0,0,0.15)] ${
+                isSeconds ? "animate-pulse" : ""
+              }`}
+            >
+              <span className="text-[13px] sm:text-[14px] font-extrabold tabular-nums leading-none">
+                {u.value}
+              </span>
+              <span className="text-[9px] font-bold uppercase tracking-[0.08em] opacity-85 leading-none">
+                {u.unit}
+              </span>
             </span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.08em] opacity-85 leading-none">
-              {u.unit}
-            </span>
-          </span>
-        ))}
+          );
+        })}
       </span>
       <span className="opacity-50">·</span>
       <span className="font-medium opacity-90">{note}</span>
