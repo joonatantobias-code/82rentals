@@ -24,9 +24,11 @@ export const DURATIONS: {
  *  vakuutus aina sisältyy. Lähtö Kipparlahden satamasta; toimitus
  *  muualle erillisellä sopimuksella. */
 export const BASE_PRICES: Record<Duration, number> = {
-  "1h": 119,
-  "2h": 189,
-  "3h": 249,
+  // Hinnoittelu: 1 h = 100 €, jokainen seuraava tunti +69 €.
+  // → 2 h = 169 €, 3 h = 238 €.
+  "1h": 100,
+  "2h": 169,
+  "3h": 238,
 };
 
 /** "Listahinta" jota vasten avajaisalennuksen säästö lasketaan.
@@ -34,9 +36,12 @@ export const BASE_PRICES: Record<Duration, number> = {
  *  näkyy UI:ssa yliviivattuna nykyhinnan vieressä; sitä ei käytetä
  *  varsinaisessa laskutuksessa missään. */
 export const STRIKETHROUGH_PRICES: Record<Duration, number> = {
-  "1h": 179, //  60 € säästö
-  "2h": 259, //  70 € säästö
-  "3h": 349, // 100 € säästö
+  // "OVH" / listahinta avajaisalennuksen referenssiksi: BASE +
+  // näytettävä säästö (50 / 60 / 70 €). Ei käytössä laskutuksessa,
+  // näkyy ainoastaan yliviivattuna UI:ssa.
+  "1h": 150, // 50 € säästö
+  "2h": 229, // 60 € säästö
+  "3h": 308, // 70 € säästö
 };
 
 /** Delivery is always free inside Helsinki. */
