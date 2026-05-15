@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 
 export const SITE_URL = "https://82rentals.com";
-export const SITE_NAME = "82Rentals";
+/** Site name visible to Google as the source label in the SERP —
+ *  e.g. "82Rentals Oy" instead of "82rentals.com". Drives
+ *  og:site_name, the WebSite JSON-LD, and applicationName, all of
+ *  which feed Google's "site name" detection algorithm. Keep this
+ *  in sync with the LocalBusiness / Organization schema names. */
+export const SITE_NAME = "82Rentals Oy";
 
 type PageSeoInput = {
   title: string;

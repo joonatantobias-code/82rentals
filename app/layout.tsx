@@ -226,6 +226,7 @@ const organizationJsonLd = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#org`,
   name: "82Rentals Oy",
+  alternateName: "82Rentals",
   url: SITE_URL,
   logo: `${SITE_URL}/logo.png`,
   sameAs: [
