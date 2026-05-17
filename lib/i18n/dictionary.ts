@@ -92,7 +92,7 @@ export const dictionary = {
         "Me haemme vesijetin pois. Ei perävaunuja, ei parkkihuolia, vain muistoja.",
     },
     socialFeed: {
-      eyebrow: "Live feed",
+      eyebrow: "Seuraa meitä",
       titleA: "Me",
       titleHighlight: "somessa",
       titleB: ".",
@@ -742,7 +742,7 @@ export const dictionary = {
         "We pick the jet ski up. No trailers, no parking headaches, just memories.",
     },
     socialFeed: {
-      eyebrow: "Live feed",
+      eyebrow: "Follow us",
       titleA: "On",
       titleHighlight: "social",
       titleB: ".",

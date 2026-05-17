@@ -136,6 +136,11 @@ const localBusinessJsonLd = {
   image: [`${SITE_URL}/logo.png`, `${SITE_URL}/Aloitusvideo-poster.jpg`],
   telephone: "+358401866664",
   email: "82rentals.info@gmail.com",
+  // Finnish business ID (Y-tunnus). Helps Google match the
+  // organisation across PRH / Kauppalehti / YTJ records and
+  // confirms the SERP listing is a real registered business.
+  taxID: "FI36243856",
+  vatID: "FI36243856",
   priceRange: "€€",
   description:
     "Vesijetin vuokraus Helsingissä Kipparlahden satamasta. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Helppo online-varaus. Jet ski rental in Helsinki — book online.",

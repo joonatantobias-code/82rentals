@@ -82,7 +82,7 @@ export default function SocialFeed() {
 
       <span
         aria-hidden
-        className="num82-outline hidden lg:block absolute right-6 bottom-2 font-display font-extrabold text-[6rem] leading-none select-none pointer-events-none tracking-tighter"
+        className="num82-outline hidden lg:block absolute right-6 top-6 font-display font-extrabold text-[6rem] leading-none select-none pointer-events-none tracking-tighter"
       >
         82
       </span>
@@ -92,10 +92,13 @@ export default function SocialFeed() {
             Below lg the grid collapses to a single column so the
             heading sits above the phone on tablets / phones. */}
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* LEFT — heading + subtitle + follow buttons */}
+          {/* On lg+ this column sits on the RIGHT (order-2),
+              holding heading + subtitle + follow buttons.
+              On mobile it falls below the phone (order-2 still
+              works because the phone takes order-1). */}
           <div
             ref={containerRef}
-            className="text-left order-2 lg:order-1"
+            className="text-left order-2 lg:order-2"
           >
             <span className="section-eyebrow">{t.socialFeed.eyebrow}</span>
             <h2 className="section-title mt-2 text-left">
@@ -136,8 +139,11 @@ export default function SocialFeed() {
             </div>
           </div>
 
-          {/* RIGHT — phone mockup */}
-          <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
+          {/* On lg+ this column sits on the LEFT (order-1)
+              holding the phone mockup, with the heading on the
+              right. On mobile it's still order-1 so the phone
+              renders first. */}
+          <div className="order-1 lg:order-1 flex justify-center lg:justify-start">
             <div
               className="relative w-full max-w-[280px] sm:max-w-[300px] lg:max-w-[260px] xl:max-w-[280px] aspect-[9/16] rounded-[2.5rem] overflow-hidden shadow-card border-[6px] border-brand-secondary bg-brand-secondary"
             >

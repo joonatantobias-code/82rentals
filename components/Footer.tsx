@@ -164,8 +164,9 @@ export default function Footer() {
       </div>
 
       <div className="relative border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 text-xs text-white/55 text-center md:text-left">
-          © {year} 82Rentals Oy. {t.footer.rights}
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 text-xs text-white/55 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 text-center md:text-left">
+          <div>© {year} 82Rentals Oy. {t.footer.rights}</div>
+          <div className="tabular-nums">Y-tunnus 3624385-6</div>
         </div>
       </div>
     </footer>
