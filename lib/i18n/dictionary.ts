@@ -54,15 +54,15 @@ export const dictionary = {
       titleHighlight: "paras päivä",
       title2: "vesillä.",
       subhead:
-        "82Rentals on helsinkiläinen vesijettivuokraamo Kipparlahden satamasta. Nauti lyhyestä kesästä aallonharjalla 82 km/h vauhdissa. Polttoaine, pelastusliivit ja perehdytys kuuluvat aina hintaan.",
+        "82Rentals on helsinkiläinen vesijettivuokraamo Tervasaaren satamasta. Nauti lyhyestä kesästä aallonharjalla 82 km/h vauhdissa. Polttoaine, pelastusliivit ja perehdytys kuuluvat aina hintaan.",
       cta: "Varaa nyt",
-      bullet1: "Lähtö Kipparlahden satamasta",
+      bullet1: "Lähtö Tervasaaren satamasta",
       bullet2: "Ei ajokorttivaatimusta",
       bullet3: "Ensikertalaisystävällinen",
       offerEyebrow: "Avajaistarjous · 2h",
       offerProduct: "Sea-Doo Spark Trixx 2UP",
       offerPrice: "199 € / 2h",
-      offerTick1: "Lähtö Kipparlahden satamasta",
+      offerTick1: "Lähtö Tervasaaren satamasta",
       offerTick2: "1-2 hengelle, pelastusliivit ja polttoaine kuuluvat hintaan",
       offerTick3: "Lyhyt perehdytys ja eikun vain menoksi",
       offerCta: "Tarkista saatavuus",
@@ -72,7 +72,7 @@ export const dictionary = {
       fuel: "Polttoaine sisältyy hintaan",
       lifeJackets: "Pelastusliivit mukana",
       rating: "Google arvostelut 4,9 / 5",
-      departure: "Lähtö Kipparlahden satamasta",
+      departure: "Lähtö Tervasaaren satamasta",
     },
     howItWorks: {
       eyebrow: "Näin se toimii",
@@ -81,9 +81,9 @@ export const dictionary = {
       step1Title: "Valitse aika",
       step1Text:
         "Päivä, kesto ja vesijettien määrä. Maksat verkossa, valmista 60 sekunnissa.",
-      step2Title: "Saavu Kipparlahden satamaan",
+      step2Title: "Saavu Tervasaaren satamaan",
       step2Text:
-        "Lähtöpaikka on Kipparlahden satama. Tarvittaessa voimme sopia toimituksen muualle lisämaksusta.",
+        "Lähtöpaikka on Tervasaaren satama. Tarvittaessa voimme sopia toimituksen muualle lisämaksusta.",
       step3Title: "Aja minne tahansa",
       step3Text:
         "Lyhyt perehdytys, tankki täynnä, pelastusliivit valmiina. Saaristo on sinun.",
@@ -147,7 +147,7 @@ export const dictionary = {
       eyebrow: "Valmiina lähtemään",
       defaultTitle: "Valmiina vesille?",
       defaultSubtitle:
-        "Varaa Sea-Doo Spark Trixx 2up 60 sekunnissa. Lähtö Kipparlahden satamasta.",
+        "Varaa Sea-Doo Spark Trixx 2up 60 sekunnissa. Lähtö Tervasaaren satamasta.",
     },
     footer: {
       tagline: "Paikallisten perustama vesijettivuokraamo Helsingistä.",
@@ -217,7 +217,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Varaa vesijetti 60 sekunnissa.",
       sectionSubtitle:
-        "Valitse päivä ja kesto. Polttoaine, liivit ja lyhyt perehdytys aina hintaan. Lähtö Kipparlahden satamasta tai vapaavalintaisesta satamasta sinun lähistöllä.",
+        "Valitse päivä ja kesto. Polttoaine, liivit ja lyhyt perehdytys aina hintaan. Lähtö Tervasaaren satamasta tai vapaavalintaisesta satamasta sinun lähistöllä.",
       stepLabels: [
         "Vesijetit ja kesto",
         "Päivä ja aloitusaika",
@@ -247,12 +247,12 @@ export const dictionary = {
       contactCustomBody:
         "Räätälöimme polttariporukoille, tapahtumiin ja pidempiin ajoihin. Soita tai laita sähköpostia, vastaamme heti.",
       pickupTitle: "Mistä noudat vesijetin?",
-      pickupDefaultBody: "Tarkka paikka on Kipparlahden satama Herttoniemessä. Sisältyy hintaan, helppo löytää kartalta.",
+      pickupDefaultBody: "Tarkka paikka on Tervasaaren satama Helsingin keskustassa, Kruunuhaassa. Sisältyy hintaan, helppo löytää kartalta.",
       pickupOtherTitle: "Tarvitsetko toimituksen muualle?",
       pickupOtherBody: "Pääkaupunkiseudulle kuljetus on ilmainen. Sen ulkopuolelle lisämaksusta — sovitaan asiakaspalvelun kautta ennen varausta.",
       pickupOrChoose: "Tai valitse pikavalinnoista",
       pickupConfirm: "Toimituspaikka:",
-      pickupModeDefault: "Lähtö Kipparlahden satamasta",
+      pickupModeDefault: "Lähtö Tervasaaren satamasta",
       pickupModeDefaultHint: "Sisältyy hintaan",
       pickupModeDelivery: "Toimitus muualle",
       pickupModeDeliveryHint: "Pääkaupunkiseudulla ilmainen",
@@ -330,7 +330,7 @@ export const dictionary = {
       summaryPickup: "Toimitus",
       summaryRent: "Vuokra",
       summaryFuelIncluded: "Polttoaine sisältyy",
-      summaryDelivery: "Lähtö Kipparlahden satamasta",
+      summaryDelivery: "Lähtö Tervasaaren satamasta",
       summaryDeliveryValue: "Sisältyy",
       summaryBriefing: "Lyhyt perehdytys",
       summaryTotal: "Yhteensä",
@@ -450,7 +450,7 @@ export const dictionary = {
         eyebrow: "Avajaisalennukset voimassa",
         heroTitle: "Aja Helsingissä avajaishintaan.",
         heroDesc:
-          "Avajaiskausi käynnissä. Polttoaine, pelastusliivit ja muut turvavarusteet aina hintaan. Lyhyt perehdytys sisältyy. Lähtö Kipparlahden satamasta, lisämaksulla kuljetus onnistuu minne vain.",
+          "Avajaiskausi käynnissä. Polttoaine, pelastusliivit ja muut turvavarusteet aina hintaan. Lyhyt perehdytys sisältyy. Lähtö Tervasaaren satamasta, lisämaksulla kuljetus onnistuu minne vain.",
         ctaTitle: "Nappaa avajaishinta itsellesi.",
         ctaSubtitle:
           "Tarjous on rajoitetun ajan voimassa. Varaa heti, niin saat parhaat ajat ja parhaan hinnan.",
@@ -571,7 +571,7 @@ export const dictionary = {
           },
           {
             q: "Mistä noudan vesijetin?",
-            a: "Lähtöpaikka on Kipparlahden satama, ja se sisältyy aina hintaan. Jos haluat että tuomme vesijetin muualle Helsingin alueelle, onnistuu se lisämaksusta sopimuksen mukaan. Soita +358 40 186 6664 tai laita sähköpostia, niin järjestetään.",
+            a: "Lähtöpaikka on Tervasaaren satama, ja se sisältyy aina hintaan. Jos haluat että tuomme vesijetin muualle Helsingin alueelle, onnistuu se lisämaksusta sopimuksen mukaan. Soita +358 40 186 6664 tai laita sähköpostia, niin järjestetään.",
           },
           {
             q: "Voiko kaksi henkilöä ajaa yhdessä?",
@@ -584,14 +584,14 @@ export const dictionary = {
         eyebrow: "Varaus",
         heroTitle: "Varaa vesijetti 60 sekunnissa.",
         heroDesc:
-          "Valitse päivä ja kesto. Polttoaine, liivit ja lyhyt perehdytys aina hintaan. Lähtö Kipparlahden satamasta tai vapaavalintaisesta satamasta sinun lähistöllä.",
+          "Valitse päivä ja kesto. Polttoaine, liivit ja lyhyt perehdytys aina hintaan. Lähtö Tervasaaren satamasta tai vapaavalintaisesta satamasta sinun lähistöllä.",
         reassurances: [
           {
             title: "Maksuton peruutus",
             text: "Maksutta 48 h ennen vuokra-aikaa.",
           },
           {
-            title: "Lähtö Kipparlahden satamasta",
+            title: "Lähtö Tervasaaren satamasta",
             text: "Yksi vakiopaikka, helppo löytää. Muusta paikasta sovitaan erikseen.",
           },
           {
@@ -706,13 +706,13 @@ export const dictionary = {
       subhead:
         "Make the short summer count at 82 km/h on the wave crest. Fuel, life jackets and a quick briefing are on us. You just bring the smile, the kind that stays put long after the engine quiets down.",
       cta: "Book now",
-      bullet1: "Departure from Kipparlahden satama",
+      bullet1: "Departure from Tervasaaren satama",
       bullet2: "No license required",
       bullet3: "First-timer friendly",
       offerEyebrow: "Opening offer · 2h",
       offerProduct: "Sea-Doo Spark Trixx 2UP",
       offerPrice: "€199 / 2h",
-      offerTick1: "Departure from Kipparlahden satama",
+      offerTick1: "Departure from Tervasaaren satama",
       offerTick2: "Fits 1-2 people, life jackets and fuel included",
       offerTick3: "Quick briefing and you're off",
       offerCta: "Check availability",
@@ -722,7 +722,7 @@ export const dictionary = {
       fuel: "Fuel included in price",
       lifeJackets: "Life jackets included",
       rating: "Google reviews 4.9 / 5",
-      departure: "Departure from Kipparlahden satama",
+      departure: "Departure from Tervasaaren satama",
     },
     howItWorks: {
       eyebrow: "How it works",
@@ -731,9 +731,9 @@ export const dictionary = {
       step1Title: "Pick a time",
       step1Text:
         "Choose date, duration and number of jet skis. Pay online, done in 60 seconds.",
-      step2Title: "Come to Kipparlahden satama",
+      step2Title: "Come to Tervasaaren satama",
       step2Text:
-        "Departure is from Kipparlahden satama. Delivery elsewhere is possible by separate arrangement for an extra fee.",
+        "Departure is from Tervasaaren satama. Delivery elsewhere is possible by separate arrangement for an extra fee.",
       step3Title: "Ride anywhere",
       step3Text:
         "Quick briefing, full tank, life jackets ready. The archipelago is yours.",
@@ -797,7 +797,7 @@ export const dictionary = {
       eyebrow: "Ready to roll",
       defaultTitle: "Ready to hit the water?",
       defaultSubtitle:
-        "Book the Sea-Doo Spark Trixx 2up in 60 seconds. Departure from Kipparlahden satama.",
+        "Book the Sea-Doo Spark Trixx 2up in 60 seconds. Departure from Tervasaaren satama.",
     },
     footer: {
       tagline: "Locally founded jet ski rental from Helsinki.",
@@ -867,7 +867,7 @@ export const dictionary = {
     booking: {
       sectionTitle: "Book a jet ski in 60 seconds.",
       sectionSubtitle:
-        "Pick the date and duration. Fuel, life jackets and a short briefing always included. Departure from Kipparlahden satama or any nearby marina you choose.",
+        "Pick the date and duration. Fuel, life jackets and a short briefing always included. Departure from Tervasaaren satama or any nearby marina you choose.",
       stepLabels: [
         "Jet skis & duration",
         "Date & start time",
@@ -897,12 +897,12 @@ export const dictionary = {
       contactCustomBody:
         "We tailor for bachelor parties, events and longer rides. Call or email, we reply right away.",
       pickupTitle: "Where do you pick up the jet ski?",
-      pickupDefaultBody: "Exact spot: Kipparlahden satama in Herttoniemi. Included in the price, easy to find on the map.",
+      pickupDefaultBody: "Exact spot: Tervasaaren satama in Kruunuhaka, central Helsinki. Included in the price, easy to find on the map.",
       pickupOtherTitle: "Need delivery elsewhere?",
       pickupOtherBody: "Free delivery anywhere in the Helsinki capital region. Outside the metro area is possible with an extra fee — agreed with customer service before booking.",
       pickupOrChoose: "Or pick a popular spot",
       pickupConfirm: "Delivery to:",
-      pickupModeDefault: "Departure from Kipparlahden satama",
+      pickupModeDefault: "Departure from Tervasaaren satama",
       pickupModeDefaultHint: "Included in the price",
       pickupModeDelivery: "Delivery elsewhere",
       pickupModeDeliveryHint: "Free in the Helsinki capital region",
@@ -980,7 +980,7 @@ export const dictionary = {
       summaryPickup: "Delivery",
       summaryRent: "Rental",
       summaryFuelIncluded: "Fuel included",
-      summaryDelivery: "Departure from Kipparlahden satama",
+      summaryDelivery: "Departure from Tervasaaren satama",
       summaryDeliveryValue: "Included",
       summaryBriefing: "Short briefing",
       summaryTotal: "Total",
@@ -1100,7 +1100,7 @@ export const dictionary = {
         eyebrow: "Opening offer live",
         heroTitle: "Ride in Helsinki at opening prices.",
         heroDesc:
-          "Opening season is on. Fuel, life jackets and safety gear always included. Short briefing too. Departure from Kipparlahden satama, delivery anywhere for an extra fee.",
+          "Opening season is on. Fuel, life jackets and safety gear always included. Short briefing too. Departure from Tervasaaren satama, delivery anywhere for an extra fee.",
         ctaTitle: "Lock in the opening price.",
         ctaSubtitle:
           "The offer runs for a limited time. Book today and grab the best slots at the best price.",
@@ -1221,7 +1221,7 @@ export const dictionary = {
           },
           {
             q: "Where do I pick up the jet ski?",
-            a: "Departure is from Kipparlahden satama, included in the price. If you'd rather have us deliver elsewhere in Helsinki, we can arrange it for an additional fee. Call +358 40 186 6664 or email us and we'll set it up.",
+            a: "Departure is from Tervasaaren satama, included in the price. If you'd rather have us deliver elsewhere in Helsinki, we can arrange it for an additional fee. Call +358 40 186 6664 or email us and we'll set it up.",
           },
           {
             q: "Can two people ride together?",
@@ -1234,14 +1234,14 @@ export const dictionary = {
         eyebrow: "Booking",
         heroTitle: "Book a jet ski in 60 seconds.",
         heroDesc:
-          "Pick a date and duration. Fuel, life jackets and a short briefing always included. Departure from Kipparlahden satama or any nearby marina you choose.",
+          "Pick a date and duration. Fuel, life jackets and a short briefing always included. Departure from Tervasaaren satama or any nearby marina you choose.",
         reassurances: [
           {
             title: "Free cancellation",
             text: "Free up to 48 h before the rental.",
           },
           {
-            title: "Departure from Kipparlahden satama",
+            title: "Departure from Tervasaaren satama",
             text: "One fixed spot, easy to find. Other locations by separate arrangement.",
           },
           {

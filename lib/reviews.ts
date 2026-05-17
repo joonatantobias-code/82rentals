@@ -158,7 +158,7 @@ const REVIEWS: Review[] = [
     initials: "NE",
     date: "3 viikkoa sitten",
     rating: 5,
-    text: "Aamuajo Suomenlinnan ohi → täydellinen tunnelma. Uusi vuokraamo Kipparlahdessa, palvelu toimi kuin viritetty kone. Kuvat oli huikeita.",
+    text: "Aamuajo Suomenlinnan ohi → täydellinen tunnelma. Uusi vuokraamo Tervasaaressa, palvelu toimi kuin viritetty kone. Kuvat oli huikeita.",
     isLocalGuide: true,
     reviewCount: 24,
     photoCount: 7,

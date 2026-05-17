@@ -16,8 +16,8 @@ export const TERMS_UPDATED = "2026-05-11";
 
 export const COMPANY = {
   name: "82Rentals Oy",
-  businessId: "—", // täydennetään virallinen Y-tunnus
-  address: "Kipparlahdenkuja 3, 00810 Helsinki",
+  businessId: "3624385-6",
+  address: "Tervasaari, 00170 Helsinki",
   phone: "+358 40 186 6664",
   email: "info@82rentals.com",
   website: "82rentals.com",
@@ -81,7 +81,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "5. Vuokra, ALV ja maksuehdot",
         body: [
           `5.1. Vuokrahinta määräytyy 82Rentals Oy:n verkkosivuilla olevan hinnaston mukaisesti tai osapuolten erikseen sopimalla tavalla. Vuokra sisältää aina arvonlisäveron 25,5 %, ellei muuta kirjallisesti ole sovittu.`,
-          `5.2. Vuokrahintaan sisältyy polttoaine vuokra-ajan käyttöön normaalissa virkistyskäytössä, pelastusliivit, paikannin sekä lyhyt perehdytys ennen ajoa. Lisämaksullisia tuotteita ovat muun muassa toimitus muuhun paikkaan kuin Kipparlahden satamaan sekä ylimääräiset polttoainetäydennykset, jotka eivät sisälly normaaliin käyttöön.`,
+          `5.2. Vuokrahintaan sisältyy polttoaine vuokra-ajan käyttöön normaalissa virkistyskäytössä, pelastusliivit, paikannin sekä lyhyt perehdytys ennen ajoa. Lisämaksullisia tuotteita ovat muun muassa toimitus muuhun paikkaan kuin Tervasaaren satamaan sekä ylimääräiset polttoainetäydennykset, jotka eivät sisälly normaaliin käyttöön.`,
           `5.3. Maksu suoritetaan paikan päällä ennen vuokra-ajan alkua kortilla tai käteisellä. Yritysasiakkaalle voidaan tarjota laskutusta erikseen sovittavin ehdoin.`,
           `5.4. Mahdolliset lisämaksut, kuten myöhästymismaksu, takuumaksusta kuitattavat vahingot tai polttoaineen lisämaksu, peritään vuokra-ajan päätyttyä joko takuumaksusta vähentäen tai erillisellä laskulla.`,
         ].join("\n\n"),
@@ -316,7 +316,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "5. Rental price, VAT and payment terms",
         body: [
           `5.1. The rental price is set by the price list on 82Rentals.com or by separate written agreement. The price always includes Finnish VAT of 25.5%, unless otherwise agreed in writing.`,
-          `5.2. The rental price includes fuel for normal recreational use during the rental period, life jackets, the GPS tracker and a short briefing before the ride. Additional services subject to extra fees include delivery to locations other than Kipparlahden satama, as well as extra fuel top-ups outside normal use.`,
+          `5.2. The rental price includes fuel for normal recreational use during the rental period, life jackets, the GPS tracker and a short briefing before the ride. Additional services subject to extra fees include delivery to locations other than Tervasaaren satama, as well as extra fuel top-ups outside normal use.`,
           `5.3. Payment is made on-site before the rental period starts, by card or cash. Business customers can be offered invoicing on separately agreed terms.`,
           `5.4. Any additional charges (late fee, damage covered by the deposit, extra fuel) are charged at the end of the rental period either by deducting from the deposit or by separate invoice.`,
         ].join("\n\n"),

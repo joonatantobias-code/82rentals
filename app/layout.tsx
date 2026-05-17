@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     template: "%s | Vesijettivuokraus Helsinki - 82Rentals Oy",
   },
   description:
-    "Vuokraa vesijetti Helsingissä helposti netistä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Avajaistarjous: 1h 119 €, 2h 199 €, 3h 279 €. Jet ski rental in Helsinki — book online.",
+    "Vuokraa vesijetti Helsingissä helposti netistä. Lähtö Tervasaaren satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Avajaistarjous: 1h 119 €, 2h 199 €, 3h 279 €. Jet ski rental in Helsinki — book online.",
   applicationName: SITE_NAME,
   keywords: [
     "vesijettivuokraus Helsinki",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     "rent jet ski Helsinki",
     "watercraft rental Helsinki",
     "vesiurheilu Helsinki",
-    "vesijetti Kipparlahti",
+    "vesijetti Tervasaari",
     "Helsinki jet ski",
     "82Rentals",
   ],
@@ -67,7 +67,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "Vesijettivuokraus Helsinki - 82Rentals Oy",
     description:
-      "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine ja vakuutus aina hintaan. Avajaistarjous alkaen 119 €.",
+      "Vesijetin vuokraus Helsingissä. Lähtö Tervasaaren satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine ja vakuutus aina hintaan. Avajaistarjous alkaen 119 €.",
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: "fi_FI",
@@ -89,7 +89,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Vesijettivuokraus Helsinki - 82Rentals Oy",
     description:
-      "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta, polttoaine ja vakuutus sisältyy. Avajaistarjous alkaen 119 €.",
+      "Vesijetin vuokraus Helsingissä. Lähtö Tervasaaren satamasta, polttoaine ja vakuutus sisältyy. Avajaistarjous alkaen 119 €.",
     images: ["/skuutit/og-helsinki.jpg"],
   },
   icons: {
@@ -143,21 +143,21 @@ const localBusinessJsonLd = {
   vatID: "FI36243856",
   priceRange: "€€",
   description:
-    "Vesijetin vuokraus Helsingissä Kipparlahden satamasta. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Helppo online-varaus. Jet ski rental in Helsinki — book online.",
+    "Vesijetin vuokraus Helsingissä Tervasaaren satamasta. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Helppo online-varaus. Jet ski rental in Helsinki — book online.",
   slogan: "Vesijettivuokraus Helsinki · Jet Ski Rental Helsinki",
   knowsLanguage: ["fi", "en"],
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Kipparlahdenkuja 3",
-    postalCode: "00810",
+    streetAddress: "Tervasaari",
+    postalCode: "00170",
     addressLocality: "Helsinki",
     addressRegion: "Uusimaa",
     addressCountry: "FI",
   },
   geo: {
     "@type": "GeoCoordinates",
-    latitude: 60.1909,
-    longitude: 25.0224,
+    latitude: 60.17143,
+    longitude: 24.96275,
   },
   // Reviews summary so search results can display the gold-star
   // rich snippet. Counts the 18 visible 5-star cards plus the

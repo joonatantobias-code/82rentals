@@ -21,7 +21,7 @@ export const DURATIONS: {
 ];
 
 /** All-inclusive tarjoushinta per vesijetti. Polttoaine, liivit ja
- *  vakuutus aina sisältyy. Lähtö Kipparlahden satamasta; toimitus
+ *  vakuutus aina sisältyy. Lähtö Tervasaaren satamasta; toimitus
  *  muualle erillisellä sopimuksella. */
 export const BASE_PRICES: Record<Duration, number> = {
   // Hinnoittelu: 1 h = 119 €, jokainen seuraava tunti +80 €.

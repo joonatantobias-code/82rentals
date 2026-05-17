@@ -15,7 +15,7 @@ type Props = {
 };
 
 const DEFAULT_DESC =
-  "Lähtöpaikka on Kipparlahden satama Helsingissä. Avaa reittiohjeet alta, Google ja Apple Maps ohjaavat suoraan paikalle.";
+  "Lähtöpaikka on Tervasaaren satama Helsingissä. Avaa reittiohjeet alta, Google ja Apple Maps ohjaavat suoraan paikalle.";
 
 export default function PickupInfo({
   withMap = true,

@@ -16,6 +16,7 @@ import {
   ArrowLeft,
   Phone,
   Mail,
+  MessageCircle,
   User as UserIcon,
   MapPin,
   Info,
@@ -44,72 +45,6 @@ const CLOSE_HOUR = 22;
 
 const DEFAULT_PICKUP = PICKUP.name;
 
-// Public boat ramps and marinas across the Helsinki capital region
-// the user can pick when choosing delivery instead of picking the jet
-// ski up at Kipparlahti. Each entry carries a postal address so we
-// can show it under the dropdown after a selection (and link to
-// Google/Apple Maps from there). Place names stay Finnish in both
-// locales — they don't translate.
-type DeliveryRamp = { name: string; address: string | null };
-
-const DELIVERY_RAMPS: DeliveryRamp[] = [
-  {
-    name: "Lauttasaaren venesatama, Helsinki",
-    address: "Vattuniemenkatu 18, 00210 Helsinki",
-  },
-  {
-    name: "Hernesaaren venesatama, Helsinki",
-    address: "Hernesaarenranta 1, 00150 Helsinki",
-  },
-  {
-    name: "Hietalahden venesatama, Helsinki",
-    address: "Hietalahdenranta 5, 00180 Helsinki",
-  },
-  {
-    name: "Pohjoisrannan ramppi, Helsinki",
-    address: "Pohjoisranta 4, 00170 Helsinki",
-  },
-  {
-    name: "Marjaniemen ranta, Helsinki",
-    address: "Marjaniementie 35, 00930 Helsinki",
-  },
-  {
-    name: "Vuosaaren venesatama, Helsinki",
-    address: "Vuosaaren satamakatu 5, 00980 Helsinki",
-  },
-  {
-    name: "Tammisalon ramppi, Helsinki",
-    address: "Sahaajankatu 1, 00880 Helsinki",
-  },
-  {
-    name: "Otaniemen venesatama, Espoo",
-    address: "Otarannantie 1, 02150 Espoo",
-  },
-  {
-    name: "Suomenojan venesatama, Espoo",
-    address: "Suomenojanranta 5, 02270 Espoo",
-  },
-  {
-    name: "Haukilahden venesatama, Espoo",
-    address: "Hauenkalliontie 1, 02170 Espoo",
-  },
-  {
-    name: "Espoonlahden venesatama, Espoo",
-    address: "Soukanlahdentie 5, 02360 Espoo",
-  },
-  {
-    name: "Soukan venesatama, Espoo",
-    address: "Soukantie 8, 02360 Espoo",
-  },
-  {
-    name: "Kivenlahden venesatama, Espoo",
-    address: "Kivenlahdenkatu 5, 02320 Espoo",
-  },
-  {
-    name: "Muu paikka pääkaupunkiseudulla",
-    address: null,
-  },
-];
 
 type DayAvailability = {
   date: string;
@@ -206,22 +141,11 @@ export default function BookingModule() {
   const [date, setDate] = useState<string | null>(null);
   const [slot, setSlot] = useState<Slot | null>(null);
   const [quantity, setQuantity] = useState(1);
-  // Pickup is now driven by a mode toggle: "default" (drop the jet
-  // off at Kipparlahti for the customer) or "delivery" (we deliver to
-  // a chosen ramp elsewhere in the capital region). The legacy
-  // `pickup` string is computed from these so the rest of the
-  // booking flow (review row, summary, submission payload) stays
-  // unchanged.
-  const [pickupMode, setPickupMode] = useState<"default" | "delivery">("default");
-  const [pickupRamp, setPickupRamp] = useState("");
-  const [pickupRampNotes, setPickupRampNotes] = useState("");
-  const pickup = useMemo(() => {
-    if (pickupMode === "default") return DEFAULT_PICKUP;
-    if (!pickupRamp) return "Toimitus muualle";
-    return `Toimitus: ${pickupRamp}${
-      pickupRampNotes.trim() ? " — " + pickupRampNotes.trim() : ""
-    }`;
-  }, [pickupMode, pickupRamp, pickupRampNotes]);
+  // Pickup is now fixed to Tervasaaren satama for every booking
+  // made through the form. Delivery elsewhere requires a phone /
+  // SMS conversation so we can quote the fee and confirm — it's
+  // no longer a self-service option, so the form has no toggle.
+  const pickup = DEFAULT_PICKUP;
   const [notes, setNotes] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -321,14 +245,6 @@ export default function BookingModule() {
     if (companion) {
       if (!isValidFullName(`${companionFirst} ${companionLast}`)) return false;
       if (!isValidBirthdate(companionBirthdate)) return false;
-    }
-    if (pickupMode === "delivery") {
-      if (!pickupRamp.trim()) return false;
-      // "Muu paikka pääkaupunkiseudulla" has no fixed address — that
-      // option is reserved for phone/email co-ordination, not the
-      // self-serve form. Block step 4 to push the user to call us.
-      const ramp = DELIVERY_RAMPS.find((r) => r.name === pickupRamp);
-      if (!ramp || !ramp.address) return false;
     }
     return true;
   }
@@ -467,9 +383,6 @@ export default function BookingModule() {
                   setCompanionFirst("");
                   setCompanionLast("");
                   setCompanionBirthdate("");
-                  setPickupMode("default");
-                  setPickupRamp("");
-                  setPickupRampNotes("");
                   setNotes("");
                 }}
                 date={date!}
@@ -677,205 +590,49 @@ export default function BookingModule() {
                         icon={<MapPin size={16} />}
                         label={t.booking.pickupTitle}
                       >
-                        {/* Pickup-vs-delivery toggle. Same active /
-                            inactive treatment as the quantity and
-                            duration buttons in step 1, so the booking
-                            flow's choice tiles all read as one family. */}
-                        <div className="grid grid-cols-2 gap-3 mb-4">
-                          {(
-                            [
-                              {
-                                mode: "default" as const,
-                                label: t.booking.pickupModeDefault,
-                                hint: t.booking.pickupModeDefaultHint,
-                              },
-                              {
-                                mode: "delivery" as const,
-                                label: t.booking.pickupModeDelivery,
-                                hint: t.booking.pickupModeDeliveryHint,
-                              },
-                            ]
-                          ).map((opt) => {
-                            const active = pickupMode === opt.mode;
-                            return (
-                              <button
-                                type="button"
-                                key={opt.mode}
-                                onClick={() => setPickupMode(opt.mode)}
-                                className={`relative text-left p-4 rounded-2xl border-2 transition-all ${
-                                  active
-                                    ? "border-brand-secondary bg-brand-secondary text-white"
-                                    : "border-brand-primary/30 bg-white text-brand-secondary hover:border-brand-primary"
-                                }`}
-                              >
-                                {active && (
-                                  <span className="absolute top-3 right-3">
-                                    <CheckCircle2
-                                      size={18}
-                                      className="text-brand-primary"
-                                    />
-                                  </span>
-                                )}
-                                <div className="font-display font-extrabold text-base sm:text-lg leading-tight pr-6">
-                                  {opt.label}
-                                </div>
-                                <div
-                                  className={`text-xs mt-1 ${
-                                    active
-                                      ? "text-white/70"
-                                      : "text-brand-secondary/60"
-                                  }`}
-                                >
-                                  {opt.hint}
-                                </div>
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        {pickupMode === "default" ? (
-                          <PickupInfo
-                            withContact={false}
-                            description={t.booking.pickupDefaultBody}
-                          />
-                        ) : (
-                          <div className="rounded-2xl border-2 border-brand-primary/30 bg-white p-4 sm:p-5 space-y-4">
-                            <div>
-                              <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
-                                <span>{t.booking.deliveryRampLabel}</span>
-                                <span
-                                  className="text-brand-primary-600 normal-case tracking-normal"
-                                  aria-hidden
-                                >
-                                  *
-                                </span>
-                              </span>
-                              <select
-                                value={pickupRamp}
-                                onChange={(e) =>
-                                  setPickupRamp(e.target.value)
-                                }
-                                className="booking-input mt-2"
-                              >
-                                <option value="">
-                                  {t.booking.deliveryRampPlaceholder}
-                                </option>
-                                {DELIVERY_RAMPS.map((r) => (
-                                  <option key={r.name} value={r.name}>
-                                    {r.name}
-                                  </option>
-                                ))}
-                              </select>
+                        {/* Pickup is fixed to Tervasaaren satama. The
+                            old self-service delivery picker was
+                            removed — delivery elsewhere now requires
+                            a phone or SMS conversation so we can
+                            quote the extra fee and confirm logistics.
+                            We surface a small contact card below the
+                            pickup info so visitors who need delivery
+                            still see a clear next step. */}
+                        <PickupInfo
+                          withContact={false}
+                          description={t.booking.pickupDefaultBody}
+                        />
+                        <div className="mt-4 rounded-2xl bg-brand-secondary text-white p-4 sm:p-5 relative overflow-hidden">
+                          <div className="absolute inset-0 pattern-grid opacity-25 pointer-events-none" />
+                          <div className="relative">
+                            <div className="font-display font-extrabold text-base sm:text-lg leading-snug">
+                              {t.booking.deliveryOtherTitle}
                             </div>
-
-                            {(() => {
-                              const ramp = DELIVERY_RAMPS.find(
-                                (r) => r.name === pickupRamp,
-                              );
-                              if (!ramp) return null;
-                              if (ramp.address) {
-                                const mapsQuery = encodeURIComponent(
-                                  ramp.address,
-                                );
-                                return (
-                                  <div className="rounded-xl bg-brand-primary-50 border-2 border-brand-primary/40 p-4">
-                                    <div className="flex items-start gap-2.5">
-                                      <MapPin
-                                        size={18}
-                                        className="text-brand-primary-600 mt-0.5 shrink-0"
-                                      />
-                                      <div className="min-w-0">
-                                        <div className="text-[11px] font-bold uppercase tracking-wider text-brand-secondary/70">
-                                          {t.booking.deliveryAddressLabel}
-                                        </div>
-                                        <div className="font-display font-extrabold text-brand-secondary mt-0.5">
-                                          {ramp.address}
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div className="mt-3 flex flex-wrap gap-2">
-                                      <a
-                                        href={`https://www.google.com/maps/search/?api=1&query=${mapsQuery}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
-                                      >
-                                        <MapPin size={14} /> Avaa Google Maps
-                                      </a>
-                                      <a
-                                        href={`https://maps.apple.com/?q=${mapsQuery}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 rounded-xl bg-brand-secondary text-white px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
-                                      >
-                                        <MapPin size={14} /> Avaa Apple Maps
-                                      </a>
-                                    </div>
-                                  </div>
-                                );
-                              }
-                              // "Muu paikka" path — no fixed address, so the
-                              // self-serve form can't take this. Surface
-                              // phone + email so the user contacts us
-                              // directly. canGoStep4() also blocks the next
-                              // button while this card is visible.
-                              return (
-                                <div className="rounded-xl bg-brand-secondary text-white p-4 sm:p-5 relative overflow-hidden">
-                                  <div className="absolute inset-0 pattern-grid opacity-25 pointer-events-none" />
-                                  <div className="relative">
-                                    <div className="font-display font-extrabold text-lg">
-                                      {t.booking.deliveryOtherTitle}
-                                    </div>
-                                    <p className="text-sm text-white/85 mt-1.5 leading-relaxed">
-                                      {t.booking.deliveryOtherBody}
-                                    </p>
-                                    <div className="mt-3 flex flex-wrap gap-2">
-                                      <a
-                                        href="tel:+358401866664"
-                                        className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
-                                      >
-                                        <Phone size={14} /> +358 40 186 6664
-                                      </a>
-                                      <a
-                                        href="mailto:82rentals.info@gmail.com"
-                                        className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
-                                      >
-                                        <Mail size={14} /> 82rentals.info@gmail.com
-                                      </a>
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })()}
-
-                            <div>
-                              <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-brand-secondary/70">
-                                <span>{t.booking.deliveryNotesLabel}</span>
-                                <span className="text-brand-secondary/45 normal-case tracking-normal font-medium">
-                                  (valinnainen)
-                                </span>
-                              </span>
-                              <textarea
-                                value={pickupRampNotes}
-                                onChange={(e) =>
-                                  setPickupRampNotes(e.target.value)
-                                }
-                                rows={4}
-                                placeholder={
-                                  t.booking.deliveryNotesPlaceholder
-                                }
-                                className="booking-input booking-textarea mt-2"
-                              />
-                              <p className="mt-2 inline-flex items-start gap-1.5 text-xs text-brand-secondary/70">
-                                <Info
-                                  size={12}
-                                  className="text-brand-primary-600 mt-0.5 shrink-0"
-                                />
-                                <span>{t.booking.deliveryNotesHint}</span>
-                              </p>
+                            <p className="text-sm text-white/85 mt-1.5 leading-relaxed">
+                              {t.booking.deliveryOtherBody}
+                            </p>
+                            <div className="mt-3 flex flex-wrap gap-2">
+                              <a
+                                href="tel:+358401866664"
+                                className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
+                              >
+                                <Phone size={14} /> +358 40 186 6664
+                              </a>
+                              <a
+                                href="sms:+358401866664"
+                                className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
+                              >
+                                <MessageCircle size={14} /> Tekstaa
+                              </a>
+                              <a
+                                href="mailto:82rentals.info@gmail.com"
+                                className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
+                              >
+                                <Mail size={14} /> 82rentals.info@gmail.com
+                              </a>
                             </div>
                           </div>
-                        )}
+                        </div>
                       </Field>
 
                       <Field
