@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, MapPin, Star } from "lucide-react";
-import { unsplashUrl } from "@/lib/images";
+import { LOCAL_PHOTOS } from "@/lib/images";
 import { FloatingShapes, GeoBurst } from "@/components/Decorations";
 import BrushUnderline from "@/components/BrushUnderline";
 import HeroBackgroundVideo from "@/components/HeroBackgroundVideo";
@@ -23,7 +23,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         <HeroBackgroundVideo
           src="https://videos.pexels.com/video-files/18074526/18074526-hd_1280_720_24fps.mp4"
-          poster={unsplashUrl("jetskiSplash", { w: 2400 })}
+          poster={LOCAL_PHOTOS.ownSpark1}
         />
         {/* Solid color overlays, no gradients */}
         <div className="absolute inset-0 bg-brand-secondary/65" />

@@ -10,7 +10,7 @@ import {
   ArrowRight,
   type LucideIcon,
 } from "lucide-react";
-import { unsplashUrl } from "@/lib/images";
+import { LOCAL_PHOTOS } from "@/lib/images";
 
 const spots = [
   "Hernesaari",
@@ -35,7 +35,7 @@ export default function Delivery() {
           className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-soft"
         >
           <Image
-            src={unsplashUrl("helsinki1", { w: 1800 })}
+            src={LOCAL_PHOTOS.ownSpark2}
             alt="Helsingin rannikko"
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"

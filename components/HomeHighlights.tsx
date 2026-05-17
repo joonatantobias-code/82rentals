@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import { LOCAL_PHOTOS, unsplashUrl } from "@/lib/images";
+import { LOCAL_PHOTOS } from "@/lib/images";
 import BrushUnderline from "@/components/BrushUnderline";
 import { useT } from "@/components/LocaleProvider";
 
@@ -13,7 +13,7 @@ export default function HomeHighlights() {
   const cardConfig = [
     { href: "/vesijettimme", photo: LOCAL_PHOTOS.coupleAction },
     { href: "/hinnasto", photo: LOCAL_PHOTOS.yellowRider },
-    { href: "/meista", photo: unsplashUrl("helsinki1", { w: 1400 }) },
+    { href: "/meista", photo: LOCAL_PHOTOS.founders },
   ];
 
   return (
