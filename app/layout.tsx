@@ -72,12 +72,16 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     locale: "fi_FI",
     alternateLocale: ["en_US"],
+    // Real Helsinki photo of the team on our green Sea-Doo at
+    // Pohjoisranta marina — replaces the previous auto-generated
+    // gradient card so Google Search, Facebook, LinkedIn,
+    // WhatsApp and Discord all show an authentic brand shot.
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "82Rentals — Vesijettivuokraus Helsinki",
+        url: "/skuutit/og-helsinki.jpg",
+        width: 1600,
+        height: 1600,
+        alt: "82Rentals — vesijettivuokraus Helsingin Pohjoisrannassa",
       },
     ],
   },
@@ -86,7 +90,7 @@ export const metadata: Metadata = {
     title: "Vesijettivuokraus Helsinki - 82Rentals Oy",
     description:
       "Vesijetin vuokraus Helsingissä. Lähtö Kipparlahden satamasta, polttoaine ja vakuutus sisältyy. Avajaistarjous alkaen 119 €.",
-    images: ["/opengraph-image"],
+    images: ["/skuutit/og-helsinki.jpg"],
   },
   icons: {
     icon: "/logo.png",

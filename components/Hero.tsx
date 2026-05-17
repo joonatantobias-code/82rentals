@@ -23,7 +23,7 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         <HeroBackgroundVideo
           src="https://videos.pexels.com/video-files/18074526/18074526-hd_1280_720_24fps.mp4"
-          poster={LOCAL_PHOTOS.ownSpark1}
+          poster={LOCAL_PHOTOS.heroPoster}
         />
         {/* Solid color overlays, no gradients */}
         <div className="absolute inset-0 bg-brand-secondary/65" />

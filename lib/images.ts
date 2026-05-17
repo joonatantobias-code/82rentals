@@ -28,4 +28,14 @@ export const LOCAL_PHOTOS = {
   ownSpark5: "/skuutit/seinajoki-5.jpg",
   ownSpark6: "/skuutit/seinajoki-6.jpg",
   ownSpark7: "/skuutit/seinajoki-7.jpg",
+  // First-frame poster extracted from the hero background video,
+  // so when the <video> hasn't yet decoded the visible image is
+  // a still from the same clip — never a stock filler.
+  heroPoster: "/skuutit/hero-poster.jpg",
+  // Open Graph / Google Search thumbnail: real photo of the team
+  // on the green Sea-Doo Spark at the Pohjoisranta marina,
+  // central Helsinki skyline behind. Replaces the previously
+  // auto-generated gradient OG card so the SERP / social shares
+  // show an authentic brand image.
+  ogHelsinki: "/skuutit/og-helsinki.jpg",
 } as const;
