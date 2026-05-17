@@ -241,12 +241,12 @@ function TikTokOverlay() {
 function RailAvatar() {
   return (
     <div className="relative">
-      <div className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white bg-brand-deep grid place-items-center">
+      <div className="h-9 w-9 rounded-full overflow-hidden ring-2 ring-white bg-white grid place-items-center">
         <img
           src="/logo.png"
           alt=""
           aria-hidden
-          className="object-contain w-[70%] h-[70%]"
+          className="object-contain w-[80%] h-[80%]"
         />
       </div>
       {/* The "+" subscribe button that sits on the avatar's
