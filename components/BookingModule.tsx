@@ -401,34 +401,40 @@ export default function BookingModule() {
                         icon={<Users size={16} />}
                         label={t.booking.qtyTitle}
                       >
-                        <div className="grid grid-cols-2 gap-3">
-                          {[1, 2].map((n) => {
+                        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                          {[1, 2, 3].map((n) => {
                             const active = quantity === n;
+                            const peopleLabel =
+                              n === 1
+                                ? t.booking.qty1People
+                                : n === 2
+                                  ? t.booking.qty2People
+                                  : t.booking.qty3People;
                             return (
                               <button
                                 type="button"
                                 key={n}
                                 onClick={() => setQuantity(n)}
-                                className={`relative p-4 sm:p-5 rounded-2xl border-2 transition-all flex flex-col items-center text-center ${
+                                className={`relative p-3 sm:p-5 rounded-2xl border-2 transition-all flex flex-col items-center text-center ${
                                   active
                                     ? "border-brand-secondary bg-brand-secondary text-white"
                                     : "border-brand-primary/30 bg-white text-brand-secondary hover:border-brand-primary"
                                 }`}
                               >
                                 {active && (
-                                  <span className="absolute top-3 right-3">
-                                    <CheckCircle2 size={18} className="text-brand-primary" />
+                                  <span className="absolute top-2 right-2">
+                                    <CheckCircle2 size={16} className="text-brand-primary" />
                                   </span>
                                 )}
-                                <span className="font-display text-3xl sm:text-4xl font-extrabold leading-none">
+                                <span className="font-display text-2xl sm:text-4xl font-extrabold leading-none">
                                   {n}
                                 </span>
                                 <span
-                                  className={`text-[11px] mt-2 ${
+                                  className={`text-[10px] sm:text-[11px] mt-2 leading-tight ${
                                     active ? "text-white/70" : "text-brand-secondary/55"
                                   }`}
                                 >
-                                  {n === 1 ? t.booking.qty1People : t.booking.qty2People}
+                                  {peopleLabel}
                                 </span>
                               </button>
                             );
@@ -1478,11 +1484,40 @@ function SlotGrid({
   t: T;
 }) {
   if (!day) return null;
-  // Filter out fully-booked slots entirely so the customer never sees
-  // a "Varattu" tile — taken hours just don't appear in the picker.
-  const available = validStarts.filter(
-    (s) => (day.slots[s] ?? MAX_QUANTITY) > 0,
+  // Filter out:
+  //   1. Fully-booked slots — taken hours don't appear in the picker.
+  //   2. On today's date, slots whose start time has already passed
+  //      in Helsinki local time. Reading "ilta 21" at 19:30 used to
+  //      let you book the 21:00 start which is fine, but the same
+  //      list also showed 09:00 / 10:00 which had already passed —
+  //      booking those would silently land in the CRM as an
+  //      impossible time. We compare in Europe/Helsinki since the
+  //      slot strings are in Helsinki-local hours.
+  const helsinkiNow = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "Europe/Helsinki" }),
   );
+  const todayKey = new Intl.DateTimeFormat("sv-SE", {
+    timeZone: "Europe/Helsinki",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  const isToday = day.date === todayKey;
+  const nowHour = helsinkiNow.getHours();
+  const nowMinute = helsinkiNow.getMinutes();
+  const available = validStarts.filter((s) => {
+    if ((day.slots[s] ?? MAX_QUANTITY) <= 0) return false;
+    if (isToday) {
+      // Slot "HH:00" — drop any slot whose start is already in the
+      // past (or right now: keep a couple-min buffer so a late
+      // click on a slot that's literally seconds away doesn't slip
+      // through).
+      const slotHour = parseInt(s.slice(0, 2), 10);
+      if (slotHour < nowHour) return false;
+      if (slotHour === nowHour && nowMinute >= 0) return false;
+    }
+    return true;
+  });
   if (validStarts.length === 0 || available.length === 0) {
     return (
       <p className="text-sm text-brand-secondary/70">
