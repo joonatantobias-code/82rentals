@@ -404,18 +404,12 @@ export default function BookingModule() {
                         <div className="grid grid-cols-3 gap-2 sm:gap-3">
                           {[1, 2, 3].map((n) => {
                             const active = quantity === n;
-                            const peopleLabel =
-                              n === 1
-                                ? t.booking.qty1People
-                                : n === 2
-                                  ? t.booking.qty2People
-                                  : t.booking.qty3People;
                             return (
                               <button
                                 type="button"
                                 key={n}
                                 onClick={() => setQuantity(n)}
-                                className={`relative p-3 sm:p-5 rounded-2xl border-2 transition-all flex flex-col items-center text-center ${
+                                className={`relative p-3 sm:p-5 rounded-2xl border-2 transition-all flex items-center justify-center text-center ${
                                   active
                                     ? "border-brand-secondary bg-brand-secondary text-white"
                                     : "border-brand-primary/30 bg-white text-brand-secondary hover:border-brand-primary"
@@ -428,13 +422,6 @@ export default function BookingModule() {
                                 )}
                                 <span className="font-display text-2xl sm:text-4xl font-extrabold leading-none">
                                   {n}
-                                </span>
-                                <span
-                                  className={`text-[10px] sm:text-[11px] mt-2 leading-tight ${
-                                    active ? "text-white/70" : "text-brand-secondary/55"
-                                  }`}
-                                >
-                                  {peopleLabel}
                                 </span>
                               </button>
                             );

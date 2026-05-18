@@ -230,7 +230,7 @@ export const dictionary = {
       qty2People: "3–4 hengelle",
       qty3People: "5–6 hengelle",
       qtyHelper:
-        "Yhdelle vesijetille mahtuu 1 tai 2 henkilöä. Otatte tarpeen mukaan yhden, kaksi tai kaikki kolme — kalustossa on yhteensä kolme vesijettiä, ja kaikki ovat aina saatavilla.",
+        "Kalustossa on 3 vesijettiä ja kaikki ovat aina saatavilla. Yhden päälle mahtuu joko 1–2 henkilöä tai 180 kg yhteensä.",
       durationTitle: "Kuinka pitkä ajo?",
       includedLine: "Polttoaine sisältyy",
       offerBadge: "Avajaistarjous",
@@ -881,7 +881,7 @@ export const dictionary = {
       qty2People: "For 3–4 people",
       qty3People: "For 5–6 people",
       qtyHelper:
-        "One jet ski fits 1 or 2 people. Take one, two, or all three — our fleet has three jet skis in total, and all of them are always available.",
+        "We have 3 jet skis and all of them are always available. Each one fits 1–2 people or 180 kg in total.",
       durationTitle: "How long do you want to ride?",
       includedLine: "Fuel included",
       offerBadge: "Opening offer",
