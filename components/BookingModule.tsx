@@ -16,7 +16,6 @@ import {
   ArrowLeft,
   Phone,
   Mail,
-  MessageCircle,
   User as UserIcon,
   MapPin,
   Info,
@@ -610,12 +609,6 @@ export default function BookingModule() {
                                 className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
                               >
                                 <Phone size={14} /> +358 40 186 6664
-                              </a>
-                              <a
-                                href="sms:+358401866664"
-                                className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
-                              >
-                                <MessageCircle size={14} /> Tekstaa
                               </a>
                               <a
                                 href="mailto:82rentals.info@gmail.com"
@@ -1607,41 +1600,72 @@ function BirthdatePicker({
   t: T;
   autoCompletePrefix?: string;
 }) {
-  const parts = value.split("-");
-  const year = parts[0] ?? "";
-  const month = parts[1] ?? "";
-  const day = parts[2] ?? "";
+  // Three locally-held select values. Earlier version derived all
+  // three from props.value, but value is only meaningful once all
+  // three are set — meaning a single pick (e.g. just year) would
+  // commit "" upstream, which then re-read into local state and
+  // wiped the dropdown back to placeholder. Holding the parts in
+  // local state lets partial selections persist visually while
+  // we only emit a full ISO date upward.
+  const initialParts = value ? value.split("-") : ["", "", ""];
+  const [year, setYear] = useState(initialParts[0] ?? "");
+  const [month, setMonth] = useState(initialParts[1] ?? "");
+  const [day, setDay] = useState(initialParts[2] ?? "");
+
+  // Sync FROM parent: adopt the incoming value when it changes
+  // externally (form reset, edit-existing flow). Skip when the
+  // incoming value is the same composition we would emit locally,
+  // so picking a single part doesn't clobber itself.
+  const local =
+    year && month && day
+      ? `${year.padStart(4, "0")}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`
+      : "";
+  useEffect(() => {
+    if (value === local) return;
+    if (value === "") {
+      // Parent cleared its value. Only also clear locally if we
+      // had previously emitted a full date — don't clobber a
+      // mid-edit partial selection.
+      if (local) {
+        setYear("");
+        setMonth("");
+        setDay("");
+      }
+      return;
+    }
+    const p = value.split("-");
+    setYear(p[0] ?? "");
+    setMonth(p[1] ?? "");
+    setDay(p[2] ?? "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
+  // Sync TO parent + day-clamp when month/year shrink the
+  // calendar (e.g. user had day=31, then picked February).
+  useEffect(() => {
+    if (year && month && day) {
+      const max = new Date(Number(year), Number(month), 0).getDate();
+      if (Number(day) > max) {
+        setDay(String(max));
+        return; // re-runs after the clamp commits
+      }
+      const composed = `${year.padStart(4, "0")}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      if (composed !== value) onChange(composed);
+    } else if (value !== "") {
+      onChange("");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [year, month, day]);
 
   const thisYear = new Date().getFullYear();
   const years: number[] = [];
   for (let y = thisYear - 6; y >= thisYear - 95; y--) years.push(y);
 
-  // Days available depend on (year, month). Default to 31 if either
-  // is missing so the user can still pick a value first; we clamp
-  // after both are known.
   const monthInt = Number(month);
   const yearInt = Number(year);
   const dayCount =
     monthInt && yearInt ? new Date(yearInt, monthInt, 0).getDate() : 31;
   const days: number[] = Array.from({ length: dayCount }, (_, i) => i + 1);
-
-  function commit(next: { y?: string; m?: string; d?: string }) {
-    const y = next.y ?? year;
-    const m = next.m ?? month;
-    let d = next.d ?? day;
-    // Re-clamp day if month/year change shrinks the calendar.
-    if (y && m && d) {
-      const max = new Date(Number(y), Number(m), 0).getDate();
-      if (Number(d) > max) d = String(max);
-    }
-    if (y && m && d) {
-      onChange(
-        `${y.padStart(4, "0")}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`,
-      );
-    } else {
-      onChange("");
-    }
-  }
 
   const cls = `booking-input ${hasError ? "!border-red-400" : ""}`;
   const auto = autoCompletePrefix;
@@ -1650,7 +1674,7 @@ function BirthdatePicker({
     <div className="grid grid-cols-3 gap-2">
       <select
         value={day}
-        onChange={(e) => commit({ d: e.target.value })}
+        onChange={(e) => setDay(e.target.value)}
         className={cls}
         autoComplete={auto ? `${auto}-day` : "off"}
         aria-invalid={hasError ? true : undefined}
@@ -1665,7 +1689,7 @@ function BirthdatePicker({
       </select>
       <select
         value={month}
-        onChange={(e) => commit({ m: e.target.value })}
+        onChange={(e) => setMonth(e.target.value)}
         className={cls}
         autoComplete={auto ? `${auto}-month` : "off"}
         aria-invalid={hasError ? true : undefined}
@@ -1680,7 +1704,7 @@ function BirthdatePicker({
       </select>
       <select
         value={year}
-        onChange={(e) => commit({ y: e.target.value })}
+        onChange={(e) => setYear(e.target.value)}
         className={cls}
         autoComplete={auto ? `${auto}-year` : "off"}
         aria-invalid={hasError ? true : undefined}
