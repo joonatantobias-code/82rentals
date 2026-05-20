@@ -307,6 +307,23 @@ export default function BookingModule() {
       if (!res.ok || !data.ok)
         throw new Error(data.error || "Booking failed");
       setStatus("success");
+
+      // Google Ads purchase-conversion event. Fires exactly
+      // once per completed booking, so Ads can attribute the
+      // booking back to the click that brought the visitor in.
+      // Conversion label EU6rCNecvbAcEMuzuttD lives under the
+      // AW-18176973259 property. value = total in EUR,
+      // transaction_id = booking id so Ads can de-dupe if the
+      // same conversion fires from multiple surfaces (e.g.
+      // confirmation email retry).
+      if (typeof window !== "undefined" && typeof window.gtag === "function") {
+        window.gtag("event", "conversion", {
+          send_to: "AW-18176973259/EU6rCNecvbAcEMuzuttD",
+          value: price.total,
+          currency: "EUR",
+          transaction_id: data.bookingId ? String(data.bookingId) : "",
+        });
+      }
     } catch (err) {
       setStatus("error");
       setErrorMsg(err instanceof Error ? err.message : "Something went wrong");
