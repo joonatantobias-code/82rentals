@@ -1,11 +1,19 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Poppins } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LocaleProvider from "@/components/LocaleProvider";
 import JsonLd from "@/components/JsonLd";
 import { SITE_URL, SITE_NAME } from "@/lib/seo";
+
+/** Google Ads conversion / remarketing tag. Loaded once globally
+ *  via next/script with strategy="afterInteractive" so it
+ *  doesn't block first paint but is in place by the time the
+ *  user interacts. Same property covers every route since the
+ *  script lives in the root layout. */
+const GOOGLE_ADS_ID = "AW-18176973259";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -267,6 +275,24 @@ export default function RootLayout({
         <JsonLd data={organizationJsonLd} />
       </head>
       <body className="font-sans bg-brand-bg text-brand-text antialiased overflow-x-clip">
+        {/* Google Ads tag (AW-18176973259). next/script wraps the
+            two snippets Google provides — async loader + inline
+            config — so they execute exactly once per session and
+            survive client-side route changes. */}
+        <Script
+          id="google-ads-loader"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-ads-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GOOGLE_ADS_ID}');
+          `}
+        </Script>
+
         <LocaleProvider>
           <Navbar />
           <main>{children}</main>
