@@ -75,6 +75,13 @@ export default function Product() {
     text: page.features[i].text,
   }));
   const [active, setActive] = useState(0);
+  // One flag per gallery slot — true once Next/Image has decoded
+  // that photo. Drives the shimmer skeleton fade-out. We bias
+  // the *first* slot to "not loaded yet" on mount so the
+  // skeleton is up immediately during the first paint.
+  const [loaded, setLoaded] = useState<boolean[]>(() =>
+    gallery.map(() => false),
+  );
 
   // Auto-advance the gallery every 5 s. The timeout is rebound on every
   // `active` change so a manual thumbnail click effectively resets the
@@ -115,11 +122,30 @@ export default function Product() {
               decorative spinning dotted ring + "Suosituin" sticker were
               fighting the photography for attention; both are gone. */}
           <div className="relative aspect-[5/4] w-full rounded-2xl overflow-hidden shadow-soft bg-brand-primary-50 ring-1 ring-black/5">
+            {/* Shimmer skeleton — visible whenever the currently
+                active image hasn't decoded yet. Sea-Doo photos
+                are ~500 KB each and Next/Image still has to run
+                the optimizer on first hit, so this card otherwise
+                sat as a flat blue rectangle for 1-2 s on slow
+                connections. The diagonal sky/turquoise sweep
+                pulses at 1.6 s while we wait and fades on load. */}
+            <div
+              aria-hidden
+              className={`absolute inset-0 transition-opacity duration-500 ${
+                loaded[active] ? "opacity-0" : "opacity-100"
+              }`}
+              style={{
+                backgroundImage:
+                  "linear-gradient(110deg, rgba(110,198,255,0.18) 0%, rgba(110,198,255,0.36) 40%, rgba(29,211,176,0.30) 60%, rgba(110,198,255,0.18) 100%)",
+                backgroundSize: "200% 100%",
+                animation: "product-shimmer 1.6s ease-in-out infinite",
+              }}
+            />
             {gallery.map((src, i) => (
               <motion.div
                 key={src}
                 initial={false}
-                animate={{ opacity: i === active ? 1 : 0 }}
+                animate={{ opacity: i === active && loaded[i] ? 1 : 0 }}
                 transition={{ duration: 0.45 }}
                 className="absolute inset-0"
               >
@@ -130,6 +156,14 @@ export default function Product() {
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-cover"
                   priority={i === 0}
+                  onLoadingComplete={() =>
+                    setLoaded((prev) => {
+                      if (prev[i]) return prev;
+                      const next = [...prev];
+                      next[i] = true;
+                      return next;
+                    })
+                  }
                 />
               </motion.div>
             ))}
@@ -139,6 +173,12 @@ export default function Product() {
               aria-hidden
               className="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-inset ring-black/10"
             />
+            <style jsx>{`
+              @keyframes product-shimmer {
+                0% { background-position: 200% 0; }
+                100% { background-position: -200% 0; }
+              }
+            `}</style>
           </div>
 
           <div className="mt-4 grid grid-cols-4 gap-2 sm:gap-3">
