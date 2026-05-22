@@ -184,11 +184,11 @@ export default function Pricing() {
               </a>
               {" "}·{" "}
               <a
-                href="mailto:82rentals.info@gmail.com"
+                href="mailto:asiakaspalvelu@82rentals.com"
                 className="underline decoration-brand-primary/60 underline-offset-2 hover:text-brand-primary inline-flex items-center gap-1"
               >
                 <Mail size={12} />
-                82rentals.info@gmail.com
+                asiakaspalvelu@82rentals.com
               </a>
             </p>
           </div>

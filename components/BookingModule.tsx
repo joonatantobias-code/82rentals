@@ -628,10 +628,10 @@ export default function BookingModule() {
                                 <Phone size={14} /> +358 40 186 6664
                               </a>
                               <a
-                                href="mailto:82rentals.info@gmail.com"
+                                href="mailto:asiakaspalvelu@82rentals.com"
                                 className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
                               >
-                                <Mail size={14} /> 82rentals.info@gmail.com
+                                <Mail size={14} /> asiakaspalvelu@82rentals.com
                               </a>
                             </div>
                           </div>
@@ -1220,11 +1220,11 @@ function ContactNote({
               +358 40 186 6664
             </a>
             <a
-              href="mailto:82rentals.info@gmail.com"
+              href="mailto:asiakaspalvelu@82rentals.com"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-secondary text-white text-sm font-semibold px-4 py-2.5 transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
             >
               <Mail size={14} />
-              82rentals.info@gmail.com
+              asiakaspalvelu@82rentals.com
             </a>
           </div>
         </div>

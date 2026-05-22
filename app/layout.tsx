@@ -143,7 +143,7 @@ const localBusinessJsonLd = {
   logo: `${SITE_URL}/logo.png`,
   image: [`${SITE_URL}/logo.png`, `${SITE_URL}/Aloitusvideo-poster.jpg`],
   telephone: "+358401866664",
-  email: "82rentals.info@gmail.com",
+  email: "asiakaspalvelu@82rentals.com",
   // Finnish business ID (Y-tunnus). Helps Google match the
   // organisation across PRH / Kauppalehti / YTJ records and
   // confirms the SERP listing is a real registered business.
@@ -254,7 +254,7 @@ const organizationJsonLd = {
     {
       "@type": "ContactPoint",
       telephone: "+358401866664",
-      email: "82rentals.info@gmail.com",
+      email: "asiakaspalvelu@82rentals.com",
       contactType: "customer service",
       areaServed: "FI",
       availableLanguage: ["fi", "en"],

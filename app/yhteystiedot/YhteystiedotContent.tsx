@@ -45,8 +45,8 @@ export default function YhteystiedotContent() {
           <ContactRow
             icon={Mail}
             label={t.common.email}
-            value="82rentals.info@gmail.com"
-            href="mailto:82rentals.info@gmail.com"
+            value="asiakaspalvelu@82rentals.com"
+            href="mailto:asiakaspalvelu@82rentals.com"
             hint={page.emailHint}
             color="bg-brand-turquoise"
           />

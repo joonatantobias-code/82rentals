@@ -19,7 +19,7 @@ export const COMPANY = {
   businessId: "3624385-6",
   address: "Tervasaari, 00170 Helsinki",
   phone: "+358 40 186 6664",
-  email: "info@82rentals.com",
+  email: "asiakaspalvelu@82rentals.com",
   website: "82rentals.com",
 };
 

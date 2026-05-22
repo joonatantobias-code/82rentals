@@ -6,7 +6,7 @@ import { SITE_URL, buildPageMetadata, breadcrumbJsonLd } from "@/lib/seo";
 export const metadata: Metadata = buildPageMetadata({
   title: "Yhteystiedot",
   description:
-    "Ota yhteyttä 82Rentals. Soita +358 40 186 6664, laita sähköpostia 82rentals.info@gmail.com tai löydä meidät somesta.",
+    "Ota yhteyttä 82Rentals. Soita +358 40 186 6664, laita sähköpostia asiakaspalvelu@82rentals.com tai löydä meidät somesta.",
   path: "/yhteystiedot",
   ogTitle: "Yhteystiedot · 82Rentals",
 });

@@ -89,7 +89,7 @@ export default function Footer() {
               <Phone size={18} />
             </a>
             <a
-              href="mailto:82rentals.info@gmail.com"
+              href="mailto:asiakaspalvelu@82rentals.com"
               className="h-11 w-11 rounded-xl bg-white/10 hover:bg-brand-primary hover:text-brand-secondary text-white grid place-items-center transition-colors"
               aria-label={t.common.email}
             >
@@ -153,10 +153,10 @@ export default function Footer() {
             <li className="flex items-start gap-2.5">
               <Mail size={16} className="text-brand-primary mt-0.5" />
               <a
-                href="mailto:82rentals.info@gmail.com"
+                href="mailto:asiakaspalvelu@82rentals.com"
                 className="hover:text-brand-primary transition-colors"
               >
-                82rentals.info@gmail.com
+                asiakaspalvelu@82rentals.com
               </a>
             </li>
           </ul>
