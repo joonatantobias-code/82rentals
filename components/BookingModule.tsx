@@ -349,7 +349,7 @@ export default function BookingModule() {
   return (
     <section
       id="book"
-      className="relative z-20 px-4 sm:px-6 md:px-8 py-10 md:py-16"
+      className="relative z-20 px-4 sm:px-6 md:px-8 py-10 md:py-16 overflow-x-clip"
     >
       <motion.div
         ref={cardRef}
@@ -620,18 +620,18 @@ export default function BookingModule() {
                             <p className="text-sm text-white/85 mt-1.5 leading-relaxed">
                               {t.booking.deliveryOtherBody}
                             </p>
-                            <div className="mt-3 flex flex-wrap gap-2">
+                            <div className="mt-3 flex flex-col sm:flex-row sm:flex-wrap gap-2 min-w-0">
                               <a
                                 href="tel:+358401866664"
-                                className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
+                                className="flex sm:inline-flex w-full sm:w-auto items-center justify-center sm:justify-start gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
                               >
-                                <Phone size={14} /> +358 40 186 6664
+                                <Phone size={14} className="shrink-0" /> <span>+358 40 186 6664</span>
                               </a>
                               <a
                                 href="mailto:asiakaspalvelu@82rentals.com"
-                                className="inline-flex items-center gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
+                                className="flex sm:inline-flex w-full sm:w-auto min-w-0 items-center justify-center sm:justify-start gap-2 rounded-xl bg-brand-primary text-brand-secondary px-3 h-10 text-sm font-semibold transition-all hover:bg-white hover:ring-2 hover:ring-brand-primary"
                               >
-                                <Mail size={14} /> asiakaspalvelu@82rentals.com
+                                <Mail size={14} className="shrink-0" /> <span className="truncate">asiakaspalvelu@82rentals.com</span>
                               </a>
                             </div>
                           </div>
@@ -1211,20 +1211,20 @@ function ContactNote({
           <p className="text-xs sm:text-sm text-brand-secondary/75 mt-1 leading-relaxed">
             {body}
           </p>
-          <div className="flex flex-col sm:flex-row gap-2 mt-3">
+          <div className="flex flex-col sm:flex-row gap-2 mt-3 min-w-0">
             <a
               href="tel:+358401866664"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-secondary text-white text-sm font-semibold px-4 py-2.5 transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
+              className="flex sm:inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-brand-secondary text-white text-sm font-semibold px-3 sm:px-4 py-2.5 transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
             >
-              <Phone size={14} />
-              +358 40 186 6664
+              <Phone size={14} className="shrink-0" />
+              <span>+358 40 186 6664</span>
             </a>
             <a
               href="mailto:asiakaspalvelu@82rentals.com"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-secondary text-white text-sm font-semibold px-4 py-2.5 transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
+              className="flex sm:inline-flex w-full sm:w-auto min-w-0 items-center justify-center gap-2 rounded-xl bg-brand-secondary text-white text-sm font-semibold px-3 sm:px-4 py-2.5 transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary"
             >
-              <Mail size={14} />
-              asiakaspalvelu@82rentals.com
+              <Mail size={14} className="shrink-0" />
+              <span className="truncate">asiakaspalvelu@82rentals.com</span>
             </a>
           </div>
         </div>

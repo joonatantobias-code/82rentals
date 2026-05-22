@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     template: "%s | Vesijettivuokraus Helsinki - 82Rentals Oy",
   },
   description:
-    "Vuokraa vesijetti Helsingissä helposti netistä. Lähtö Tervasaaren satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Avajaistarjous: 1h 119 €, 2h 199 €, 3h 279 €. Jet ski rental in Helsinki — book online.",
+    "Vuokraa vesijetti Helsingissä helposti netistä. Lähtö Tervasaaren satamasta tai ilmainen toimitus pääkaupunkiseudulle. Polttoaine, pelastusliivit ja vakuutus aina hintaan. Avajaistarjous: 1h 119 €, 2h 199 €, 3h 249 €. Jet ski rental in Helsinki — book online.",
   applicationName: SITE_NAME,
   keywords: [
     "vesijettivuokraus Helsinki",
@@ -221,7 +221,7 @@ const localBusinessJsonLd = {
     {
       "@type": "Offer",
       name: "3 tunnin vuokra (polttoaine sisältyy)",
-      price: "279",
+      price: "249",
       priceCurrency: "EUR",
       url: `${SITE_URL}/varaa`,
     },

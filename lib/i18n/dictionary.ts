@@ -36,7 +36,7 @@ export const dictionary = {
     },
     announcement: {
       eyebrow: "Avajaisalennukset",
-      headline: "1h 119 €  ·  2h 199 €  ·  3h 279 €",
+      headline: "1h 119 €  ·  2h 199 €  ·  3h 249 €",
       tagline: "Säästä jopa 70 € · polttoaine ja toimitus aina hintaan",
       cta: "Varaa tarjoushintaan",
       mobileShort: "Avajaisalennukset · alkaen 119 €",
@@ -688,7 +688,7 @@ export const dictionary = {
     },
     announcement: {
       eyebrow: "Opening offer",
-      headline: "1h €119  ·  2h €199  ·  3h €279",
+      headline: "1h €119  ·  2h €199  ·  3h €249",
       tagline: "Save up to €70 · fuel and delivery always included",
       cta: "Book the offer",
       mobileShort: "Opening offer · from €119",

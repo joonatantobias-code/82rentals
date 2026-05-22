@@ -25,7 +25,7 @@ const productJsonLd = {
     "@type": "AggregateOffer",
     priceCurrency: "EUR",
     lowPrice: "119",
-    highPrice: "279",
+    highPrice: "249",
     offerCount: 3,
     availability: "https://schema.org/InStock",
     url: `${SITE_URL}/varaa`,

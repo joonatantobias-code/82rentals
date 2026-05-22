@@ -25,10 +25,10 @@ export const DURATIONS: {
  *  muualle erillisellä sopimuksella. */
 export const BASE_PRICES: Record<Duration, number> = {
   // Hinnoittelu: 1 h = 119 €, jokainen seuraava tunti +80 €.
-  // → 2 h = 199 €, 3 h = 279 €.
+  // → 2 h = 199 €, 3 h = 249 €.
   "1h": 119,
   "2h": 199,
-  "3h": 279,
+  "3h": 249,
 };
 
 /** "Listahinta" jota vasten avajaisalennuksen säästö lasketaan.
