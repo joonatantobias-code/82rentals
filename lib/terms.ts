@@ -11,13 +11,16 @@ export type TermsLocale = "fi" | "en";
  * Subsections are inlined and prefixed with the dotted number so the
  * structure mirrors a paper contract.
  */
-export const TERMS_VERSION = "2.0";
-export const TERMS_UPDATED = "2026-05-11";
+export const TERMS_VERSION = "2.1";
+export const TERMS_UPDATED = "2026-05-23";
 
 export const COMPANY = {
   name: "82Rentals Oy",
   businessId: "3624385-6",
-  address: "Tervasaari, 00170 Helsinki",
+  // Legal / registered business address. Pickups still happen at
+  // Tervasaaren satama — that's a separate pickup label set in
+  // lib/pickup.ts / lib/harbors.ts, not the company address.
+  address: "Lapinlahdenkatu 12 B 29, 00180 Helsinki",
   phone: "+358 40 186 6664",
   email: "asiakaspalvelu@82rentals.com",
   website: "82rentals.com",
@@ -41,8 +44,8 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         id: "1",
         heading: "1. Sopimuksen osapuolet ja kohde",
         body: [
-          `1.1. Vuokranantaja on ${COMPANY.name}, Y-tunnus ${COMPANY.businessId}, osoite ${COMPANY.address}. Yhteyspuhelin ${COMPANY.phone} ja sähköposti ${COMPANY.email}.`,
-          `1.2. Vuokralainen on luonnollinen henkilö tai oikeushenkilö, joka tekee varauksen 82Rentals Oy:n verkkosivuilla osoitteessa ${COMPANY.website}, puhelimitse tai sähköpostitse ja jonka tiedot kirjataan vuokrasopimukseen.`,
+          `1.1. Vuokranantaja on ${COMPANY.name}, Y-tunnus ${COMPANY.businessId}, osoite ${COMPANY.address}. Yhteyspuhelin on ${COMPANY.phone} ja sähköposti ${COMPANY.email}.`,
+          `1.2. Vuokralainen on luonnollinen henkilö tai oikeushenkilö, joka tekee varauksen 82Rentals Oy:n verkkosivuilla osoitteessa ${COMPANY.website}, puhelimitse tai sähköpostitse (tai muulla asiaankuuluvalla tavalla) ja jonka tiedot kirjataan vuokrasopimukseen.`,
           `1.3. Sopimuksen kohteena on yksilöity vesijetti varusteineen (jäljempänä "laitteisto"). Laitteiston tarkka merkki, malli, rekisteritunnus ja mahdolliset oheisvarusteet kirjataan ennen vuokra-ajan alkua tehtävään luovutustarkastukseen.`,
         ].join("\n\n"),
       },
@@ -52,7 +55,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         body: [
           `2.1. Vuokranantajalla tarkoitetaan kohdassa 1 yksilöityä yritystä, joka tarjoaa vesijetin vuokrauspalvelua kulloinkin saatavilla olevasta valikoimastaan.`,
           `2.2. Vuokralaisella tarkoitetaan henkilöä tai oikeushenkilöä, joka vuokraa laitteiston omaan käyttöönsä ja vastaa tämän sopimuksen mukaisista velvoitteista.`,
-          `2.3. Laitteistolla tarkoitetaan vuokrauksen kohteena olevaa vesijettiä, sen lisävarusteita (pelastusliivit, paikannin, käynnistysavain tms.) sekä mahdollisia kuljetukseen liittyviä apuvälineitä.`,
+          `2.3. Laitteistolla tarkoitetaan vuokrauksen kohteena olevaa vesijettiä, sen lisävarusteita (pelastusliivi, käynnistysavain, kuivapussi tms.) sekä mahdollisia kuljetukseen liittyviä apuvälineitä.`,
           `2.4. Vuokrakaudella tarkoitetaan sopimukseen kirjattua aikaväliä, jonka asiakas pitää laitteistoa hallussaan ja jonka aikana käyttöoikeus on voimassa.`,
           `2.5. Vuokrauspaikalla tarkoitetaan paikkaa, jossa laitteisto luovutetaan asiakkaalle ja jonne se palautetaan vuokra-ajan päätyttyä, ellei kirjallisesti toisin sovita.`,
         ].join("\n\n"),
@@ -72,8 +75,8 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         body: [
           `4.1. Vuokra-aika alkaa luovutusta seuraavasta vuokrasopimukseen kirjatusta ajankohdasta ja päättyy sovittuna ajankohtana. Vuokralainen on velvollinen palauttamaan laitteiston vuokra-ajan päättyessä siihen paikkaan ja sellaisessa kunnossa, kuin se on luovutushetkellä asiakkaalle annettu.`,
           `4.2. Laitteistoa ei luovuteta ennen vuokra-ajan alkua, eikä vuokranantaja ole velvollinen palauttamaan vuokraa tai antamaan hyvitystä, mikäli vuokralainen myöhästyy luovutuksesta omasta syystään.`,
-          `4.3. Mikäli vuokralainen palauttaa laitteiston myöhässä yli vuokra-ajan, peritään myöhästymismaksuna 100,00 € alkavalta tunnilta (ALV 25,5 %). Muista kuin vuokra-ajan ylittämisestä johtuvista palautusviiveistä sovitaan tapauskohtaisesti.`,
-          `4.4. Vuokranantajalla on oikeus pidättää laitteisto luovuttamatta tai keskeyttää vuokraus, jos asiakas ei täytä luovutushetkellä näitä ehtoja, esimerkiksi puuttuvan henkilöllisyystodistuksen, päihtymyksen tai ikävaatimuksen vastaisen tilanteen johdosta. Tällöin vuokraa ei palauteta.`,
+          `4.3. Mikäli vuokralainen palauttaa laitteiston myöhässä yli vuokra-ajan, peritään myöhästymismaksuna 200,00 € alkavalta tunnilta (ALV 25,5 %). Muista kuin vuokra-ajan ylittämisestä johtuvista palautusviiveistä sovitaan tapauskohtaisesti.`,
+          `4.4. Vuokranantajalla on oikeus pidättää laitteisto luovuttamatta tai keskeyttää vuokraus, jos asiakas ei täytä luovutushetkellä näitä ehtoja, esimerkiksi puuttuvan henkilöllisyystodistuksen, päihtymyksen, allekirjoittamattoman sopimuksen tai ikävaatimuksen vastaisen tilanteen johdosta. Tällöin vuokraa ei palauteta.`,
         ].join("\n\n"),
       },
       {
@@ -81,8 +84,8 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "5. Vuokra, ALV ja maksuehdot",
         body: [
           `5.1. Vuokrahinta määräytyy 82Rentals Oy:n verkkosivuilla olevan hinnaston mukaisesti tai osapuolten erikseen sopimalla tavalla. Vuokra sisältää aina arvonlisäveron 25,5 %, ellei muuta kirjallisesti ole sovittu.`,
-          `5.2. Vuokrahintaan sisältyy polttoaine vuokra-ajan käyttöön normaalissa virkistyskäytössä, pelastusliivit, paikannin sekä lyhyt perehdytys ennen ajoa. Lisämaksullisia tuotteita ovat muun muassa toimitus muuhun paikkaan kuin Tervasaaren satamaan sekä ylimääräiset polttoainetäydennykset, jotka eivät sisälly normaaliin käyttöön.`,
-          `5.3. Maksu suoritetaan paikan päällä ennen vuokra-ajan alkua kortilla tai käteisellä. Yritysasiakkaalle voidaan tarjota laskutusta erikseen sovittavin ehdoin.`,
+          `5.2. Vuokrahintaan sisältyy polttoaine vuokra-ajan käyttöön normaalissa virkistyskäytössä, pelastusliivit sekä perehdytys ennen ajoa. Lisämaksullisia tuotteita ovat muun muassa toimitus muuhun paikkaan kuin Tervasaaren satamaan sekä ylimääräiset polttoainetäydennykset, jotka eivät sisälly normaaliin käyttöön.`,
+          `5.3. Maksu suoritetaan paikan päällä ennen vuokra-ajan alkua kortilla tai käteisellä (tai muulla asianmukaisella tavalla kuten MobilePaylla). Yritysasiakkaalle voidaan tarjota laskutusta erikseen sovittavin ehdoin.`,
           `5.4. Mahdolliset lisämaksut, kuten myöhästymismaksu, takuumaksusta kuitattavat vahingot tai polttoaineen lisämaksu, peritään vuokra-ajan päätyttyä joko takuumaksusta vähentäen tai erillisellä laskulla.`,
         ].join("\n\n"),
       },
@@ -91,8 +94,8 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "6. Takuumaksu",
         body: [
           `6.1. Vuokranantaja perii vuokralaiselta varauksen yhteydessä takuumaksun, jonka suuruus on 100,00 € (ALV 0 %). Takuumaksu kattaa mahdolliset vuokrauksesta aiheutuvat pienet vahingot tai puuttumiset, joita ei ole ilmoitettu luovutustarkastuksessa.`,
-          `6.2. Takuumaksu palautetaan vuokralaiselle kolmen (3) arkipäivän kuluessa vuokra-ajan päättymisestä tilisiirrolla asiakkaan ilmoittamalle pankkitilille, mikäli laitteisto on palautettu ehtojen mukaisesti eikä sitä ole vahingoitettu.`,
-          `6.3. Mikäli laitteistossa on todettavissa vahinkoja, puutteita tai siivousta vaativia jälkiä, takuumaksusta vähennetään aiheutuneet kustannukset kohdan 14 mukaisesti. Takuumaksun ylittävät vahingot peritään asiakkaalta erikseen.`,
+          `6.2. Takuumaksu palautetaan vuokralaiselle vuokra-ajan päätyttyä ilman erillisiä viiveitä lähtökohtaisesti MobilePaylla, mutta myös esimerkiksi tilisiirto ja muut asianmukaiset maksutavat hyväksytään asiakkaan pyynnöstä.`,
+          `6.3. Mikäli laitteistossa on todettavissa vahinkoja, puutteita tai siivousta vaativia jälkiä, takuumaksusta vähennetään aiheutuneet kustannukset kohdan 13 mukaisesti. Takuumaksun ylittävät vahingot peritään asiakkaalta erikseen.`,
         ].join("\n\n"),
       },
       {
@@ -101,7 +104,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         body: [
           `7.1. Sekä laitteistoa ajavalla henkilöllä että matkustajalla tulee olla vähintään 16 vuoden ikä. Molempien on todistettava henkilöllisyytensä voimassa olevalla kuvallisella henkilöllisyystodistuksella (passi, ajokortti tai poliisin myöntämä henkilökortti).`,
           `7.2. Vuokralainen vastaa siitä, että hänellä on tarvittava terveydentila ja kyky käsitellä laitteistoa turvallisesti. Suomessa Sea-Doo Spark Trixx 2up -tyyppisen vesijetin ajamiseen ei vaadita erillistä vesikulkuneuvokorttia, mutta vuokralainen sitoutuu noudattamaan voimassa olevia vesiliikennelakeja.`,
-          `7.3. Laitteistoa saa kuljettaa ainoastaan tämä sopimus kirjattu henkilö. Laitteiston luovuttaminen kolmannelle osapuolelle, vaikka tilapäisestikin, on kielletty ilman vuokranantajan kirjallista lupaa.`,
+          `7.3. Laitteistoa saa kuljettaa ainoastaan tämän sopimuksen allekirjoittanut henkilö. Laitteiston luovuttaminen kolmannelle osapuolelle, vaikka tilapäisestikin, on kielletty ilman vuokranantajan kirjallista lupaa.`,
         ].join("\n\n"),
       },
       {
@@ -109,7 +112,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "8. Vuokralaisen velvollisuudet",
         body: [
           `8.1. Vuokralainen on velvollinen tutustumaan vuokranantajan antamaan perehdytykseen ja noudattamaan annettuja ohjeita koko vuokra-ajan.`,
-          `8.2. Vuokralainen sitoutuu kohtelemaan laitteistoa huolellisesti, kuten huolellinen huoltaja kohtelisi omaa omaisuuttaan. Tämä koskee sekä ajossa että maissa pysäköitynä olevaa laitteistoa.`,
+          `8.2. Vuokralainen sitoutuu kohtelemaan laitteistoa huolellisesti ja asianmukaisesti. Tämä koskee sekä ajossa että maissa pysäköitynä olevaa laitteistoa.`,
           `8.3. Mahdollisista käytön aikana havaituista vioista, vaurioista tai poikkeavasta toiminnasta on ilmoitettava vuokranantajalle välittömästi puhelimitse ${COMPANY.phone}. Asiakas ei saa jatkaa ajamista, mikäli jatkaminen aiheuttaisi lisävahinkoa.`,
           `8.4. Laitteisto palautetaan sovittuna ajankohtana siihen paikkaan, jossa se on luovutettu, ja siinä kunnossa, missä se on otettu vastaan. Vuokralainen vastaa kaikista varusteista, jotka luovutushetkellä on kirjattu mukaan annetuiksi (esimerkiksi pelastusliivit, paikannin, käynnistysavain).`,
           `8.5. Mikäli laitteisto ei poikkeuksellisesti ole ehtinyt kerran tankkaamista vuokra-ajan aikana, vuokralainen vastaa polttoaineen täydennyksestä laskutushinnan mukaan vuokra-ajan päättymisen jälkeen. Hinta perustuu vuokra-ajan aikana käytettyyn lisäpolttoaineen määrään ja sen ostohintaan.`,
@@ -121,7 +124,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         body: [
           `9.1. Laitteistoa saa ajaa vain merkityillä ja sallituilla vesialueilla. Veden syvyyden tulee olla vähintään yksi (1) metri. Alueilla, joissa veden syvyys on 1–1,5 metriä, suurin sallittu nopeus on 10 km/h.`,
           `9.2. Vesikasvillisuudessa, ruovikoissa, suojelu- ja kieltoalueilla, satama-alueilla niiden kieltohetkenä sekä rannan välittömässä läheisyydessä (alle 50 metriä rantaviivasta, paitsi merkityllä reitillä) ajaminen on kielletty.`,
-          `9.3. Laitteiston käyttäminen toisen vesikulkuneuvon hinaamiseen, hinattavien välineiden vetämiseen tai muiden alusten aaltoja tai jälkivanaa hyppimiseen on kielletty.`,
+          `9.3. Laitteiston käyttäminen toisen vesikulkuneuvon hinaamiseen tai hinattavien välineiden vetämiseen on kielletty.`,
           `9.4. Laitteistoa ei saa rantauttaa tai paineistaa pohjaan asti. Laiturointi tehdään pinnan tasolla ja asianmukaisesti köydellä kiinnittäen.`,
           `9.5. Vuokralaisen on noudatettava Suomen vesiliikennelain (782/2019) säädöksiä sekä alueellisesti annettuja vesiliikennemerkintöjä, nopeusrajoituksia ja muita viranomaismääräyksiä.`,
         ].join("\n\n"),
@@ -141,7 +144,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         id: "11",
         heading: "11. Päihteet",
         body: [
-          `11.1. Laitteiston ajaminen alkoholin, huumaavien aineiden, lääkkeiden tai muun ajokykyä alentavan tekijän vaikutuksen alaisena on ehdottomasti kielletty. Sama kielto koskee myös matkustajaa siltä osin kuin hänen tilansa voi vaarantaa turvallisuutta.`,
+          `11.1. Laitteiston ajaminen alkoholin, huumaavien aineiden, lääkkeiden tai muun ajokykyä alentavan tekijän vaikutuksen alaisena on ehdottomasti kielletty. Sama kielto koskee myös matkustajaa.`,
           `11.2. Mikäli vuokranantaja epäilee vuokralaisen tai matkustajan olevan päihteiden vaikutuksen alaisena luovutus- tai vuokra-aikana, vuokranantajalla on oikeus keskeyttää tai estää vuokraus. Tässä tilanteessa vuokraa ei palauteta.`,
         ].join("\n\n"),
       },
@@ -149,9 +152,10 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         id: "12",
         heading: "12. Vakuutus ja omavastuu",
         body: [
-          `12.1. Vuokraus sisältää kattavan vakuutuksen, joka kattaa tavanomaisesta käytöstä syntyvät vahingot. Vuokralaisen omavastuu vahinkotilanteessa on 3 000,00 € (kolmetuhatta) per vahinkotapahtuma.`,
+          `12.1. Vuokraus sisältää kattavan vakuutuksen, joka kattaa tavanomaisesta käytöstä syntyvät vahingot. Vuokralaisen omavastuu vahinkotilanteessa on korkeintaan 3 000,00 € (kolmetuhatta).`,
           `12.2. Mikäli vahinko on aiheutunut tahallisuudesta, törkeästä huolimattomuudesta, ehtojen vastaisesta ajamisesta, päihtymyksestä tai sopimusalueen ulkopuolella ajamisesta, vakuutus ei kata vahinkoa ja vuokralainen vastaa täysimääräisesti kaikista korjaus- ja uudelleenhankintakustannuksista sekä menetetystä vuokratulosta.`,
           `12.3. Vuokralainen on velvollinen ilmoittamaan kaikista vuokra-ajalla syntyneistä vahingoista ja vaaratilanteista vuokranantajalle välittömästi sekä viranomaisille, jos tapahtuma sitä lain tai vakuutusehdon mukaan edellyttää.`,
+          `12.4. Vuokralainen vastaa itse omasta terveydestään ja terveysvakuutuksistaan. Vuokranantaja ei koskaan ole vastuussa mistään vuokralaisen aiheuttamista henkilövahingoista. Vuokranantaja ei myöskään koskaan ole vastuussa vuokralaisen aiheuttamista aineellisista vahingoista, kuten esimerkiksi toiseen vesikulkuneuvoon aiheuttamasta vahingosta.`,
         ].join("\n\n"),
       },
       {
@@ -183,7 +187,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
 · vuokralainen tai matkustaja rikkoo näitä ehtoja olennaisesti,
 · vuokralainen tai matkustaja on päihtynyt tai muutoin ajokyvyttömässä tilassa,
 · laitteisto vaurioituu tai vuokralainen toimii tavalla, joka aiheuttaa lisävahingon riskiä,
-· vuokralainen ei pysty esittämään henkilöllisyystodistusta tai täyttämään muita näiden ehtojen edellyttämiä vaatimuksia.`,
+· vuokralainen ei pysty esittämään henkilöllisyystodistusta, allekirjoittamaan sopimusta tai täyttämään muita näiden ehtojen edellyttämiä vaatimuksia.`,
           `14.2. Sopimuksen purkautuessa vuokranantajan toimesta sopimusehtojen rikkomisen seurauksena vuokraa tai takuumaksua ei palauteta, ja vuokralainen vastaa kaikista aiheutuneista vahingoista täysimääräisesti.`,
         ].join("\n\n"),
       },
@@ -213,7 +217,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "17. Sovellettava laki ja riitojen ratkaiseminen",
         body: [
           `17.1. Tähän sopimukseen sovelletaan Suomen lakia, lukuun ottamatta sen lainvalintaa koskevia säännöksiä.`,
-          `17.2. Mahdolliset sopimusta koskevat riidat pyritään ensisijaisesti ratkaisemaan neuvotellen. Mikäli sovintoon ei päästä, riidat ratkaistaan lopullisesti Helsingin käräjäoikeudessa tai vuokralaisen kotipaikan käräjäoikeudessa, mikäli vuokralainen on kuluttaja.`,
+          `17.2. Mahdolliset sopimusta koskevat riidat pyritään ensisijaisesti ratkaisemaan neuvotellen. Mikäli sovintoon ei päästä, riidat ratkaistaan lopullisesti Helsingin käräjäoikeudessa.`,
           `17.3. Vuokralaisella, joka on kuluttaja, on oikeus saattaa riita myös kuluttajariitalautakunnan (www.kuluttajariita.fi) ratkaistavaksi. Ennen asian saattamista lautakuntaan vuokralaisen on suositeltavaa olla yhteydessä kuluttajaneuvontaan (www.kkv.fi/kuluttajaneuvonta).`,
         ].join("\n\n"),
       },
@@ -224,8 +228,9 @@ export const terms: Record<TermsLocale, TermsDoc> = {
           `18.1. Sopimuksen erottamattomana osana ovat seuraavat liitteet:
 · Liite 1: Yleiset sopimusehdot (tämä asiakirja)
 · Liite 2: Tietosuojakäytänteet
-· Liite 3: Varauksen mukana toimitettu materiaali ja luovutustarkastus`,
-          `18.2. Sopimus on laadittu ja allekirjoitettu yhtenä kappaleena sähköisesti. Sähköinen vahvistus (esimerkiksi varauslomakkeen lähetys tai sähköpostissa annettu hyväksyntä) muodostaa sitovan sopimuksen.`,
+· Liite 3: Varauksen mukana toimitettu materiaali ja luovutustarkastus
+· Liite 4: Allekirjoitettava luovutuslomake`,
+          `18.2. Sopimus on laadittu ja allekirjoitettu yhtenä kappaleena sähköisesti tai paperisena. Sähköinen vahvistus (esimerkiksi varauslomakkeen lähetys tai sähköpostissa annettu hyväksyntä) muodostaa sitovan sopimuksen.`,
           `18.3. Sopimus on voimassa varauksen vahvistamisesta vuokra-ajan päättymiseen sekä siitä eteenpäin sellaisten velvoitteiden osalta, jotka luonteensa puolesta jäävät voimaan vuokra-ajan päättymisen jälkeen (esimerkiksi vahinkokorvaukset, takuumaksun palautus, tietosuoja).`,
         ].join("\n\n"),
       },
@@ -242,7 +247,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
           `Säilytysaika — Henkilötietoja säilytetään ainoastaan niin kauan kuin se on tarpeellista palvelun toteuttamiseksi, lakisääteisten velvoitteiden täyttämiseksi (esimerkiksi kirjanpitolain 6 v) tai oikeudellisten vaatimusten toteuttamiseksi.`,
           `Tietojen luovuttaminen — Henkilötietoja ei luovuteta lähtökohtaisesti kolmansille osapuolille. Tietojen luovuttaminen voi kuitenkin olla mahdollista lain niin edellyttäessä, viranomaisen pyynnöstä, vakuutusyhtiölle vahinkotilanteessa, kirjanpitäjälle, maksupalveluntarjoajille tai tekniseen ylläpitoon liittyville luotettaville kumppaneille.`,
           `Tietojen siirto EU/ETA-alueen ulkopuolelle — Lähtökohtaisesti tietoja säilytetään EU/ETA-alueella. Mikäli käyttämämme tekniset järjestelmät sijaitsevat alueen ulkopuolella, varmistamme tietosuojan tason riittävyyden EU:n vakiosopimuslausekkeilla tai muilla tietosuojalainsäädännön sallimilla suojatoimilla.`,
-          `Tietojen turvaaminen — Tiedot tallennetaan suojattuihin järjestelmiin, joiden pääsy on rajoitettu vain niille henkilöille, joiden työtehtävät edellyttävät tietoihin pääsyä. Manuaalisia aineistoja säilytetään lukitusti.`,
+          `Tietojen turvaaminen — Tiedot tallennetaan suojattuihin järjestelmiin, joiden pääsy on rajoitettu vain niille henkilöille, joiden työtehtävät edellyttävät tietoihin pääsyä. Fyysisiä aineistoja säilytetään lukitusti.`,
           `Asiakkaan oikeudet — Asiakkaalla on oikeus tarkastaa, mitä henkilötietoja hänestä käsitellään, pyytää virheellisten tietojen korjaamista, pyytää tietojen poistamista (oikeus tulla unohdetuksi), rajoittaa käsittelyä tai vastustaa käsittelyä lain sallimissa rajoissa. Oikeuksiensa toteuttamiseksi asiakas voi ottaa yhteyttä osoitteeseen ${COMPANY.email}. Asiakkaalla on myös oikeus tehdä valitus tietosuojavaltuutetun toimistolle (www.tietosuoja.fi).`,
         ].join("\n\n"),
       },
@@ -254,10 +259,38 @@ export const terms: Record<TermsLocale, TermsDoc> = {
           `· Sea-Doo Spark Trixx 2up -vesijetti (rekisteritunnus kirjataan luovutustarkastukseen)
 · Hyväksytyt pelastusliivit (ajaja + matkustaja)
 · Käynnistysavain ja sen turvanaru
-· Paikannin (GPS-tracker)
-· Lyhyt perehdytys vesijetin käytöstä, turvallisuudesta ja palautuksesta
+· Perehdytys vesijetin käytöstä, turvallisuudesta ja palautuksesta
 · Tarvittavat ohjeet ja yhteystiedot mahdollisissa ongelmatilanteissa`,
           `Vuokra-ajan päätyttyä asiakas palauttaa kaikki edellä mainitut varusteet vuokranantajalle. Mikäli jokin varuste puuttuu tai on vaurioitunut, vuokralaiselta peritään kohdan 13 mukainen korvaus.`,
+        ].join("\n\n"),
+      },
+      {
+        id: "liite4",
+        heading: "Liite 4: Allekirjoitettava luovutuslomake",
+        body: [
+          `Tämä lomake täytetään ja allekirjoitetaan luovutushetkellä jokaisen vuokrauksen yhteydessä. Lomake tulostetaan paperille ja säilytetään vuokrasopimuksen liitteenä.`,
+          `Vuokrauksen aloitus- ja loppumisaika sekä päivämäärä:
+______________________________________________________________________`,
+          `VUOKRANANTAJALLE TÄYTETTÄVÄKSI`,
+          `Vuokrauksen mukana annettavat lisävarusteet:
+· Pelastusliivit, ____ kpl
+· Kuivapussit, ____ kpl
+· ______________________________, ____ kpl
+· ______________________________, ____ kpl`,
+          `Vuokralle annettavan kaluston rekisterinumerot:
+· P154021
+· P109430
+· P87257
+· ______________
+· ______________
+· ______________`,
+          `Vuokranantajan nimi, nimenselvennys ja päiväys:
+______________________________________________________________________`,
+          `VUOKRALAISELLE TÄYTETTÄVÄKSI`,
+          `· Olen saanut riittävän perehdytyksen kaluston käyttöön ja osaan operoida sitä turvallisesti sekä luotettavasti.
+· Sitoudun noudattamaan sopimuksen allekirjoittamishetkellä voimassa olevaa vesiliikennelakia ja ymmärrän sen.`,
+          `Vuokralaisen nimi, nimenselvennys ja päiväys:
+______________________________________________________________________`,
         ].join("\n\n"),
       },
     ],
@@ -276,8 +309,8 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         id: "1",
         heading: "1. Parties and subject of the agreement",
         body: [
-          `1.1. The rental provider is ${COMPANY.name}, business ID ${COMPANY.businessId}, address ${COMPANY.address}. Contact phone ${COMPANY.phone} and email ${COMPANY.email}.`,
-          `1.2. The renter is the natural person or legal entity who makes a booking on the 82Rentals website (${COMPANY.website}), by phone or by email, and whose details are recorded in the rental agreement.`,
+          `1.1. The rental provider is ${COMPANY.name}, business ID ${COMPANY.businessId}, address ${COMPANY.address}. Contact phone is ${COMPANY.phone} and email ${COMPANY.email}.`,
+          `1.2. The renter is the natural person or legal entity who makes a booking on the 82Rentals website (${COMPANY.website}), by phone, email or another appropriate method, and whose details are recorded in the rental agreement.`,
           `1.3. The subject of the agreement is the specified jet ski with its accessories ("the equipment"). The exact make, model, registration number and any accessories are recorded in the handover check carried out before the rental period begins.`,
         ].join("\n\n"),
       },
@@ -287,7 +320,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         body: [
           `2.1. The rental provider means the company defined in section 1 that offers jet ski rental services from its current fleet.`,
           `2.2. The renter means the person or legal entity who rents the equipment for their own use and is responsible for the obligations under this agreement.`,
-          `2.3. The equipment means the jet ski being rented, its accessories (life jackets, GPS tracker, ignition key, etc.) and any aids related to its transport.`,
+          `2.3. The equipment means the jet ski being rented, its accessories (life jacket, ignition key, dry bag etc.) and any aids related to its transport.`,
           `2.4. The rental period means the time interval recorded in the agreement during which the customer has the equipment in their possession and the right of use is in force.`,
           `2.5. The pickup location means the place where the equipment is handed over to the customer and where it must be returned at the end of the rental period, unless otherwise agreed in writing.`,
         ].join("\n\n"),
@@ -307,8 +340,8 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         body: [
           `4.1. The rental period starts at the time stated in the booking and ends at the agreed time. The renter must return the equipment by the end of the rental period to the location and in the condition in which it was handed over.`,
           `4.2. The equipment is not handed over before the start of the rental period, and the rental provider is not obliged to refund any portion of the price or grant compensation if the renter is late to pick up due to their own reason.`,
-          `4.3. If the renter returns the equipment late, a late fee of €100.00 per started hour (VAT 25.5%) is charged. Other delay situations are handled on a case-by-case basis.`,
-          `4.4. The rental provider may withhold handover or interrupt the rental if the renter does not meet these terms at handover time, for example due to missing photo ID, intoxication, or failing the age requirement. In such a case the rental fee is not refunded.`,
+          `4.3. If the renter returns the equipment late, a late fee of €200.00 per started hour (VAT 25.5%) is charged. Other delay situations are handled on a case-by-case basis.`,
+          `4.4. The rental provider may withhold handover or interrupt the rental if the renter does not meet these terms at handover time, for example due to missing photo ID, intoxication, an unsigned agreement or failing the age requirement. In such a case the rental fee is not refunded.`,
         ].join("\n\n"),
       },
       {
@@ -316,8 +349,8 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "5. Rental price, VAT and payment terms",
         body: [
           `5.1. The rental price is set by the price list on 82Rentals.com or by separate written agreement. The price always includes Finnish VAT of 25.5%, unless otherwise agreed in writing.`,
-          `5.2. The rental price includes fuel for normal recreational use during the rental period, life jackets, the GPS tracker and a short briefing before the ride. Additional services subject to extra fees include delivery to locations other than Tervasaaren satama, as well as extra fuel top-ups outside normal use.`,
-          `5.3. Payment is made on-site before the rental period starts, by card or cash. Business customers can be offered invoicing on separately agreed terms.`,
+          `5.2. The rental price includes fuel for normal recreational use during the rental period, life jackets and a briefing before the ride. Additional services subject to extra fees include delivery to locations other than Tervasaaren satama, as well as extra fuel top-ups outside normal use.`,
+          `5.3. Payment is made on-site before the rental period starts, by card or cash (or by another appropriate method such as MobilePay). Business customers can be offered invoicing on separately agreed terms.`,
           `5.4. Any additional charges (late fee, damage covered by the deposit, extra fuel) are charged at the end of the rental period either by deducting from the deposit or by separate invoice.`,
         ].join("\n\n"),
       },
@@ -326,7 +359,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "6. Security deposit",
         body: [
           `6.1. The rental provider collects a security deposit of €100.00 (VAT 0%) at the time of booking. The deposit covers any minor damages or missing items not noted in the handover check.`,
-          `6.2. The deposit is refunded by bank transfer to the account provided by the renter within three (3) business days after the end of the rental period, provided the equipment is returned in line with these terms and undamaged.`,
+          `6.2. The deposit is refunded to the renter at the end of the rental period without separate delays, primarily by MobilePay, but other appropriate payment methods such as bank transfer are accepted at the customer's request.`,
           `6.3. If the equipment shows damage, missing parts or cleaning required, the corresponding costs are deducted from the deposit per section 13. Damages exceeding the deposit are invoiced separately.`,
         ].join("\n\n"),
       },
@@ -336,7 +369,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         body: [
           `7.1. Both the person operating the equipment and any passenger must be at least 16 years old. Both must present a valid photo ID (passport, driving licence or national ID card).`,
           `7.2. The renter is responsible for being in fit condition and capable of safely operating the equipment. In Finland the Sea-Doo Spark Trixx 2up does not require a separate watercraft licence, but the renter agrees to comply with the applicable Finnish waterway laws.`,
-          `7.3. The equipment may only be operated by the person named in the agreement. Transferring the equipment to a third party, even temporarily, is prohibited without the rental provider's written consent.`,
+          `7.3. The equipment may only be operated by the person who has signed this agreement. Transferring the equipment to a third party, even temporarily, is prohibited without the rental provider's written consent.`,
         ].join("\n\n"),
       },
       {
@@ -344,7 +377,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "8. Renter's obligations",
         body: [
           `8.1. The renter must follow the instructions given in the safety briefing throughout the rental period.`,
-          `8.2. The renter must handle the equipment carefully, as a diligent custodian would handle their own property. This applies both during the ride and when the equipment is moored.`,
+          `8.2. The renter must handle the equipment carefully and appropriately. This applies both during the ride and when the equipment is moored.`,
           `8.3. Any defects, damages or abnormal behaviour discovered during use must be reported to the rental provider immediately by phone (${COMPANY.phone}). The renter must not continue using the equipment if continued use would cause further damage.`,
           `8.4. The equipment is returned at the agreed time and place, and in the same condition as it was received. The renter is responsible for all accessories listed in the handover check (e.g. life jackets, GPS tracker, ignition key).`,
           `8.5. If the equipment exceptionally requires an additional fuel top-up during the rental period, the renter pays for the extra fuel based on the volume used and its purchase price.`,
@@ -356,7 +389,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         body: [
           `9.1. The equipment may only be operated in marked and permitted waters. The water depth must be at least one (1) metre. In areas where the depth is 1–1.5 metres, the maximum permitted speed is 10 km/h.`,
           `9.2. Driving in vegetation, reeds, restricted or protected areas, harbours when prohibited and in the immediate vicinity of shore (less than 50 metres unless on a marked route) is prohibited.`,
-          `9.3. Using the equipment to tow other watercraft, pull towables or to jump the wakes of other vessels is prohibited.`,
+          `9.3. Using the equipment to tow other watercraft or to pull towables is prohibited.`,
           `9.4. The equipment must not be beached or pressed onto the bottom. Mooring is done at the surface and properly secured with rope.`,
           `9.5. The renter must comply with the Finnish Maritime Act (782/2019), local water-traffic markings, speed limits and other authority regulations.`,
         ].join("\n\n"),
@@ -376,7 +409,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         id: "11",
         heading: "11. Substance use",
         body: [
-          `11.1. Operating the equipment under the influence of alcohol, drugs, medication or any other factor that impairs driving ability is strictly prohibited. The same prohibition applies to passengers to the extent their condition can compromise safety.`,
+          `11.1. Operating the equipment under the influence of alcohol, drugs, medication or any other factor that impairs driving ability is strictly prohibited. The same prohibition applies to passengers.`,
           `11.2. If the rental provider suspects the renter or passenger to be under the influence at handover or during the rental period, the provider has the right to interrupt or refuse the rental. In such a case the rental fee is not refunded.`,
         ].join("\n\n"),
       },
@@ -384,9 +417,10 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         id: "12",
         heading: "12. Insurance and deductible",
         body: [
-          `12.1. The rental includes comprehensive insurance that covers damages arising from normal use. The renter's deductible per incident is €3,000.00 (three thousand).`,
+          `12.1. The rental includes comprehensive insurance that covers damages arising from normal use. The renter's deductible is at most €3,000.00 (three thousand).`,
           `12.2. If damage is caused by intent, gross negligence, breach of these terms, intoxication, or driving outside the agreed area, the insurance does not cover the damage and the renter is fully liable for all repair or replacement costs and any lost rental income.`,
           `12.3. The renter must report any damage and dangerous situation to the rental provider immediately, and to the authorities where required by law or insurance terms.`,
+          `12.4. The renter is responsible for their own health and any associated health insurance. The rental provider is never liable for personal injuries caused by the renter. Likewise, the rental provider is never liable for any material damage caused by the renter, such as damage caused to another watercraft.`,
         ].join("\n\n"),
       },
       {
@@ -418,7 +452,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
 · the renter or passenger materially breaches these terms,
 · the renter or passenger is intoxicated or otherwise unfit to operate the equipment,
 · the equipment is damaged or the renter acts in a way that causes further risk,
-· the renter fails to present a photo ID or otherwise meet the requirements set in these terms.`,
+· the renter fails to present a photo ID, sign the agreement, or otherwise meet the requirements set in these terms.`,
           `14.2. If the agreement is terminated by the rental provider due to a breach by the renter, the rental fee and the deposit are not refunded, and the renter remains fully liable for any damages caused.`,
         ].join("\n\n"),
       },
@@ -448,7 +482,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
         heading: "17. Applicable law and dispute resolution",
         body: [
           `17.1. Finnish law applies to this agreement, excluding its conflict-of-laws rules.`,
-          `17.2. Any disputes are first settled by negotiation. If no settlement is reached, disputes are resolved by the Helsinki District Court or, where the renter is a consumer, by the district court of the renter's place of residence.`,
+          `17.2. Any disputes are first settled by negotiation. If no settlement is reached, disputes are resolved by the Helsinki District Court.`,
           `17.3. Consumer renters may also bring the dispute before the Finnish Consumer Disputes Board (www.kuluttajariita.fi). Before applying to the Board, the consumer is advised to contact the Consumer Advisory Service (www.kkv.fi/kuluttajaneuvonta).`,
         ].join("\n\n"),
       },
@@ -459,8 +493,9 @@ export const terms: Record<TermsLocale, TermsDoc> = {
           `18.1. The following appendices form an integral part of the agreement:
 · Appendix 1: General Terms and Conditions (this document)
 · Appendix 2: Data Protection Practices
-· Appendix 3: Materials provided with the booking and handover check`,
-          `18.2. The agreement is drawn up and signed electronically in one copy. Electronic confirmation (such as submitting the booking form or providing acceptance by email) forms a binding agreement.`,
+· Appendix 3: Materials provided with the booking and handover check
+· Appendix 4: Handover form to be signed`,
+          `18.2. The agreement is drawn up and signed in one copy electronically or on paper. Electronic confirmation (such as submitting the booking form or providing acceptance by email) forms a binding agreement.`,
           `18.3. The agreement is in force from the confirmation of the booking until the end of the rental period, and thereafter for obligations that by their nature remain in force after the end of the rental (e.g. damage compensation, deposit refund, data protection).`,
         ].join("\n\n"),
       },
@@ -477,7 +512,7 @@ export const terms: Record<TermsLocale, TermsDoc> = {
           `Retention period — Personal data is retained only as long as is necessary to perform the service, comply with legal obligations (e.g. six-year bookkeeping retention) or fulfil legal claims.`,
           `Disclosure — Personal data is not by default shared with third parties. Data may however be shared where required by law, authority orders, with the insurer in case of an incident, with the bookkeeper, with payment service providers or with trusted partners related to technical maintenance.`,
           `Transfers outside the EU/EEA — Data is by default stored within the EU/EEA. If our technical systems are located outside the area, we secure adequate protection through EU standard contractual clauses or other safeguards permitted by data protection law.`,
-          `Information security — Data is stored in secured systems with access restricted to staff whose duties require it. Any paper records are kept in locked storage.`,
+          `Information security — Data is stored in secured systems with access restricted to staff whose duties require it. Physical records are kept in locked storage.`,
           `Customer's rights — The customer may request access to their data, request correction of inaccurate data, request erasure (right to be forgotten), restrict processing or object to processing within the limits of the law. To exercise these rights the customer can contact us at ${COMPANY.email}. The customer also has the right to lodge a complaint with the Office of the Data Protection Ombudsman (www.tietosuoja.fi).`,
         ].join("\n\n"),
       },
@@ -489,10 +524,38 @@ export const terms: Record<TermsLocale, TermsDoc> = {
           `· Sea-Doo Spark Trixx 2up jet ski (registration number recorded in the handover check)
 · Approved life jackets (driver + passenger)
 · Ignition key and lanyard
-· GPS tracker
-· Short briefing covering the use of the jet ski, safety procedures and return
+· Briefing covering the use of the jet ski, safety procedures and return
 · Necessary instructions and contact details for problem situations`,
           `At the end of the rental period the customer returns all of the above items. If an item is missing or damaged, the renter is charged according to section 13.`,
+        ].join("\n\n"),
+      },
+      {
+        id: "liite4",
+        heading: "Appendix 4: Handover form to be signed",
+        body: [
+          `This form is filled in and signed at handover for every rental. The form is printed on paper and kept as an attachment to the rental agreement.`,
+          `Rental start and end time, and date:
+______________________________________________________________________`,
+          `TO BE FILLED IN BY THE RENTAL PROVIDER`,
+          `Additional equipment delivered with the rental:
+· Life jackets, ____ pcs
+· Dry bags, ____ pcs
+· ______________________________, ____ pcs
+· ______________________________, ____ pcs`,
+          `Registration numbers of the equipment handed over:
+· P154021
+· P109430
+· P87257
+· ______________
+· ______________
+· ______________`,
+          `Rental provider's name, signature and date:
+______________________________________________________________________`,
+          `TO BE FILLED IN BY THE RENTER`,
+          `· I have received sufficient briefing on operating the equipment and am able to use it safely and reliably.
+· I commit to following the Finnish maritime law in force at the time of signing this agreement and understand it.`,
+          `Renter's name, signature and date:
+______________________________________________________________________`,
         ].join("\n\n"),
       },
     ],

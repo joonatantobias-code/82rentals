@@ -630,6 +630,40 @@ label {
   font-weight: 800;
 }
 
+/* Continuous flowing terms layout — used on the web view so the
+ * document scrolls naturally, no per-section pagination. The cover
+ * lockup sits at the top, then every section + appendix in order,
+ * then the version/footer line. */
+.terms-flow {
+  margin-top: 28px;
+  padding-top: 8px;
+  border-top: 1px solid #E5EDF5;
+}
+.terms-section-flow {
+  margin-top: 28px;
+  page-break-inside: avoid;
+}
+.terms-section-flow:first-child {
+  margin-top: 0;
+  padding-top: 4px;
+}
+.terms-section-flow .terms-heading {
+  page-break-after: avoid;
+  font-size: 18px;
+}
+.terms-cover {
+  padding-bottom: 8px;
+}
+.terms-doc-footer {
+  margin-top: 36px;
+  padding-top: 16px;
+  border-top: 1px solid #E5EDF5;
+  font-size: 11px;
+  color: #475569;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
 /* ============================================================================
  * PRINT — render every page in sequence, let @page handle pagination.
  * The visible chrome inside each `.terms-pdf-page` matches the on-screen
@@ -677,26 +711,131 @@ label {
   /* Drop wrapper chrome around the document. */
   .card-soft, .section { padding: 0 !important; background: transparent !important; box-shadow: none !important; border-radius: 0 !important; }
   main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
-  /* Hide the on-screen paginated frame (it would print as a single
-   * page). We render print-specific pages below. */
-  .terms-page-frame { display: none !important; }
+  /* On-screen pagination frame from the old viewer is gone; this
+   * just safety-hides any legacy markup. */
+  .terms-page-frame, .terms-pdf-pages, .terms-pdf-page { display: none !important; }
 
-  /* Each .terms-pdf-page IS an A4 sheet — same chrome as the web
-   * card so the printed PDF looks identical to the page-flip view. */
-  .terms-pdf-pages { display: block !important; }
-  .terms-pdf-page {
-    page-break-after: always;
-    page-break-inside: avoid;
-    width: 210mm;
-    height: 297mm;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    background: #FFFFFF !important;
+  /* @page sets the paper format, margins, and a top-running header
+   * area where the print header band sits. */
+  @page {
+    size: A4 portrait;
+    margin: 22mm 18mm 18mm 18mm;
   }
-  .terms-pdf-page:last-child { page-break-after: auto; }
+
+  /* Print the visible header band at the top of the *first* sheet.
+   * For subsequent sheets the @page top margin holds space; modern
+   * browsers cannot reliably repeat custom elements per page, so we
+   * just keep margins generous and let content flow. */
+  .terms-print .terms-page-head {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 4mm !important;
+    padding: 0 0 4mm 0 !important;
+    margin: 0 0 6mm 0 !important;
+    border-bottom: 0.6pt solid #E5EDF5 !important;
+  }
+  .terms-print .terms-page-logo {
+    height: 9mm !important;
+    width: auto !important;
+    filter: brightness(0) saturate(100%) !important;
+  }
+  .terms-print .terms-page-company {
+    font-family: "Poppins", "Inter", sans-serif !important;
+    font-size: 11pt !important;
+    font-weight: 700 !important;
+    color: #0A3D62 !important;
+    letter-spacing: 0.04em !important;
+  }
+
+  /* Continuous flow on print too — each section avoids being
+   * split across pages but they pack together. Section heading
+   * stays glued to the first paragraph below it. */
+  .terms-flow {
+    margin-top: 6mm !important;
+    padding-top: 4mm !important;
+    border-top: 0.4pt solid #E5EDF5 !important;
+  }
+  .terms-section-flow {
+    page-break-inside: avoid !important;
+    margin-top: 8mm !important;
+  }
+  .terms-section-flow:first-child { margin-top: 4mm !important; }
+  .terms-section-flow .terms-heading {
+    font-family: "Poppins", "Inter", sans-serif !important;
+    font-size: 13pt !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.01em !important;
+    color: #0A3D62 !important;
+    margin: 0 !important;
+    padding-bottom: 1.5mm !important;
+    border-bottom: 0.6pt solid #6EC6FF !important;
+    page-break-after: avoid !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .terms-section-flow .terms-body-text {
+    margin-top: 3mm !important;
+    color: #1A2B3D !important;
+    font-size: 10pt !important;
+    line-height: 1.55 !important;
+  }
+  .terms-section-flow .terms-body-text p {
+    margin: 0 0 2.5mm 0 !important;
+    color: #1A2B3D !important;
+  }
+  .terms-section-flow .terms-body-text p:last-child { margin-bottom: 0 !important; }
+  .terms-section-flow .terms-bullets li {
+    display: block !important;
+    padding-left: 4mm !important;
+    text-indent: -4mm !important;
+    margin: 1mm 0 !important;
+  }
+  .terms-section-flow .terms-bullets li .terms-bullet-mark {
+    color: #0A3D62 !important;
+    font-weight: 800 !important;
+    margin-right: 2mm !important;
+  }
+
+  /* Cover lockup on print — sits above the flow. */
+  .terms-cover-eyebrow {
+    font-size: 9pt !important;
+    color: #0A3D62 !important;
+  }
+  .terms-cover-title {
+    font-size: 22pt !important;
+    margin: 3mm 0 5mm 0 !important;
+    line-height: 1.05 !important;
+    color: #0A3D62 !important;
+  }
+  .terms-cover-intro {
+    font-size: 10pt !important;
+    line-height: 1.55 !important;
+    color: #334155 !important;
+    margin: 0 0 8mm 0 !important;
+  }
+  .terms-cover-meta {
+    border-top: 0.4pt solid #E5EDF5 !important;
+    padding-top: 4mm !important;
+  }
+  .terms-cover-meta-label {
+    font-size: 8.5pt !important;
+    color: #475569 !important;
+  }
+  .terms-cover-meta-value {
+    font-size: 10pt !important;
+    line-height: 1.5 !important;
+    color: #0A3D62 !important;
+  }
+
+  /* Doc footer line at the very bottom. */
+  .terms-doc-footer {
+    margin-top: 8mm !important;
+    padding-top: 4mm !important;
+    border-top: 0.4pt solid #E5EDF5 !important;
+    font-size: 8.5pt !important;
+    color: #475569 !important;
+  }
 
   /* Reuse the same head + body + foot styling as the web frame. */
   .terms-pdf-page .terms-page-head {

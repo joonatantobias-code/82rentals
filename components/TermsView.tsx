@@ -1,73 +1,40 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Printer } from "lucide-react";
+import { Printer } from "lucide-react";
 import { useLocale } from "@/components/LocaleProvider";
-import { terms, COMPANY } from "@/lib/terms";
+import { terms, COMPANY, TERMS_VERSION, TERMS_UPDATED } from "@/lib/terms";
 
 /**
  * /sopimusehdot page renderer.
  *
- * Web view: paginated like a PDF. The full document is split into
- * a cover + one page per top-level section + one page per appendix.
- * The customer flips through with prev/next arrows (or arrow keys).
- * Each "page" is rendered inside a portrait A-paper container with
- * the same chrome the print stylesheet will produce: a thin
- * navy-and-white header band carrying the black 82Rentals logo on
- * the left and the "82Rentals Oy" wordmark on the right, plus a
- * page counter at the bottom.
+ * Web view: one continuous flowing document. The cover lockup at
+ * the top, then every numbered section in order, then the
+ * appendices. No paginated viewer or prev/next arrows — the page
+ * scrolls naturally so the customer can find a clause with Cmd+F
+ * and the screen never sits with only one paragraph on it.
  *
- * Print view: hides the page navigator and prints every page in
- * order, letting the @page rules in globals.css handle real
- * pagination (margins, page-numbering footer, brand chrome). The
- * customer sees the same layout in their browser preview that they
- * get in the saved PDF.
+ * Print view (@media print in globals.css): each top-level section
+ * starts on a fresh sheet via `page-break-before: always` on the
+ * section heading, so the printed PDF still looks like a paper
+ * contract. The print-only header band (logo + 82Rentals Oy) is
+ * pinned by the print stylesheet's @page top margin.
  */
 type Section = { id: string; heading: string; body: string };
-type Page = { kind: "cover" } | { kind: "section"; section: Section };
 
 export default function TermsView() {
   const { locale } = useLocale();
   const t = terms[locale === "en" ? "en" : "fi"];
   const isEn = locale === "en";
   const printLabel = isEn ? "Lataa PDF / tulosta" : "Lataa PDF / tulosta";
-  const pageLabel = isEn ? "Page" : "Sivu";
-  const prevLabel = isEn ? "Previous" : "Edellinen";
-  const nextLabel = isEn ? "Next" : "Seuraava";
 
-  const pages: Page[] = [
-    { kind: "cover" },
-    ...t.sections.map((s) => ({ kind: "section" as const, section: s })),
-    ...t.appendices.map((a) => ({ kind: "section" as const, section: a })),
+  const allSections: Section[] = [
+    ...t.sections,
+    ...t.appendices.map((a) => ({ id: a.id, heading: a.heading, body: a.body })),
   ];
-  const [pageIdx, setPageIdx] = useState(0);
-
-  // Keyboard nav: left/right arrows step pages (skipping when an
-  // input/textarea has focus so /sopimusehdot doesn't fight other
-  // pages that share the layout).
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      const target = e.target as HTMLElement | null;
-      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
-      if (e.key === "ArrowLeft") {
-        setPageIdx((p) => Math.max(0, p - 1));
-      } else if (e.key === "ArrowRight") {
-        setPageIdx((p) => Math.min(pages.length - 1, p + 1));
-      }
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [pages.length]);
-
-  const current = pages[pageIdx];
-  const totalPages = pages.length;
 
   return (
     <div className="terms-print">
-      {/* ============================================================
-       *  Top toolbar — print button + heading lockup. Hidden in
-       *  print so it doesn't end up on the PDF.
-       *  ============================================================ */}
+      {/* Toolbar — print button. Hidden in print. */}
       <div className="not-print flex flex-wrap items-center justify-between gap-3 mb-6">
         <div className="text-xs font-bold uppercase tracking-[0.18em] text-brand-secondary/70">
           {isEn ? "Rental agreement" : "Vuokrasopimus"}
@@ -81,204 +48,78 @@ export default function TermsView() {
         </button>
       </div>
 
-      {/* ============================================================
-       *  WEB-ONLY paginated viewer. Shows one page at a time inside
-       *  the paper-like frame.
-       *  ============================================================ */}
-      <div className="not-print">
-        <PageFrame
-          isCover={current.kind === "cover"}
-          pageNumber={pageIdx + 1}
-          totalPages={totalPages}
-        >
-          {current.kind === "cover" ? (
-            <CoverContent t={t} isEn={isEn} />
-          ) : (
-            <SectionContent section={current.section} />
-          )}
-        </PageFrame>
+      {/* Print-only header band that mirrors the @page chrome. The
+          @page rules in globals.css repeat this on every printed
+          sheet via fixed positioning; this inline copy guarantees
+          the first sheet has the band even in browsers that strip
+          fixed positioning during print. */}
+      <div className="print-only terms-page-head">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/logo.png" alt="82Rentals" className="terms-page-logo" />
+        <div className="terms-page-company">82Rentals Oy</div>
+      </div>
 
-        {/* Page navigator */}
-        <div className="mt-5 flex items-center justify-between gap-3">
-          <button
-            type="button"
-            onClick={() => setPageIdx((p) => Math.max(0, p - 1))}
-            disabled={pageIdx === 0}
-            aria-label={prevLabel}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-secondary text-white shadow-soft transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-brand-secondary disabled:hover:text-white disabled:hover:ring-0"
-          >
-            <ChevronLeft size={20} />
-          </button>
-
-          <div className="text-sm font-bold tracking-wider text-brand-secondary/80">
-            {pageLabel} {pageIdx + 1} / {totalPages}
+      {/* Cover lockup */}
+      <div className="terms-cover">
+        <div className="terms-cover-eyebrow">
+          {isEn ? "Rental agreement" : "Vuokrasopimus"}
+        </div>
+        <h1 className="terms-cover-title">{t.title}</h1>
+        <p className="terms-cover-intro">{t.intro}</p>
+        <div className="terms-cover-meta">
+          <div className="terms-cover-meta-label">
+            {isEn ? "Rental provider" : "Vuokranantaja"}
           </div>
-
-          <button
-            type="button"
-            onClick={() =>
-              setPageIdx((p) => Math.min(totalPages - 1, p + 1))
-            }
-            disabled={pageIdx === totalPages - 1}
-            aria-label={nextLabel}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-brand-secondary text-white shadow-soft transition-all hover:bg-white hover:text-brand-secondary hover:ring-2 hover:ring-brand-primary disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-brand-secondary disabled:hover:text-white disabled:hover:ring-0"
-          >
-            <ChevronRight size={20} />
-          </button>
+          <div className="terms-cover-meta-value">
+            {COMPANY.name}
+            <br />
+            {COMPANY.address}
+            <br />
+            {COMPANY.phone} · {COMPANY.email}
+          </div>
         </div>
       </div>
 
-      {/* ============================================================
-       *  PRINT-ONLY: every page rendered in order. Each block carries
-       *  the same head + body + foot chrome the on-screen frame uses,
-       *  so the printed PDF looks identical to the page-flip view in
-       *  the browser. `page-break-after: always` (from globals.css)
-       *  guarantees one section per A4 sheet.
-       *  ============================================================ */}
-      <div className="print-only terms-pdf-pages">
-        {pages.map((p, idx) => (
-          <div key={idx} className="terms-pdf-page">
-            <PrintHeader />
-            <div className="terms-pdf-page-body">
-              {p.kind === "cover" ? (
-                <CoverContent t={t} isEn={isEn} forPrint />
-              ) : (
-                <SectionContent section={p.section} />
-              )}
-            </div>
-            <div className="terms-page-foot">
-              Sivu {idx + 1} / {pages.length}
-            </div>
-          </div>
+      {/* Continuous body — every section + appendix in order. CSS
+          (.terms-section-flow + @media print) handles compact
+          spacing on screen and per-section page breaks on print. */}
+      <div className="terms-flow">
+        {allSections.map((s) => (
+          <section key={s.id} className="terms-section-flow">
+            <h2 className="terms-heading">{s.heading}</h2>
+            <Paragraphs body={s.body} />
+          </section>
         ))}
       </div>
-    </div>
-  );
-}
 
-/* ============================================================================
- *  Page frame — the paper-like container shown on the web. Replicates
- *  the print layout (logo top-left, "82Rentals Oy" top-right,
- *  Sivu X / Y at the bottom) so what the customer sees in the
- *  browser is what they get in the saved PDF.
- * ============================================================================ */
-function PageFrame({
-  children,
-  isCover,
-  pageNumber,
-  totalPages,
-}: {
-  children: React.ReactNode;
-  isCover: boolean;
-  pageNumber: number;
-  totalPages: number;
-}) {
-  // Two-layer markup: the outer wrapper carries the A4 aspect ratio
-  // so its size is independent of content. The inner absolutely-inset
-  // flex column holds head/body/foot — body scrolls within if content
-  // exceeds the page. Without the absolute inner, long sections
-  // pushed the aspect-ratio'd outer taller than short ones, which is
-  // why the page card visibly bounced when flipping between sections.
-  return (
-    <div className="terms-page-frame">
-      <div className="terms-page-frame-inner">
-        <div className="terms-page-head">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo.png"
-            alt="82Rentals"
-            className="terms-page-logo"
-          />
-          <div className="terms-page-company">82Rentals Oy</div>
-        </div>
-
-        <div
-          className={`terms-page-body ${isCover ? "terms-page-body-cover" : ""}`}
-        >
-          {children}
-        </div>
-
-        <div className="terms-page-foot">
-          Sivu {pageNumber} / {totalPages}
-        </div>
+      {/* Footer line (version / address) — shown in both web and
+          print so the customer always knows which version they read. */}
+      <div className="terms-doc-footer">
+        {isEn
+          ? `Version ${TERMS_VERSION}, updated ${TERMS_UPDATED}`
+          : `Versio ${TERMS_VERSION}, päivitetty ${TERMS_UPDATED}`}
+        {" · "}
+        {COMPANY.name} · {COMPANY.address}
       </div>
     </div>
-  );
-}
-
-/** Print-only header (matches the on-screen `terms-page-head`). The
- *  fixed @page header in globals.css handles repeating on every
- *  page; this inline element ensures the FIRST page also has the
- *  visual band even in browsers that don't honour fixed positioning
- *  during print. */
-function PrintHeader() {
-  return (
-    <div className="terms-page-head">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src="/logo.png"
-        alt="82Rentals"
-        className="terms-page-logo"
-      />
-      <div className="terms-page-company">82Rentals Oy</div>
-    </div>
-  );
-}
-
-function CoverContent({
-  t,
-  isEn,
-  forPrint,
-}: {
-  t: typeof terms.fi;
-  isEn: boolean;
-  forPrint?: boolean;
-}) {
-  return (
-    <div
-      className={`terms-cover ${forPrint ? "terms-cover-print" : ""}`}
-    >
-      <div className="terms-cover-eyebrow">
-        {isEn ? "Rental agreement" : "Vuokrasopimus"}
-      </div>
-      <h1 className="terms-cover-title">{t.title}</h1>
-      <p className="terms-cover-intro">{t.intro}</p>
-      <div className="terms-cover-meta">
-        <div className="terms-cover-meta-label">
-          {isEn ? "Rental provider" : "Vuokranantaja"}
-        </div>
-        <div className="terms-cover-meta-value">
-          {COMPANY.name}
-          <br />
-          {COMPANY.address}
-          <br />
-          {COMPANY.phone} · {COMPANY.email}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function SectionContent({ section }: { section: Section }) {
-  return (
-    <section className="terms-section">
-      <h3 className="terms-heading">{section.heading}</h3>
-      <Paragraphs body={section.body} />
-    </section>
   );
 }
 
 function Paragraphs({ body }: { body: string }) {
   // Split on blank lines so each paragraph in the source string
   // renders as its own block, then promote consecutive "· "-prefixed
-  // lines into a bulleted list.
+  // lines into a bulleted list. Lines that mix headline text and
+  // bullets (e.g. "14.1. … if: · a · b · c") emit the headline as a
+  // paragraph and the rest as a tight <ul>.
   const paragraphs = body.split(/\n\s*\n/);
   return (
-    <div className="terms-body-text mt-3 space-y-3 leading-relaxed">
+    <div className="terms-body-text mt-2 space-y-3 leading-relaxed">
       {paragraphs.map((p, idx) => {
         const lines = p.split("\n");
         const bulletLines = lines.filter((l) => l.trim().startsWith("·"));
-        if (bulletLines.length > 0 && bulletLines.length === lines.length) {
+        const headerLines = lines.filter((l) => !l.trim().startsWith("·"));
+        if (bulletLines.length > 0 && headerLines.every((l) => l.trim() === "")) {
+          // Pure bullet block.
           return (
             <ul key={idx} className="terms-bullets list-none pl-0 space-y-1.5">
               {bulletLines.map((line, j) => (
@@ -290,6 +131,26 @@ function Paragraphs({ body }: { body: string }) {
                 </li>
               ))}
             </ul>
+          );
+        }
+        if (bulletLines.length > 0) {
+          // Headline + bullets ("14.1. … if: · a · b · c")
+          return (
+            <div key={idx}>
+              <p className="whitespace-pre-line">
+                {headerLines.join("\n").trim()}
+              </p>
+              <ul className="terms-bullets list-none pl-0 mt-1.5 space-y-1.5">
+                {bulletLines.map((line, j) => (
+                  <li key={j} className="flex gap-2">
+                    <span aria-hidden className="terms-bullet-mark select-none">
+                      ·
+                    </span>
+                    <span>{line.replace(/^·\s*/, "")}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           );
         }
         return (
