@@ -14,6 +14,13 @@
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  /* Belt-and-braces against the mobile horizontal scroll. The body
+   * already carries `overflow-x-clip` via Tailwind, but iOS Safari
+   * occasionally lets the html element scroll horizontally anyway
+   * when a deep descendant exceeds the viewport (decorative blob,
+   * marquee strip, etc). Locking both elements guarantees there's
+   * never a horizontal scrollbar on phones. */
+  overflow-x: hidden;
 }
 
 html,
@@ -22,6 +29,12 @@ body {
   color: var(--color-text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Same guard for body — `overflow-x: clip` would be cleaner
+   * (it doesn't break `position: sticky` parents), but on iOS
+   * pre-17 Safari it isn't always honoured. `hidden` is the
+   * compatible-everywhere version. */
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* Kill the 300 ms tap-delay on every interactive element and stop
