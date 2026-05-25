@@ -36,11 +36,11 @@ type Slot = string; // "HH:00"
 type T = ReturnType<typeof useT>;
 
 const ALL_SLOTS: Slot[] = [
-  "09:00", "10:00", "11:00", "12:00", "13:00", "14:00",
-  "15:00", "16:00", "17:00", "18:00", "19:00", "20:00", "21:00",
+  "10:00", "11:00", "12:00", "13:00", "14:00", "15:00",
+  "16:00", "17:00", "18:00", "19:00", "20:00", "21:00", "22:00", "23:00",
 ];
-const OPEN_HOUR = 9;
-const CLOSE_HOUR = 22;
+const OPEN_HOUR = 10;
+const CLOSE_HOUR = 24;
 
 const DEFAULT_PICKUP = PICKUP.name;
 
@@ -544,6 +544,8 @@ export default function BookingModule() {
                           days={availability ?? []}
                           validStarts={validStarts}
                           selected={date}
+                          quantity={quantity}
+                          durationHours={durHours}
                           onPick={(d) => {
                             setDate(d);
                             setSlot(null);
@@ -568,6 +570,8 @@ export default function BookingModule() {
                             day={selectedDay}
                             validStarts={validStarts}
                             selected={slot}
+                            quantity={quantity}
+                            durationHours={durHours}
                             onPick={setSlot}
                             t={t}
                           />
@@ -1335,12 +1339,16 @@ function MonthCalendar({
   days,
   validStarts,
   selected,
+  quantity,
+  durationHours,
   onPick,
   t,
 }: {
   days: DayAvailability[];
   validStarts: Slot[];
   selected: string | null;
+  quantity: number;
+  durationHours: number;
   onPick: (d: string) => void;
   t: T;
 }) {
@@ -1430,10 +1438,22 @@ function MonthCalendar({
         {grid.map((g) => {
           const avail = availabilityMap.get(g.iso);
           const noData = !avail;
-          const totalFree = avail
-            ? validStarts.reduce((sum, s) => sum + (avail.slots[s] ?? MAX_QUANTITY), 0)
-            : 0;
-          const fullyBooked = !!avail && totalFree === 0;
+          // A day is bookable only if at least one valid start has
+          // every spanned hour at >= quantity capacity. Matches the
+          // SlotGrid filter so a "green" day in the calendar can't
+          // open into an empty slot picker for the customer's
+          // selected qty + duration.
+          const dur = Math.max(1, Math.ceil(durationHours));
+          const hasOpenStart = !!avail && validStarts.some((s) => {
+            const startHour = parseInt(s.slice(0, 2), 10);
+            for (let h = startHour; h < startHour + dur; h++) {
+              const key = `${String(h).padStart(2, "0")}:00` as Slot;
+              const cap = avail.slots[key] ?? MAX_QUANTITY;
+              if (cap < quantity) return false;
+            }
+            return true;
+          });
+          const fullyBooked = !!avail && !hasOpenStart;
           const disabled =
             g.outside || g.isPast || g.iso < earliestIso || noData || fullyBooked;
           const isSelected = selected === g.iso;
@@ -1471,25 +1491,28 @@ function SlotGrid({
   day,
   validStarts,
   selected,
+  quantity,
+  durationHours,
   onPick,
   t,
 }: {
   day: DayAvailability | null;
   validStarts: Slot[];
   selected: Slot | null;
+  quantity: number;
+  durationHours: number;
   onPick: (s: Slot) => void;
   t: T;
 }) {
   if (!day) return null;
-  // Filter out:
-  //   1. Fully-booked slots — taken hours don't appear in the picker.
-  //   2. On today's date, slots whose start time has already passed
-  //      in Helsinki local time. Reading "ilta 21" at 19:30 used to
-  //      let you book the 21:00 start which is fine, but the same
-  //      list also showed 09:00 / 10:00 which had already passed —
-  //      booking those would silently land in the CRM as an
-  //      impossible time. We compare in Europe/Helsinki since the
-  //      slot strings are in Helsinki-local hours.
+  // A slot is shown to the customer only when EVERY hour the ride
+  // would occupy still has at least `quantity` jets free. That keeps
+  // the picker in lock-step with the admin Saatavuus view: if the
+  // customer asks for 2 jets and the second hour of the ride has
+  // capacity 1, that start is hidden — they'd see "Aika ei
+  // saatavilla" otherwise at submit. Past-time slots are dropped on
+  // today's date so the picker can't show a hour that's already
+  // happened in Helsinki local time.
   const helsinkiNow = new Date(
     new Date().toLocaleString("en-US", { timeZone: "Europe/Helsinki" }),
   );
@@ -1501,17 +1524,16 @@ function SlotGrid({
   }).format(new Date());
   const isToday = day.date === todayKey;
   const nowHour = helsinkiNow.getHours();
-  const nowMinute = helsinkiNow.getMinutes();
+  const dur = Math.max(1, Math.ceil(durationHours));
   const available = validStarts.filter((s) => {
-    if ((day.slots[s] ?? MAX_QUANTITY) <= 0) return false;
-    if (isToday) {
-      // Slot "HH:00" — drop any slot whose start is already in the
-      // past (or right now: keep a couple-min buffer so a late
-      // click on a slot that's literally seconds away doesn't slip
-      // through).
-      const slotHour = parseInt(s.slice(0, 2), 10);
-      if (slotHour < nowHour) return false;
-      if (slotHour === nowHour && nowMinute >= 0) return false;
+    const startHour = parseInt(s.slice(0, 2), 10);
+    // Past-time filter — slot has already started in Helsinki time.
+    if (isToday && startHour <= nowHour) return false;
+    // Every hour the ride spans must have >= quantity jets free.
+    for (let h = startHour; h < startHour + dur; h++) {
+      const key = `${String(h).padStart(2, "0")}:00` as Slot;
+      const cap = day.slots[key] ?? MAX_QUANTITY;
+      if (cap < quantity) return false;
     }
     return true;
   });
