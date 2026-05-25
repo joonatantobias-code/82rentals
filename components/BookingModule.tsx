@@ -349,7 +349,7 @@ export default function BookingModule() {
   return (
     <section
       id="book"
-      className="relative z-20 px-4 sm:px-6 md:px-8 py-10 md:py-16 overflow-x-clip"
+      className="relative z-20 px-3 sm:px-6 md:px-8 py-10 md:py-16 overflow-x-clip"
     >
       <motion.div
         ref={cardRef}
@@ -370,8 +370,8 @@ export default function BookingModule() {
           />
         )}
 
-        <div className="grid lg:grid-cols-[1.5fr_1fr]">
-          <div className="p-5 sm:p-7 lg:p-9">
+        <div className="grid lg:grid-cols-[1.5fr_1fr] min-w-0">
+          <div className="p-4 sm:p-7 lg:p-9 min-w-0">
             <Header
               step={step}
               maxStepReached={maxStepReached}
@@ -417,7 +417,7 @@ export default function BookingModule() {
                         icon={<Users size={16} />}
                         label={t.booking.qtyTitle}
                       >
-                        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                        <div className="grid grid-cols-3 gap-2 sm:gap-3 min-w-0">
                           {[1, 2, 3].map((n) => {
                             const active = quantity === n;
                             return (
@@ -425,7 +425,7 @@ export default function BookingModule() {
                                 type="button"
                                 key={n}
                                 onClick={() => setQuantity(n)}
-                                className={`relative p-3 sm:p-5 rounded-2xl border-2 transition-all flex items-center justify-center text-center ${
+                                className={`relative min-w-0 p-3 sm:p-5 rounded-2xl border-2 transition-all flex items-center justify-center text-center overflow-hidden ${
                                   active
                                     ? "border-brand-secondary bg-brand-secondary text-white"
                                     : "border-brand-primary/30 bg-white text-brand-secondary hover:border-brand-primary"
