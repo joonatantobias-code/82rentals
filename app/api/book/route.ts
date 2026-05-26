@@ -162,7 +162,10 @@ export async function POST(request: Request) {
     try {
       const res = await fetch(`${CRM_URL}/api/public/book`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "X-Brand": "82rentals",
+        },
         body: JSON.stringify({
           date: payload.date,
           slot: payload.slot,
@@ -175,6 +178,7 @@ export async function POST(request: Request) {
           notes: payload.notes,
           birthdate: payload.birthdate,
           companion: payload.companion ?? null,
+          brand: "82rentals",
         }),
         cache: "no-store",
       });
