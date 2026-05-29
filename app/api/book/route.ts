@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createBooking, ALL_SLOTS, type Slot } from "@/lib/crm";
 import { DURATIONS, MAX_QUANTITY, type Duration } from "@/lib/pricing";
 
 const CRM_URL = process.env.CRM_API_URL;
+
+/** Referral cookie name set by /alennus (and any future flyer
+ *  landing page). The value is the CRM `users.username` of the
+ *  salesperson who should be credited; we pass it through to the
+ *  CRM as `sales_ref`, which resolves it to bookings.sales_id. */
+const REF_COOKIE = "b82_ref";
 
 // Same shape as the client-side validators in BookingModule. The
 // browser checks gate the "Confirm" button; these gate the API
@@ -159,6 +166,12 @@ export async function POST(request: Request) {
   // If a CRM is configured, forward the booking there so it lands in the
   // shared bookings table (single source of truth). Otherwise use the mock.
   if (CRM_URL) {
+    // Pull the referral cookie set by /alennus (or any other
+    // flyer landing). Null when the customer skipped the landing
+    // page and came straight to /varaa — the CRM treats null as
+    // "no salesperson attribution" and falls back to its normal
+    // sales_id = null path.
+    const salesRef = cookies().get(REF_COOKIE)?.value ?? null;
     try {
       const res = await fetch(`${CRM_URL}/api/public/book`, {
         method: "POST",
@@ -179,6 +192,7 @@ export async function POST(request: Request) {
           birthdate: payload.birthdate,
           companion: payload.companion ?? null,
           brand: "82rentals",
+          sales_ref: salesRef,
         }),
         cache: "no-store",
       });
