@@ -6,7 +6,6 @@ import PageHero from "@/components/PageHero";
 import BookingModule from "@/components/BookingModule";
 import {
   BadgeCheck,
-  Megaphone,
   Shield,
   Truck,
   Clock,
@@ -150,20 +149,6 @@ function DiscountBanner() {
               1 h <strong>119 €</strong> · 2 h <strong>199 €</strong> · 3 h{" "}
               <strong>249 €</strong>. Säästät jopa 70 €. Alennus näkyy
               suoraan kassayhteenvedossa.
-            </p>
-          </div>
-
-          <div className="hidden lg:block self-stretch w-px bg-brand-secondary/10" />
-
-          <div className="flex items-start gap-3 lg:max-w-xs">
-            <span className="grid place-items-center h-9 w-9 rounded-lg bg-brand-orange/15 text-brand-orange shrink-0">
-              <Megaphone size={16} />
-            </span>
-            <p className="text-xs leading-relaxed text-brand-secondary/80">
-              <strong className="text-brand-secondary">
-                Mainitse avajaisalennus
-              </strong>{" "}
-              luovutuksessa. Kuittaamme alennuksen myös paikan päällä.
             </p>
           </div>
         </div>

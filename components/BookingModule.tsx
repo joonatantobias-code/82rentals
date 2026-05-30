@@ -152,14 +152,6 @@ export default function BookingModule() {
   // Renter must be ≥16. Birthdate is also stored on the customer
   // row so the CRM doesn't have to ask again on return visits.
   const [birthdate, setBirthdate] = useState("");
-  // Optional second rider (single companion — Spark Trixx fits 2).
-  // Keeping the toggle state separate from the field values lets
-  // the user uncheck without nuking already-typed data.
-  const [companion, setCompanion] = useState(false);
-  const [companionFirst, setCompanionFirst] = useState("");
-  const [companionLast, setCompanionLast] = useState("");
-  const [companionBirthdate, setCompanionBirthdate] = useState("");
-
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [acceptTerms, setAcceptTerms] = useState(false);
@@ -241,10 +233,6 @@ export default function BookingModule() {
     if (!isValidPhone(phone)) return false;
     if (!isValidEmail(email)) return false;
     if (!isValidBirthdate(birthdate) || !isAdultRenter(birthdate)) return false;
-    if (companion) {
-      if (!isValidFullName(`${companionFirst} ${companionLast}`)) return false;
-      if (!isValidBirthdate(companionBirthdate)) return false;
-    }
     return true;
   }
 
@@ -271,18 +259,6 @@ export default function BookingModule() {
           ? t.booking.validation.ageError
           : null
       : null;
-  const companionNameError =
-    companion &&
-    (companionFirst.trim() || companionLast.trim()) &&
-    !isValidFullName(`${companionFirst} ${companionLast}`)
-      ? t.booking.validation.companionNameError
-      : null;
-  const companionBirthdateError =
-    companion &&
-    companionBirthdate.trim().length > 0 &&
-    !isValidBirthdate(companionBirthdate)
-      ? t.booking.validation.companionBirthdateError
-      : null;
 
   async function handleSubmit() {
     setStatus("submitting");
@@ -294,13 +270,7 @@ export default function BookingModule() {
         body: JSON.stringify({
           date, slot, duration, quantity, name, phone, email, pickup, notes,
           birthdate,
-          companion: companion
-            ? {
-                first_name: companionFirst.trim(),
-                last_name: companionLast.trim(),
-                birthdate: companionBirthdate,
-              }
-            : null,
+          companion: null,
         }),
       });
       const data = await res.json();
@@ -395,10 +365,6 @@ export default function BookingModule() {
                   setPhone("");
                   setEmail("");
                   setBirthdate("");
-                  setCompanion(false);
-                  setCompanionFirst("");
-                  setCompanionLast("");
-                  setCompanionBirthdate("");
                   setNotes("");
                 }}
                 date={date!}
@@ -722,86 +688,6 @@ export default function BookingModule() {
                           </p>
                         )}
                       </Field>
-
-                      {/* Kyytiläinen — single checkbox that reveals
-                          a sub-card with first / last / dob inputs.
-                          Toggling off keeps the typed values in
-                          state so accidental clicks don't wipe
-                          them. */}
-                      <div className="rounded-2xl border-2 border-brand-primary/30 bg-white p-4 sm:p-5">
-                        <label className="flex items-start gap-3 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={companion}
-                            onChange={(e) => setCompanion(e.target.checked)}
-                            className="h-5 w-5 mt-0.5 shrink-0 accent-brand-secondary"
-                          />
-                          <span className="flex-1 min-w-0">
-                            <span className="block font-display font-bold text-brand-secondary text-sm sm:text-base">
-                              {t.booking.companionToggleLabel}
-                            </span>
-                            <span className="block text-xs text-brand-secondary/70 mt-0.5 leading-relaxed">
-                              {t.booking.companionToggleHelper}
-                            </span>
-                          </span>
-                        </label>
-                        {companion && (
-                          <div className="mt-4 space-y-4">
-                            <div className="grid sm:grid-cols-2 gap-4">
-                              <Field
-                                icon={<UserIcon size={16} />}
-                                label={t.booking.companionFirstNameLabel}
-                                required
-                              >
-                                <input
-                                  type="text"
-                                  value={companionFirst}
-                                  onChange={(e) => setCompanionFirst(e.target.value)}
-                                  className={`booking-input ${
-                                    companionNameError ? "!border-red-400" : ""
-                                  }`}
-                                  autoComplete="off"
-                                  aria-invalid={companionNameError ? true : undefined}
-                                />
-                              </Field>
-                              <Field
-                                icon={<UserIcon size={16} />}
-                                label={t.booking.companionLastNameLabel}
-                                required
-                              >
-                                <input
-                                  type="text"
-                                  value={companionLast}
-                                  onChange={(e) => setCompanionLast(e.target.value)}
-                                  className={`booking-input ${
-                                    companionNameError ? "!border-red-400" : ""
-                                  }`}
-                                  autoComplete="off"
-                                  aria-invalid={companionNameError ? true : undefined}
-                                />
-                              </Field>
-                            </div>
-                            {companionNameError && (
-                              <FieldError text={companionNameError} />
-                            )}
-                            <Field
-                              icon={<CalendarIcon size={16} />}
-                              label={t.booking.companionBirthdateLabel}
-                              required
-                            >
-                              <BirthdatePicker
-                                value={companionBirthdate}
-                                onChange={setCompanionBirthdate}
-                                hasError={!!companionBirthdateError}
-                                t={t}
-                              />
-                              {companionBirthdateError && (
-                                <FieldError text={companionBirthdateError} />
-                              )}
-                            </Field>
-                          </div>
-                        )}
-                      </div>
 
                       <Field label={t.booking.additionalInfo} optional>
                         <textarea
