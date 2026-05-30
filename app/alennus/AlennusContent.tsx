@@ -21,7 +21,10 @@ import {
  * credit the booking to the right `myyja` user. 30-day TTL.
  */
 const REF_COOKIE = "b82_ref";
-const REF_VALUE = "caleb";
+// Flyer-jakajan CRM-tunnus. Lähetetään /api/book → CRM:n
+// /api/public/book joka kirjaa bookings.sales_id-arvon tämän
+// myyjän id:ksi.
+const REF_VALUE = "thewave";
 const REF_TTL_DAYS = 30;
 const PHONE_TEL = "tel:+358401866664";
 const PHONE_LABEL = "+358 40 186 6664";
