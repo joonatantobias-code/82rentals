@@ -15,7 +15,7 @@ const REF_COOKIE = "b82_ref";
 // browser checks gate the "Confirm" button; these gate the API
 // directly so a hand-crafted POST can't slip through with a name
 // like "Seppo", a 7-digit phone, or an email like "@.fi" (we got
-// one of those — Resend rejected it but the booking still landed
+// one of those, Resend rejected it but the booking still landed
 // in the CRM).
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 function isValidEmail(v: string) {
@@ -168,7 +168,7 @@ export async function POST(request: Request) {
   if (CRM_URL) {
     // Pull the referral cookie set by /alennus (or any other
     // flyer landing). Null when the customer skipped the landing
-    // page and came straight to /varaa — the CRM treats null as
+    // page and came straight to /varaa. The CRM treats null as
     // "no salesperson attribution" and falls back to its normal
     // sales_id = null path.
     const salesRef = cookies().get(REF_COOKIE)?.value ?? null;

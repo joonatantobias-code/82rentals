@@ -118,7 +118,7 @@ export default function VaraaContent({
 }
 
 /**
- * Visible only when the b82_ref cookie is set on the request — so
+ * Visible only when the b82_ref cookie is set on the request, so
  * the customer who scanned the flyer QR sees an unambiguous "your
  * discount is in" cue above the booking module, plus the reminder
  * to say the magic word at pickup so Caleb's attribution gets
@@ -148,7 +148,7 @@ function DiscountBanner() {
             </p>
             <p className="text-sm text-brand-secondary/70 mt-1.5 leading-relaxed">
               1 h <strong>119 €</strong> · 2 h <strong>199 €</strong> · 3 h{" "}
-              <strong>249 €</strong>. Säästät jopa 70 € — alennus näkyy
+              <strong>249 €</strong>. Säästät jopa 70 €. Alennus näkyy
               suoraan kassayhteenvedossa.
             </p>
           </div>
@@ -163,7 +163,7 @@ function DiscountBanner() {
               <strong className="text-brand-secondary">
                 Mainitse avajaisalennus
               </strong>{" "}
-              luovutuksessa — kuittaamme alennuksen myös paikan päällä.
+              luovutuksessa. Kuittaamme alennuksen myös paikan päällä.
             </p>
           </div>
         </div>

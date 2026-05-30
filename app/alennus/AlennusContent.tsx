@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -92,29 +91,13 @@ export default function AlennusContent() {
 
   return (
     <main className="relative min-h-[100svh] bg-brand-secondary text-white overflow-hidden">
-      {/* Animated mesh-blob background — two soft brand-coloured
+      {/* Animated mesh-blob background. Two soft brand-coloured
           glows drifting on a long loop so the navy panel never
           feels static. CSS-only, GPU-cheap. */}
       <BackgroundGlow />
 
-      {/* Decorative customer photo, blended into the lower half. */}
-      <div
-        aria-hidden
-        className="absolute inset-x-0 bottom-0 h-[55%] z-0 pointer-events-none"
-      >
-        <Image
-          src="/skuutit/spark-customers-helsinki.jpg"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-[50%_55%] opacity-20 mix-blend-luminosity"
-          priority={false}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-brand-secondary via-brand-secondary/70 to-transparent" />
-      </div>
-
       <section className="relative z-10 max-w-3xl mx-auto px-5 sm:px-8 pt-16 sm:pt-24 pb-16">
-        {/* Activation badge — pulses softly to draw the eye. */}
+        {/* Activation badge. Pulses softly to draw the eye. */}
         <div className="flex justify-center">
           <motion.span
             initial={{ opacity: 0, y: 10, scale: 0.92 }}
@@ -162,9 +145,9 @@ export default function AlennusContent() {
             variants={fadeUp}
             className="font-display font-extrabold text-[2.4rem] sm:text-5xl lg:text-6xl leading-[1.02] tracking-tight mt-6"
           >
-            Kesän paras päivä —{" "}
+            Kesän paras päivä.{" "}
             <span className="text-brand-primary italic">
-              alennettuun hintaan.
+              Alennettuun hintaan.
             </span>
           </motion.h1>
 
@@ -173,11 +156,11 @@ export default function AlennusContent() {
             className="mt-5 text-base sm:text-lg text-white/85 max-w-xl mx-auto leading-relaxed"
           >
             Skannasit oikein. Valitse alta sopiva paketti tai soita
-            suoraan — alennus näkyy hinnoissa automaattisesti.
+            suoraan. Alennus näkyy hinnoissa automaattisesti.
           </motion.p>
         </motion.div>
 
-        {/* Pricing tiles — each is its own Link to /varaa?duration=… */}
+        {/* Pricing tiles. Each is its own Link to /varaa?duration=Xh. */}
         <motion.div
           initial="hidden"
           animate="show"
@@ -235,13 +218,13 @@ export default function AlennusContent() {
               varauksen luovutuksessa.
             </p>
             <p className="text-white/70 mt-0.5">
-              Asiakaspalvelija tietää tällöin, että tulit flyer-koodin kautta —
-              alennus on aktivoitu ja tieto kirjautuu automaattisesti.
+              Asiakaspalvelija tietää tällöin, että tulit flyer-koodin kautta.
+              Alennus on aktivoitu ja tieto kirjautuu automaattisesti.
             </p>
           </div>
         </motion.div>
 
-        {/* Phone CTA — emphasised separately so anyone who'd rather
+        {/* Phone CTA. Emphasised separately so anyone who'd rather
             call than tap-through finds it without scrolling. */}
         <motion.a
           initial={{ opacity: 0, y: 16 }}
