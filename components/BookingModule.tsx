@@ -121,7 +121,29 @@ function isAdultRenter(v: string) {
   return a !== null && a >= 16;
 }
 
-export default function BookingModule() {
+export default function BookingModule({
+  discountActive = false,
+  partnerRef = null,
+}: {
+  /**
+   * Kun true:
+   *   - kunkin keston kortilla näkyy "Tarjous"-badge ja
+   *     yliviivattu listahinta nykyhinnan vieressä
+   *   - submit lähettää `sales_ref`-arvona partnerRefin niin että
+   *     varaus kirjautuu yhteistyökumppanin myynniksi CRM:ssä
+   *
+   * Kun false (oletus, esim. suora /varaa-vierailu ilman
+   * /alennus-kierrosta): hintaeditori näyttää pelkän nykyhinnan
+   * ilman "tarjous"-merkintöjä, sales_ref jätetään pois POST
+   * payloadista.
+   */
+  discountActive?: boolean;
+  /**
+   * Partnerin CRM-username, lähetetään POST /api/book payloadissa
+   * `sales_ref`-kentässä. Null jos ei attribuutiota.
+   */
+  partnerRef?: string | null;
+}) {
   const t = useT();
   const { locale } = useLocale();
   const searchParams = useSearchParams();
@@ -271,6 +293,13 @@ export default function BookingModule() {
           date, slot, duration, quantity, name, phone, email, pickup, notes,
           birthdate,
           companion: null,
+          // Yhteistyökumppanin attribuutio: lähetetään vain jos
+          // /varaa-sivu tunnisti vierailijan saapuneen
+          // /alennus-kierroksen kautta. Tämä on AINOA tapa, jolla
+          // varaus voi kirjautua thewaven myynniksi — suora
+          // /varaa-vierailu jättää tämän pois ja CRM kirjaa
+          // bookings.sales_id-arvoksi NULL.
+          sales_ref: discountActive ? partnerRef : null,
         }),
       });
       const data = await res.json();
@@ -445,29 +474,33 @@ export default function BookingModule() {
                                     <CheckCircle2 size={18} className="text-brand-primary" />
                                   </span>
                                 )}
-                                <span
-                                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                                    active
-                                      ? "bg-white/15 text-brand-primary"
-                                      : "bg-brand-primary text-brand-secondary"
-                                  }`}
-                                >
-                                  {t.booking.offerBadge}
-                                </span>
-                                <div className="font-display text-xl sm:text-2xl font-extrabold mt-2">
+                                {discountActive && (
+                                  <span
+                                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                                      active
+                                        ? "bg-white/15 text-brand-primary"
+                                        : "bg-brand-primary text-brand-secondary"
+                                    }`}
+                                  >
+                                    {t.booking.offerBadge}
+                                  </span>
+                                )}
+                                <div className={`font-display text-xl sm:text-2xl font-extrabold ${discountActive ? "mt-2" : ""}`}>
                                   {durationLabel(d.value, t)}
                                 </div>
                                 <div className="mt-2 flex items-baseline gap-2 flex-wrap">
                                   <span className="font-display text-2xl sm:text-3xl font-extrabold leading-none">
                                     {BASE_PRICES[d.value]} €
                                   </span>
-                                  <span
-                                    className={`text-xs sm:text-sm font-semibold line-through tabular-nums ${
-                                      active ? "text-white/55" : "text-brand-secondary/45"
-                                    }`}
-                                  >
-                                    {STRIKETHROUGH_PRICES[d.value]} €
-                                  </span>
+                                  {discountActive && (
+                                    <span
+                                      className={`text-xs sm:text-sm font-semibold line-through tabular-nums ${
+                                        active ? "text-white/55" : "text-brand-secondary/45"
+                                      }`}
+                                    >
+                                      {STRIKETHROUGH_PRICES[d.value]} €
+                                    </span>
+                                  )}
                                 </div>
                                 <div
                                   className={`text-xs mt-1 ${

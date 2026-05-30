@@ -16,16 +16,27 @@ import {
 } from "lucide-react";
 
 /**
- * Referral cookie. Set on /alennus load so that the marketing-
- * site /api/book endpoint can forward `sales_ref` to the CRM and
- * credit the booking to the right `myyja` user. 30-day TTL.
+ * Yhteistyökumppanin CRM-tunnus. Tämä arvo:
+ *   1. lähetetään /api/book → CRM:n /api/public/book pyynnössä
+ *      `sales_ref`-kentässä, joka kirjaa bookings.sales_id-arvon
+ *      tämän käyttäjän id:ksi;
+ *   2. liitetään /varaa-linkkiin query-parametrina (?ref=thewave),
+ *      jotta /varaa-sivu tunnistaa että asiakas tuli flyerin
+ *      kautta ja näyttää alennusbannerin + alennettujen hintojen
+ *      yliviivaukset;
+ *   3. tallennetaan sessionStorageen niin, että jos käyttäjä
+ *      navigoi suoraan /varaa-osoitteeseen samassa tabissa
+ *      (esim. logon klikkauksen jälkeen), attribuutio säilyy.
+ *
+ * Sessionstorage tyhjenee tabin sulkemisessa, joten vanhat
+ * vierailut eivät pollutoi uusien asiakkaiden varauksia kuukausia
+ * eteenpäin (toisin kuin aiempi 30 päivän cookie-toteutus).
  */
-const REF_COOKIE = "b82_ref";
-// Flyer-jakajan CRM-tunnus. Lähetetään /api/book → CRM:n
-// /api/public/book joka kirjaa bookings.sales_id-arvon tämän
-// myyjän id:ksi.
 const REF_VALUE = "thewave";
-const REF_TTL_DAYS = 30;
+const SESSION_KEY = "b82_alennus";
+const VARAA_LINK_FOR = (duration: string) =>
+  `/varaa?duration=${duration}&ref=${REF_VALUE}`;
+const LEGACY_COOKIE = "b82_ref";
 const PHONE_TEL = "tel:+358401866664";
 const PHONE_LABEL = "+358 40 186 6664";
 
@@ -83,10 +94,25 @@ export default function AlennusContent() {
   const [armed, setArmed] = useState(false);
 
   useEffect(() => {
-    const expires = new Date(
-      Date.now() + REF_TTL_DAYS * 24 * 60 * 60 * 1000,
-    ).toUTCString();
-    document.cookie = `${REF_COOKIE}=${REF_VALUE}; expires=${expires}; path=/; SameSite=Lax`;
+    // Tag the tab as "geld through the flyer". Cleared on tab
+    // close, so the attribution dies with the session — no
+    // 30-day ghost where a customer who once visited /alennus
+    // gets every later booking credited to thewave.
+    try {
+      window.sessionStorage.setItem(SESSION_KEY, "1");
+    } catch {
+      // SSR-noop / private mode — fine, the query param on
+      // VARAA_LINK_FOR is the durable signal anyway.
+    }
+    // Aktiivisesti tyhjennä mahdollinen vanha 30 päivän cookie
+    // niiltä asiakkailta jotka kävivät /alennus-sivulla
+    // aiemmalla deployilla. Muuten heidän seuraava varaus kuukauden
+    // sisällä menisi vielä virheellisesti thewaven myynniksi.
+    try {
+      document.cookie = `${LEGACY_COOKIE}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Lax`;
+    } catch {
+      /* noop */
+    }
     // Tiny delay so the badge animates IN visibly after mount.
     const t = window.setTimeout(() => setArmed(true), 250);
     return () => window.clearTimeout(t);
@@ -285,7 +311,7 @@ function PricingTile({ tier }: { tier: Tier }) {
   const isPopular = tier.badge?.tone === "popular";
   return (
     <Link
-      href={`/varaa?duration=${tier.duration}`}
+      href={VARAA_LINK_FOR(tier.duration)}
       className={`group relative flex flex-col rounded-2xl p-5 sm:p-6 border transition-all duration-300 hover:-translate-y-1 ${
         isPopular
           ? "bg-white/12 border-brand-primary/70 hover:border-brand-primary"

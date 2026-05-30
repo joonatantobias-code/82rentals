@@ -1,6 +1,7 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import PageHero from "@/components/PageHero";
 import BookingModule from "@/components/BookingModule";
@@ -13,6 +14,17 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useT } from "@/components/LocaleProvider";
+
+/**
+ * Yhteistyökumppanin tunniste, jota /alennus-sivu välittää
+ * /varaa-linkissä `?ref=thewave`. Vain tämä tarkka arvo voi
+ * aktivoida alennusbannerin + näyttää yliviivatut listahinnat +
+ * kirjata varauksen thewaven myynniksi. Random / muokatut
+ * arvot eivät pure: client lähettää sales_refin vain jos
+ * tunniste matchaa.
+ */
+const PARTNER_REF = "thewave";
+const SESSION_KEY = "b82_alennus";
 
 type ReassuranceVisual = {
   icon: LucideIcon;
@@ -53,11 +65,7 @@ const REASSURANCE_VISUALS: ReassuranceVisual[] = [
   },
 ];
 
-export default function VaraaContent({
-  discountActive = false,
-}: {
-  discountActive?: boolean;
-}) {
+export default function VaraaContent() {
   const t = useT();
   const page = t.pages.varaa;
   const reassurances = REASSURANCE_VISUALS.map((v, i) => ({
@@ -74,10 +82,8 @@ export default function VaraaContent({
         crumbs={[{ label: t.footer.varaaLink }]}
       />
 
-      {discountActive && <DiscountBanner />}
-
       <Suspense fallback={null}>
-        <BookingModule />
+        <BookingGate />
       </Suspense>
 
       <section className="section">
@@ -117,11 +123,56 @@ export default function VaraaContent({
 }
 
 /**
- * Visible only when the b82_ref cookie is set on the request, so
- * the customer who scanned the flyer QR sees an unambiguous "your
- * discount is in" cue above the booking module, plus the reminder
- * to say the magic word at pickup so Caleb's attribution gets
- * confirmed face-to-face too.
+ * Lukee URL-parametrin (?ref=thewave) JA sessionStoragen, päättää
+ * onko avajaisalennus aktivoitu tälle vierailulle, ja renderöi
+ * banner + BookingModule oikealla discountActive-asetuksella.
+ *
+ * URL-parametri on ensisijainen lähde: se on /alennus-sivun
+ * "Varaa nyt" -linkin payload. SessionStorage on fallback samassa
+ * tabissa, jos käyttäjä navigoi /varaa-osoitteeseen jonkin muun
+ * sisäisen linkin kautta saavuttuaan ensin /alennus-sivulle.
+ */
+function BookingGate() {
+  const searchParams = useSearchParams();
+  const [partnerRef, setPartnerRef] = useState<string | null>(null);
+
+  useEffect(() => {
+    let ref: string | null = null;
+    const fromQuery = searchParams?.get("ref") ?? null;
+    if (fromQuery === PARTNER_REF) {
+      ref = PARTNER_REF;
+      try {
+        window.sessionStorage.setItem(SESSION_KEY, "1");
+      } catch {
+        /* noop */
+      }
+    } else {
+      try {
+        const flag = window.sessionStorage.getItem(SESSION_KEY);
+        if (flag === "1") ref = PARTNER_REF;
+      } catch {
+        /* noop */
+      }
+    }
+    setPartnerRef(ref);
+  }, [searchParams]);
+
+  return (
+    <>
+      {partnerRef && <DiscountBanner />}
+      <BookingModule
+        discountActive={Boolean(partnerRef)}
+        partnerRef={partnerRef}
+      />
+    </>
+  );
+}
+
+/**
+ * Avajaisalennus-banneri. Näkyy /varaa-sivulla vain niille
+ * vierailijoille, jotka saapuivat /alennus-sivun kautta (joko
+ * QR-koodi-skannauksena tai jaetusta linkistä, jossa on
+ * ?ref=thewave).
  */
 function DiscountBanner() {
   return (

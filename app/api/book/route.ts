@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { createBooking, ALL_SLOTS, type Slot } from "@/lib/crm";
 import { DURATIONS, MAX_QUANTITY, type Duration } from "@/lib/pricing";
 
 const CRM_URL = process.env.CRM_API_URL;
 
-/** Referral cookie name set by /alennus (and any future flyer
- *  landing page). The value is the CRM `users.username` of the
- *  salesperson who should be credited; we pass it through to the
- *  CRM as `sales_ref`, which resolves it to bookings.sales_id. */
-const REF_COOKIE = "b82_ref";
+/**
+ * Sallitut yhteistyökumppanin sales_ref-arvot. Vain nämä
+ * usernamet pääsevät /api/public/book → bookings.sales_id
+ * -ketjuun läpi. Random / muokatut payload-arvot pudotetaan
+ * NULL:iksi ennen CRM-forwardia, jotta asiakas ei voi käsin
+ * kohdistaa varausta vääränlaiseen myyjään POST-pyynnön
+ * sales_ref-kenttää muokkaamalla.
+ */
+const ALLOWED_SALES_REFS = new Set(["thewave"]);
 
 // Same shape as the client-side validators in BookingModule. The
 // browser checks gate the "Confirm" button; these gate the API
@@ -67,6 +70,13 @@ type Payload = Partial<{
   notes: string;
   birthdate: string;
   companion: Companion | null;
+  /**
+   * Yhteistyökumppanin CRM-username, asetetaan client-puolelta
+   * /varaa-sivun BookingModulesta vain silloin, kun käyttäjä
+   * saapui /alennus-sivun kautta. Validoidaan tässä
+   * ALLOWED_SALES_REFS-whitelistia vasten.
+   */
+  sales_ref: string | null;
 }>;
 
 export async function POST(request: Request) {
@@ -166,12 +176,15 @@ export async function POST(request: Request) {
   // If a CRM is configured, forward the booking there so it lands in the
   // shared bookings table (single source of truth). Otherwise use the mock.
   if (CRM_URL) {
-    // Pull the referral cookie set by /alennus (or any other
-    // flyer landing). Null when the customer skipped the landing
-    // page and came straight to /varaa. The CRM treats null as
-    // "no salesperson attribution" and falls back to its normal
-    // sales_id = null path.
-    const salesRef = cookies().get(REF_COOKIE)?.value ?? null;
+    // Yhteistyökumppanin attribuutio tulee POST-payloadissa
+    // /varaa-sivun BookingModulesta. Kelpuutamme vain whitelistin
+    // mukaiset arvot — muut nollataan, jotta asiakas ei voi
+    // hand-craftatulla pyynnöllä syöttää väärää sales_refiä.
+    const rawRef =
+      typeof payload.sales_ref === "string"
+        ? payload.sales_ref.trim().toLowerCase()
+        : "";
+    const salesRef = ALLOWED_SALES_REFS.has(rawRef) ? rawRef : null;
     try {
       const res = await fetch(`${CRM_URL}/api/public/book`, {
         method: "POST",
