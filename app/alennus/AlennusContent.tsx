@@ -202,55 +202,50 @@ export default function AlennusContent() {
           </div>
         </motion.div>
 
-        {/* "Mainitse avajaisalennus" megaphone callout */}
+        {/* Combined "Soita suoraan" + "muista mainita avajaisalennus".
+            Yksi yhtenäinen lohko, koska avajaisalennuksen mainitseminen
+            koskee vain puhelinpolkua. Verkkovarauksessa cookie hoitaa
+            attribuution automaattisesti, joten ei toistoa. */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7 }}
-          className="mt-5 rounded-2xl bg-brand-orange/15 border border-brand-orange/40 px-4 sm:px-5 py-4 flex items-start gap-3"
+          className="mt-7 rounded-2xl bg-white text-brand-secondary p-5 sm:p-6"
         >
-          <span className="grid place-items-center h-9 w-9 rounded-xl bg-brand-orange/90 text-white shrink-0">
-            <Megaphone size={18} />
-          </span>
-          <div className="text-sm leading-relaxed">
-            <p className="font-bold text-white">
-              Mainitse <span className="text-brand-orange">avajaisalennus</span>{" "}
-              varauksen luovutuksessa.
-            </p>
-            <p className="text-white/70 mt-0.5">
-              Asiakaspalvelija tietää tällöin, että tulit flyer-koodin kautta.
-              Alennus on aktivoitu ja tieto kirjautuu automaattisesti.
+          <a
+            href={PHONE_TEL}
+            className="group flex items-center justify-between gap-3"
+          >
+            <span className="flex items-center gap-3">
+              <span className="grid place-items-center h-12 w-12 rounded-xl bg-brand-secondary text-brand-primary shrink-0">
+                <Phone size={22} />
+              </span>
+              <span>
+                <span className="block text-[10px] uppercase tracking-[0.22em] font-bold text-brand-secondary/60">
+                  Soita suoraan
+                </span>
+                <span className="block font-display font-extrabold text-xl sm:text-2xl tabular-nums leading-tight">
+                  {PHONE_LABEL}
+                </span>
+              </span>
+            </span>
+            <ArrowRight
+              size={20}
+              className="text-brand-secondary/40 group-hover:translate-x-1 group-hover:text-brand-secondary transition-all"
+            />
+          </a>
+
+          <div className="mt-4 pt-4 border-t border-brand-secondary/10 flex items-start gap-3">
+            <span className="grid place-items-center h-8 w-8 rounded-lg bg-brand-orange/15 text-brand-orange shrink-0">
+              <Megaphone size={15} />
+            </span>
+            <p className="text-sm leading-snug text-brand-secondary/85">
+              Kun soitat, mainitse{" "}
+              <strong className="text-brand-orange">avajaisalennus</strong>.
+              Asiakaspalvelija kirjaa alennuksen heti.
             </p>
           </div>
         </motion.div>
-
-        {/* Phone CTA. Emphasised separately so anyone who'd rather
-            call than tap-through finds it without scrolling. */}
-        <motion.a
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.85 }}
-          href={PHONE_TEL}
-          className="group mt-5 flex items-center justify-between gap-3 rounded-2xl bg-white text-brand-secondary px-5 py-4 sm:py-5 hover:bg-brand-primary transition-colors"
-        >
-          <span className="flex items-center gap-3">
-            <span className="grid place-items-center h-11 w-11 rounded-xl bg-brand-secondary text-brand-primary group-hover:bg-brand-secondary/90 transition-colors">
-              <Phone size={20} />
-            </span>
-            <span>
-              <span className="block text-[10px] uppercase tracking-[0.22em] font-bold opacity-60">
-                Soita suoraan
-              </span>
-              <span className="block font-display font-extrabold text-lg sm:text-xl tabular-nums leading-tight">
-                {PHONE_LABEL}
-              </span>
-            </span>
-          </span>
-          <ArrowRight
-            size={18}
-            className="opacity-50 group-hover:translate-x-1 transition-transform"
-          />
-        </motion.a>
 
         {/* Pickup line */}
         <motion.p
@@ -288,7 +283,7 @@ function PricingTile({ tier }: { tier: Tier }) {
   return (
     <Link
       href={`/varaa?duration=${tier.duration}`}
-      className={`group relative block rounded-2xl p-5 sm:p-6 border transition-all duration-300 hover:-translate-y-1 ${
+      className={`group relative flex flex-col rounded-2xl p-5 sm:p-6 border transition-all duration-300 hover:-translate-y-1 ${
         isPopular
           ? "bg-white/12 border-brand-primary/70 hover:border-brand-primary"
           : "bg-white/5 border-white/15 hover:border-brand-primary/55 hover:bg-white/8"
@@ -322,17 +317,31 @@ function PricingTile({ tier }: { tier: Tier }) {
       <p className="text-white/45 text-sm font-semibold line-through tabular-nums mt-3">
         {tier.strike}
       </p>
-      <p className="font-display font-black text-white text-4xl sm:text-5xl leading-none tracking-tighter mt-1 tabular-nums">
-        {tier.price}
-      </p>
-      <span className="mt-3 inline-flex items-center rounded-full bg-brand-orange/90 text-white text-[10px] font-extrabold uppercase tracking-[0.14em] px-2 py-0.5">
-        {tier.saving}
-      </span>
-
-      <div className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-primary group-hover:gap-2.5 transition-all">
-        Varaa
-        <ArrowRight size={14} />
+      <div className="mt-1 flex items-baseline gap-2 flex-wrap">
+        <span className="font-display font-black text-white text-4xl sm:text-5xl leading-none tracking-tighter tabular-nums">
+          {tier.price}
+        </span>
+        <span className="inline-flex items-center rounded-full bg-brand-orange/90 text-white text-[10px] font-extrabold uppercase tracking-[0.14em] px-2 py-0.5">
+          {tier.saving}
+        </span>
       </div>
+
+      {/* Explicit CTA button at the bottom of the tile. The whole
+          card stays clickable, but the button signals the action
+          unambiguously instead of leaving the user to guess. */}
+      <span
+        className={`mt-6 inline-flex items-center justify-center gap-2 w-full rounded-xl py-3 text-sm font-display font-extrabold uppercase tracking-[0.16em] transition-colors ${
+          isPopular
+            ? "bg-brand-primary text-brand-secondary group-hover:bg-white"
+            : "bg-white/10 text-white border border-white/25 group-hover:bg-brand-primary group-hover:text-brand-secondary group-hover:border-brand-primary"
+        }`}
+      >
+        Varaa nyt
+        <ArrowRight
+          size={14}
+          className="transition-transform group-hover:translate-x-0.5"
+        />
+      </span>
     </Link>
   );
 }
