@@ -131,6 +131,16 @@ export default function Footer() {
                 {t.footer.termsLink}
               </Link>
             </li>
+            <li>
+              <Link href="/tietosuoja" className="hover:text-brand-primary transition-colors">
+                {t.footer.privacyLink}
+              </Link>
+            </li>
+            <li>
+              <Link href="/evasteet" className="hover:text-brand-primary transition-colors">
+                {t.footer.cookiesLink}
+              </Link>
+            </li>
           </ul>
         </div>
 
