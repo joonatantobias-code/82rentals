@@ -20,11 +20,13 @@ import { useT } from "@/components/LocaleProvider";
 // Side profile leads — it's the cleanest "this is what you're
 // renting" hero — followed by the front 3/4, rear 3/4 detail, and
 // top-down on the cockpit.
+// Omat valokuvat poistettu omistajan pyynnöstä; käytetään
+// repon /skuutit/spark-*.png-renderöintejä galleriaa varten.
 const gallery = [
-  LOCAL_PHOTOS.ownSpark1,
-  LOCAL_PHOTOS.ownSpark4,
-  LOCAL_PHOTOS.ownSpark5,
-  LOCAL_PHOTOS.ownSpark6,
+  LOCAL_PHOTOS.blueSide,
+  LOCAL_PHOTOS.blue1,
+  LOCAL_PHOTOS.blue2,
+  LOCAL_PHOTOS.yellowRider,
 ];
 
 type FeatureVisual = {

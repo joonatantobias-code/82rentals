@@ -13,7 +13,8 @@ export default function HomeHighlights() {
   const cardConfig = [
     { href: "/vesijettimme", photo: LOCAL_PHOTOS.coupleAction },
     { href: "/hinnasto", photo: LOCAL_PHOTOS.yellowRider },
-    { href: "/meista", photo: LOCAL_PHOTOS.founders },
+    // Korvattu omistajan oma founders-valokuva spark-render-kuvalla.
+    { href: "/meista", photo: LOCAL_PHOTOS.redRider },
   ];
 
   return (

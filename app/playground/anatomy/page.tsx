@@ -125,7 +125,7 @@ export default function AnatomyPlayground() {
             }}
           >
             <Image
-              src={LOCAL_PHOTOS.ownSpark1}
+              src={LOCAL_PHOTOS.blueSide}
               alt=""
               fill
               sizes="(min-width: 1024px) 800px, 100vw"
