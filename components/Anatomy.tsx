@@ -85,7 +85,7 @@ export default function Anatomy() {
       >
         <div className="relative aspect-[4/3] w-full">
           <Image
-            src={LOCAL_PHOTOS.blueSide}
+            src={LOCAL_PHOTOS.ownSpark1}
             alt="Sea-Doo Spark Trixx 2up sivuprofiilista"
             fill
             sizes="(min-width: 1024px) 800px, 100vw"

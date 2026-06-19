@@ -50,11 +50,11 @@ export default function Lifestyle() {
             the cropped portrait area instead of being pushed off the
             right edge by the narrower viewport. */}
         <Image
-          src={LOCAL_PHOTOS.coupleAction}
+          src={LOCAL_PHOTOS.founders}
           alt=""
           fill
           sizes="100vw"
-          className="object-cover object-center"
+          className="object-cover object-[45%_center] md:object-[70%_center]"
           priority={false}
         />
         <div className="absolute inset-0 bg-brand-secondary/70" />

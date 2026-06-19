@@ -35,8 +35,8 @@ export default function Delivery() {
           className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-soft"
         >
           <Image
-            src={LOCAL_PHOTOS.coupleAction}
-            alt="Sea-Doo Spark Trixx -vesijetti"
+            src={LOCAL_PHOTOS.ownSpark2}
+            alt="Helsingin rannikko"
             fill
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover"

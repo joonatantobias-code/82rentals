@@ -17,13 +17,25 @@ export const LOCAL_PHOTOS = {
   yellowRider: "/skuutit/spark-trixx-yellow-rider.png",
   redRider: "/skuutit/spark-red-rider.png",
   coupleAction: "/skuutit/spark-couple-action.png",
-  // Hero-videon poster-stilli — pidetään, koska se on osa
-  // background-video-elementtiä, ei erillinen valokuvasisältö.
+  founders: "/skuutit/founders.jpg",
+  // Real photos of our own Sea-Doo Spark Trixx, shot in Seinäjoki.
+  // Used as the primary product gallery on /vesijetti and various
+  // hero / section posters across the site.
+  ownSpark1: "/skuutit/seinajoki-1.jpg",
+  ownSpark2: "/skuutit/seinajoki-2.jpg",
+  ownSpark3: "/skuutit/seinajoki-3.jpg",
+  ownSpark4: "/skuutit/seinajoki-4.jpg",
+  ownSpark5: "/skuutit/seinajoki-5.jpg",
+  ownSpark6: "/skuutit/seinajoki-6.jpg",
+  ownSpark7: "/skuutit/seinajoki-7.jpg",
+  // First-frame poster extracted from the hero background video,
+  // so when the <video> hasn't yet decoded the visible image is
+  // a still from the same clip — never a stock filler.
   heroPoster: "/skuutit/hero-poster.jpg",
+  // Open Graph / Google Search thumbnail: real photo of the team
+  // on the green Sea-Doo Spark at the Pohjoisranta marina,
+  // central Helsinki skyline behind. Replaces the previously
+  // auto-generated gradient OG card so the SERP / social shares
+  // show an authentic brand image.
+  ogHelsinki: "/skuutit/og-helsinki.jpg",
 } as const;
-
-// HUOM: omistajan omat valokuvat (seinajoki-1..7.jpg, founders.jpg,
-// og-helsinki.jpg) on poistettu omistajan pyynnöstä. Avaimet
-// ownSpark1..7, founders ja ogHelsinki ovat sallitusti poissa
-// LOCAL_PHOTOS:ista. Älä lisää niitä takaisin ilman uutta
-// kuva-aineistoa.
