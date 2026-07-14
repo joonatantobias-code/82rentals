@@ -232,7 +232,7 @@ export const dictionary = {
       qty2People: "3–4 hengelle",
       qty3People: "5–6 hengelle",
       qtyHelper:
-        "Kalustossa on 3 vesijettiä ja yhden päälle mahtuu joko max 180 kg tai max 2 henkilöä.",
+        "Kalustossa on 2 vesijettiä ja yhden päälle mahtuu joko max 180 kg tai max 2 henkilöä.",
       durationTitle: "Kuinka pitkä ajo?",
       includedLine: "Polttoaine sisältyy",
       offerBadge: "Avajaistarjous",
@@ -886,7 +886,7 @@ export const dictionary = {
       qty2People: "For 3–4 people",
       qty3People: "For 5–6 people",
       qtyHelper:
-        "We have 3 jet skis. Each one fits max 180 kg or 2 people.",
+        "We have 2 jet skis. Each one fits max 180 kg or 2 people.",
       durationTitle: "How long do you want to ride?",
       includedLine: "Fuel included",
       offerBadge: "Opening offer",

@@ -412,8 +412,8 @@ export default function BookingModule({
                         icon={<Users size={16} />}
                         label={t.booking.qtyTitle}
                       >
-                        <div className="grid grid-cols-3 gap-2 sm:gap-3 min-w-0">
-                          {[1, 2, 3].map((n) => {
+                        <div className="grid grid-cols-2 gap-2 sm:gap-3 min-w-0">
+                          {[1, 2].map((n) => {
                             const active = quantity === n;
                             return (
                               <button

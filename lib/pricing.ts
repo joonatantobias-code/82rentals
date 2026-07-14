@@ -47,9 +47,9 @@ export const STRIKETHROUGH_PRICES: Record<Duration, number> = {
 /** Delivery is always free inside Helsinki. */
 export const DELIVERY_FEE = 0;
 
-/** Maximum jet skis per booking. We currently have 3 in the
+/** Maximum jet skis per booking. We currently have 2 in the
  *  fleet and they are always available once the season is on. */
-export const MAX_QUANTITY = 3;
+export const MAX_QUANTITY = 2;
 
 export type TierTag = "fast" | "popular" | "best-value";
 
