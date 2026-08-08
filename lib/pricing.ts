@@ -49,7 +49,7 @@ export const DELIVERY_FEE = 0;
 
 /** Maximum jet skis per booking. We currently have 2 in the
  *  fleet and they are always available once the season is on. */
-export const MAX_QUANTITY = 2;
+export const MAX_QUANTITY = 1; // vain yksi ehjä vesijetti käytössä
 
 export type TierTag = "fast" | "popular" | "best-value";
 

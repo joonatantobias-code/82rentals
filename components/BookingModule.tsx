@@ -408,12 +408,13 @@ export default function BookingModule({
                 <AnimatePresence mode="wait">
                   {step === 1 && (
                     <StepWrapper key="s1">
+                      {MAX_QUANTITY > 1 && (
                       <Field
                         icon={<Users size={16} />}
                         label={t.booking.qtyTitle}
                       >
                         <div className="grid grid-cols-2 gap-2 sm:gap-3 min-w-0">
-                          {[1, 2].map((n) => {
+                          {Array.from({ length: MAX_QUANTITY }, (_, i) => i + 1).map((n) => {
                             const active = quantity === n;
                             return (
                               <button
@@ -443,6 +444,7 @@ export default function BookingModule({
                           <span>{t.booking.qtyHelper}</span>
                         </p>
                       </Field>
+                      )}
 
                       <Field
                         icon={<Hourglass size={16} />}
