@@ -4,6 +4,9 @@
 
 export const dictionary = {
   fi: {
+    seasonClosed: {
+      banner: "Kausi 2026 on päättynyt — kiitos kesästä! Varaukset avautuvat taas keväällä 2027.",
+    },
     common: {
       bookNow: "Varaa nyt",
       bookShort: "Varaa",
@@ -658,6 +661,9 @@ export const dictionary = {
     },
   },
   en: {
+    seasonClosed: {
+      banner: "The 2026 season has ended — thank you for a great summer! Bookings reopen in spring 2027.",
+    },
     common: {
       bookNow: "Book now",
       bookShort: "Book",
