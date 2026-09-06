@@ -120,38 +120,13 @@ export default function Navbar() {
           structure (two identical copies of a strip translating
           -50%) so both ribbons feel like one family at the same
           visual scroll speed. */}
-      {isHome && (
-        <Link
-          href="/varaa"
-          className="group block bg-brand-primary text-brand-secondary overflow-hidden py-2"
-          aria-label={t.announcement.cta}
-        >
-          {/* The ribbon segment is much wider than a TrustBanner
-              strip (countdown chips eat horizontal space), so even
-              with the same .marquee-track class the px/sec rate
-              looks faster than the trust ribbon below. Override
-              the duration so the ribbon settles into the same
-              visual pace — ~45 px/sec, matching TrustBanner. */}
-          <div
-            className="marquee-track flex w-max items-center whitespace-nowrap group-hover:[animation-play-state:paused] pl-8"
-            style={{ animationDuration: "55s" }}
-          >
-            <RibbonStrip
-              eyebrow={t.announcement.eyebrow}
-              prefix={t.announcement.countdownPrefix}
-              units={countdownUnits}
-              note={t.announcement.laterNote}
-            />
-            <RibbonStrip
-              eyebrow={t.announcement.eyebrow}
-              prefix={t.announcement.countdownPrefix}
-              units={countdownUnits}
-              note={t.announcement.laterNote}
-              ariaHidden
-            />
-          </div>
-        </Link>
-      )}
+      {/* Kausi suljettu -palkki: näkyy kaikilla sivuilla navin yläpuolella.
+          Korvaa kauden aikaisen avajaisalennus-rullan. */}
+      <div className="bg-brand-primary text-brand-secondary py-2 px-4">
+        <p className="mx-auto max-w-6xl text-center text-xs sm:text-sm font-bold">
+          ❄ {t.seasonClosed.banner}
+        </p>
+      </div>
 
       <div
         className={`relative bg-brand-secondary transition-all duration-300 ${

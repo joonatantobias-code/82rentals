@@ -3,7 +3,6 @@ import { Inter, Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import SeasonClosedBanner from "@/components/SeasonClosedBanner";
 import Footer from "@/components/Footer";
 import LocaleProvider from "@/components/LocaleProvider";
 import JsonLd from "@/components/JsonLd";
@@ -296,7 +295,6 @@ export default function RootLayout({
 
         <LocaleProvider>
           <Navbar />
-          <SeasonClosedBanner />
           <main>{children}</main>
           <Footer />
         </LocaleProvider>
